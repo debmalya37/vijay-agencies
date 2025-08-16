@@ -13,6 +13,7 @@
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
     "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.536.0",
     "mongoose": "^8.16.5",
     "next": "14.2.7",
     "next-auth": "^4.24.11",

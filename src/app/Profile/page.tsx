@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { 
   User, 
   Package, 
@@ -23,39 +25,41 @@ import {
   Truck,
   BarChart3,
   ChevronRight,
-  Building2
+  Building2,
+  LogOut,
+  Loader2
 } from 'lucide-react';
 
-// Mock user data based on your User model
-const mockUserData = {
-  _id: '67584a1b2c3d4e5f6789abcd',
-  usermail: 'natasha@fusion.com',
-  username: 'natasha_khaleira',
-  full_name: 'Natasha Khaleira',
-  phone_number: '(+62) 821 2554-5646',
-  age: 28,
-  gender: 'female',
-  isverified: true,
-  verification_method: 'email',
-  admin_approval: true,
-  addresses: [
-    {
-      _id: 'addr1',
-      address_line1: '123 Business District',
-      address_line2: 'Suite 456',
-      city: 'Leeds, East London',
-      state: 'England',
-      country: 'United Kingdom',
-      pincode: 'BT1 1DLA',
-      is_default: true,
-      label: 'Business Address'
-    }
-  ],
-  pincode: 'BT1 1DLA',
-  company_name: 'Fusion Technologies Ltd',
-  gst_number: 'GB123456789',
-  business_type: 'distributor'
-};
+// Interface matching your User model
+interface IAddress {
+  _id?: string;
+  address_line1: string;
+  address_line2?: string;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
+  is_default: boolean;
+  label?: string;
+}
+
+interface IUserData {
+  _id: string;
+  usermail: string;
+  username: string;
+  phone_number?: string;
+  full_name?: string;
+  age?: number;
+  gender?: 'male' | 'female' | 'other';
+  isverified: boolean;
+  verification_method?: string;
+  admin_approval: boolean;
+  addresses: IAddress[];
+  pincode?: string;
+  company_name?: string;
+  gst_number?: string;
+  business_type?: string;
+}
 
 const sidebarItems = [
   { id: 'dashboard', label: 'Dashboard', icon: BarChart3, active: false },
@@ -81,92 +85,153 @@ const profileSections = [
 ];
 
 export default function UserProfilePage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [activeSection, setActiveSection] = useState('personal');
   const [editMode, setEditMode] = useState(false);
-  const [userData, setUserData] = useState(mockUserData);
-  const [formData, setFormData] = useState(mockUserData);
-  const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState<IUserData | null>(null);
+  const [formData, setFormData] = useState<IUserData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
-  // Function to fetch user data from API (placeholder)
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
+    }
+  }, [status, router]);
+
+  // Function to fetch user data from API
   const fetchUserData = async () => {
+    if (!session) return;
+    
     setLoading(true);
+    setError('');
+    
     try {
-      // Replace with actual API call
-      // const response = await fetch('/api/user', {
-      //   headers: {
-      //     'Authorization': `Bearer ${sessionToken}`
-      //   }
-      // });
-      // const data = await response.json();
-      // setUserData(data);
-      // setFormData(data);
+      const response = await fetch('/api/profile', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       
-      // For now, using mock data
-      setUserData(mockUserData);
-      setFormData(mockUserData);
+      const data = await response.json();
+      
+      if (data.ok && data.user) {
+        setUserData(data.user);
+        setFormData(data.user);
+      } else {
+        setError(data.error || 'Failed to fetch user data');
+      }
     } catch (error) {
       console.error('Error fetching user data:', error);
+      setError('Failed to fetch user data');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchUserData();
-  }, []);
+    if (session) {
+      fetchUserData();
+    }
+  }, [session]);
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: keyof IUserData, value: any) => {
+    if (!formData) return;
+    
     setFormData(prev => ({
-      ...prev,
+      ...prev!,
       [field]: value
     }));
   };
 
-  const handleAddressChange = (field, value) => {
+  const handleAddressChange = (field: keyof IAddress, value: string) => {
+    if (!formData || !formData.addresses?.[0]) return;
+    
     setFormData(prev => ({
-      ...prev,
-      addresses: prev.addresses.map((addr, index) => 
+      ...prev!,
+      addresses: prev!.addresses.map((addr, index) => 
         index === 0 ? { ...addr, [field]: value } : addr
       )
     }));
   };
 
   const handleSave = async () => {
-    setLoading(true);
+    if (!formData) return;
+    
+    setSaving(true);
+    setError('');
+    
     try {
-      // Replace with actual API call
-      // const response = await fetch('/api/user', {
-      //   method: 'PUT',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${sessionToken}`
-      //   },
-      //   body: JSON.stringify(formData)
-      // });
-      // const updatedData = await response.json();
+      const response = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
       
-      // For now, just update local state
-      setUserData(formData);
-      setEditMode(false);
+      const data = await response.json();
+      
+      if (data.ok && data.user) {
+        setUserData(data.user);
+        setFormData(data.user);
+        setEditMode(false);
+      } else {
+        setError(data.error || 'Failed to update user data');
+      }
     } catch (error) {
       console.error('Error updating user data:', error);
+      setError('Failed to update user data');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
   const handleCancel = () => {
     setFormData(userData);
     setEditMode(false);
+    setError('');
   };
 
-  const formatDate = (dateString) => {
+  const handleSignOut = () => {
+    signOut({ callbackUrl: '/auth/signin' });
+  };
+
+  const formatDate = (dateString?: string) => {
     return new Date().toLocaleDateString('en-GB', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
     });
   };
+
+  // Show loading spinner while checking authentication or loading data
+  if (status === 'loading' || loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex items-center gap-3 text-gray-600">
+          <Loader2 className="w-6 h-6 animate-spin" />
+          <span>Loading profile...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if no session
+  if (!session || !userData) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-gray-600 mb-4">Unable to load profile data</div>
+          {error && <div className="text-red-600 text-sm">{error}</div>}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex text-black">
@@ -196,12 +261,29 @@ export default function UserProfilePage() {
           </ul>
         </nav>
 
-        {/* Footer */}
+        {/* User Info & Logout */}
         <div className="p-4 border-t border-gray-200">
-          <div className="bg-orange-500 text-white p-3 rounded-lg text-center">
-            <User className="w-6 h-6 mx-auto mb-1" />
-            <div className="text-xs font-medium">Need help with orders?</div>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+              <span className="text-sm font-bold text-white">
+                {userData.full_name?.charAt(0) || userData.username?.charAt(0) || 'U'}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {userData.full_name || userData.username}
+              </p>
+              <p className="text-xs text-gray-500 truncate">{userData.usermail}</p>
+            </div>
           </div>
+          
+          <button
+            onClick={handleSignOut}
+            className="w-full flex items-center gap-2 px-3 py-2 text-left text-gray-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="text-sm">Sign Out</span>
+          </button>
         </div>
       </div>
 
@@ -221,7 +303,9 @@ export default function UserProfilePage() {
                   <div className="w-4 h-4 border-2 border-gray-400 rounded-full"></div>
                 </div>
               </div>
-              <span className="text-sm text-gray-600">Tuesday, 18 July</span>
+              <span className="text-sm text-gray-600">
+                {formatDate()}
+              </span>
             </div>
             
             <div className="flex items-center gap-4">
@@ -248,18 +332,23 @@ export default function UserProfilePage() {
                     <>
                       <button
                         onClick={handleCancel}
-                        className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                        disabled={saving}
+                        className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50"
                       >
                         <X className="w-4 h-4" />
                         Cancel
                       </button>
                       <button
                         onClick={handleSave}
-                        disabled={loading}
+                        disabled={saving}
                         className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50"
                       >
-                        <Save className="w-4 h-4" />
-                        {loading ? 'Saving...' : 'Save'}
+                        {saving ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Save className="w-4 h-4" />
+                        )}
+                        {saving ? 'Saving...' : 'Save'}
                       </button>
                     </>
                   ) : (
@@ -274,11 +363,18 @@ export default function UserProfilePage() {
                 </div>
               </div>
 
+              {/* Error Message */}
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-700 text-sm">{error}</p>
+                </div>
+              )}
+
               <div className="flex items-start gap-6">
                 <div className="relative">
                   <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
                     <span className="text-2xl font-bold text-white">
-                      {userData.full_name?.charAt(0) || 'N'}
+                      {userData.full_name?.charAt(0) || userData.username?.charAt(0) || 'U'}
                     </span>
                   </div>
                   {editMode && (
@@ -289,19 +385,27 @@ export default function UserProfilePage() {
                 </div>
                 
                 <div className="flex-1">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-1">{userData.full_name}</h2>
-                  <p className="text-gray-600 mb-1">Admin</p>
-                  <p className="text-gray-500 text-sm">{userData.addresses?.[0]?.city}, {userData.addresses?.[0]?.country}</p>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-1">
+                    {userData.full_name || userData.username}
+                  </h2>
+                  <p className="text-gray-600 mb-1">
+                    {userData.admin_approval ? 'Admin' : 'User'}
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    {userData.addresses?.[0]?.city}, {userData.addresses?.[0]?.country}
+                  </p>
                   
                   <div className="flex items-center gap-4 mt-3">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span>Verified Account</span>
+                      <div className={`w-2 h-2 rounded-full ${userData.isverified ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                      <span>{userData.isverified ? 'Verified Account' : 'Unverified Account'}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Building2 className="w-4 h-4" />
-                      <span>{userData.business_type || 'Business User'}</span>
-                    </div>
+                    {userData.business_type && (
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <Building2 className="w-4 h-4" />
+                        <span className="capitalize">{userData.business_type}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -337,72 +441,60 @@ export default function UserProfilePage() {
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className='text-black'>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
                         {editMode ? (
                           <input
                             type="text"
-                            value={formData.full_name?.split(' ')[0] || ''}
-                            onChange={(e) => {
-                              const lastName = formData.full_name?.split(' ').slice(1).join(' ') || '';
-                              handleInputChange('full_name', `${e.target.value} ${lastName}`.trim());
-                            }}
+                            value={formData?.username || ''}
+                            onChange={(e) => handleInputChange('username', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                           />
                         ) : (
                           <div className="px-3 py-2 bg-gray-50 rounded-lg">
-                            {userData.full_name?.split(' ')[0] || 'Natasha'}
+                            {userData.username}
                           </div>
                         )}
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                         {editMode ? (
                           <input
                             type="text"
-                            value={formData.full_name?.split(' ').slice(1).join(' ') || ''}
-                            onChange={(e) => {
-                              const firstName = formData.full_name?.split(' ')[0] || '';
-                              handleInputChange('full_name', `${firstName} ${e.target.value}`.trim());
-                            }}
+                            value={formData?.full_name || ''}
+                            onChange={(e) => handleInputChange('full_name', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                           />
                         ) : (
                           <div className="px-3 py-2 bg-gray-50 rounded-lg">
-                            {userData.full_name?.split(' ').slice(1).join(' ') || 'Khaleira'}
+                            {userData.full_name || 'Not provided'}
                           </div>
                         )}
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
                         {editMode ? (
                           <input
-                            type="date"
+                            type="number"
+                            value={formData?.age || ''}
+                            onChange={(e) => handleInputChange('age', parseInt(e.target.value) || 0)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                           />
                         ) : (
                           <div className="px-3 py-2 bg-gray-50 rounded-lg">
-                            19-10-1995
+                            {userData.age || 'Not provided'}
                           </div>
                         )}
                       </div>
                       
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                        {editMode ? (
-                          <input
-                            type="email"
-                            value={formData.usermail}
-                            onChange={(e) => handleInputChange('usermail', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                          />
-                        ) : (
-                          <div className="px-3 py-2 bg-gray-50 rounded-lg">
-                            {userData.usermail}
-                          </div>
-                        )}
+                        <div className="px-3 py-2 bg-gray-100 rounded-lg text-gray-600">
+                          {userData.usermail}
+                          <span className="text-xs ml-2">(Cannot be changed)</span>
+                        </div>
                       </div>
                       
                       <div>
@@ -410,13 +502,13 @@ export default function UserProfilePage() {
                         {editMode ? (
                           <input
                             type="tel"
-                            value={formData.phone_number}
+                            value={formData?.phone_number || ''}
                             onChange={(e) => handleInputChange('phone_number', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                           />
                         ) : (
                           <div className="px-3 py-2 bg-gray-50 rounded-lg">
-                            {userData.phone_number}
+                            {userData.phone_number || 'Not provided'}
                           </div>
                         )}
                       </div>
@@ -425,17 +517,18 @@ export default function UserProfilePage() {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
                         {editMode ? (
                           <select
-                            value={formData.gender}
+                            value={formData?.gender || ''}
                             onChange={(e) => handleInputChange('gender', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                           >
+                            <option value="">Select Gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                             <option value="other">Other</option>
                           </select>
                         ) : (
                           <div className="px-3 py-2 bg-gray-50 rounded-lg capitalize">
-                            {userData.gender}
+                            {userData.gender || 'Not provided'}
                           </div>
                         )}
                       </div>
@@ -449,17 +542,33 @@ export default function UserProfilePage() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Address Line 1</label>
                         {editMode ? (
                           <input
                             type="text"
-                            value={formData.addresses?.[0]?.country || ''}
-                            onChange={(e) => handleAddressChange('country', e.target.value)}
+                            value={formData?.addresses?.[0]?.address_line1 || ''}
+                            onChange={(e) => handleAddressChange('address_line1', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                           />
                         ) : (
                           <div className="px-3 py-2 bg-gray-50 rounded-lg">
-                            {userData.addresses?.[0]?.country || 'United Kingdom'}
+                            {userData.addresses?.[0]?.address_line1 || 'Not provided'}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Address Line 2</label>
+                        {editMode ? (
+                          <input
+                            type="text"
+                            value={formData?.addresses?.[0]?.address_line2 || ''}
+                            onChange={(e) => handleAddressChange('address_line2', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                          />
+                        ) : (
+                          <div className="px-3 py-2 bg-gray-50 rounded-lg">
+                            {userData.addresses?.[0]?.address_line2 || 'Not provided'}
                           </div>
                         )}
                       </div>
@@ -469,69 +578,45 @@ export default function UserProfilePage() {
                         {editMode ? (
                           <input
                             type="text"
-                            value={formData.addresses?.[0]?.city || ''}
+                            value={formData?.addresses?.[0]?.city || ''}
                             onChange={(e) => handleAddressChange('city', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                           />
                         ) : (
                           <div className="px-3 py-2 bg-gray-50 rounded-lg">
-                            {userData.addresses?.[0]?.city || 'Leeds, East London'}
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
-                        {editMode ? (
-                          <input
-                            type="text"
-                            value={formData.addresses?.[0]?.pincode || ''}
-                            onChange={(e) => handleAddressChange('pincode', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                          />
-                        ) : (
-                          <div className="px-3 py-2 bg-gray-50 rounded-lg">
-                            {userData.addresses?.[0]?.pincode || 'BT1 1DLA'}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeSection === 'business' && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-6">Business Information</h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
-                        {editMode ? (
-                          <input
-                            type="text"
-                            value={formData.company_name || ''}
-                            onChange={(e) => handleInputChange('company_name', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                          />
-                        ) : (
-                          <div className="px-3 py-2 bg-gray-50 rounded-lg">
-                            {userData.company_name || 'Fusion Technologies Ltd'}
+                            {userData.addresses?.[0]?.city || 'Not provided'}
                           </div>
                         )}
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">GST Number</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
                         {editMode ? (
                           <input
                             type="text"
-                            value={formData.gst_number || ''}
-                            onChange={(e) => handleInputChange('gst_number', e.target.value)}
+                            value={formData?.addresses?.[0]?.state || ''}
+                            onChange={(e) => handleAddressChange('state', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                           />
                         ) : (
                           <div className="px-3 py-2 bg-gray-50 rounded-lg">
-                            {userData.gst_number || 'GB123456789'}
+                            {userData.addresses?.[0]?.state || 'Not provided'}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                        {editMode ? (
+                          <input
+                            type="text"
+                            value={formData?.addresses?.[0]?.country || ''}
+                            onChange={(e) => handleAddressChange('country', e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                          />
+                        ) : (
+                          <div className="px-3 py-2 bg-gray-50 rounded-lg">
+                            {userData.addresses?.[0]?.country || 'Not provided'}
                           </div>
                         )}
                       </div>
