@@ -1,6 +1,5 @@
 // app/api/auth/signup/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
 import dbConnect from '@/lib/dbConnect';
 import { User } from '@/models/User';
 
@@ -8,10 +7,10 @@ export async function POST(request: NextRequest) {
   try {
     await dbConnect();
     
-    const { usermail, username, password, phone_number } = await request.json();
+    const { email, username, password, phone_number } = await request.json();
     
     // Validation
-    if (!usermail || !username || !password) {
+    if (!email || !username || !password) {
       return NextResponse.json(
         { error: 'Email, username, and password are required', ok: false },
         { status: 400 }
@@ -20,7 +19,7 @@ export async function POST(request: NextRequest) {
     
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(usermail)) {
+    if (!emailRegex.test(email)) {
       return NextResponse.json(
         { error: 'Please enter a valid email address', ok: false },
         { status: 400 }
@@ -47,7 +46,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Check if user already exists
-    const existingUserByEmail = await User.findOne({ usermail });
+    const existingUserByEmail = await User.findOne({ email });
     if (existingUserByEmail) {
       return NextResponse.json(
         { error: 'User with this email already exists', ok: false },
@@ -63,15 +62,11 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Hash password
-    const saltRounds = 12;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    
-    // Create new user
+    // Create new user (password will be hashed in UserSchema pre-save hook)
     const newUser = new User({
-      usermail,
+      email,
       username,
-      password: hashedPassword,
+      password, // plain text → will be hashed automatically in model
       phone_number: phone_number || '',
       isverified: false,
       verification_method: 'email',
@@ -88,7 +83,7 @@ export async function POST(request: NextRequest) {
         ok: true,
         user: {
           id: newUser._id,
-          usermail: newUser.usermail,
+          email: newUser.email,
           username: newUser.username,
           phone_number: newUser.phone_number,
           isverified: newUser.isverified

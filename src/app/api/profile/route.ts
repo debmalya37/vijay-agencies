@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     await dbConnect();
     
     // Use the email from session to find user
-    const user = await User.findOne({ usermail: session.user.email }).select('-password');
+    const user = await User.findOne({ email: session.user.email }).select('-password');
     
     if (!user) {
       return NextResponse.json(
@@ -61,7 +61,7 @@ export async function PUT(request: NextRequest) {
     const {
       _id,
       password,
-      usermail, // Don't allow email changes
+      email, // Don't allow email changes
       verification_timestamps,
       verification_status_history,
       cart_id,
@@ -73,7 +73,7 @@ export async function PUT(request: NextRequest) {
     await dbConnect();
     
     const updatedUser = await User.findOneAndUpdate(
-      { usermail: session.user.email },
+      { email: session.user.email },
       { $set: safeUpdateData },
       { new: true, runValidators: true }
     ).select('-password');

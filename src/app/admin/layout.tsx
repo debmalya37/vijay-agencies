@@ -13,6 +13,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <li><Link href="/admin/products">Products</Link></li>
           <li><Link href="/admin/users">Users</Link></li>
           <li><Link href="/admin/orders">Orders</Link></li>
+          <li><Link href="/admin/category">Category</Link></li>
+          <li><Link href="/admin/coupon&banner">Coupon & Banner</Link></li>
         </ul>
       </nav>
       <main className="flex-1 p-6 bg-gray-100">{children}</main>

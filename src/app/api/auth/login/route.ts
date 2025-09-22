@@ -8,8 +8,8 @@ import { generateToken } from '@/lib/auth';
 
 export async function POST(req: Request) {
   await dbConnect();
-  const { usermail, password } = await req.json();
-  const user = await User.findOne({ usermail }) as { _id: string, password: string } | null;
+  const { email, password } = await req.json();
+  const user = await User.findOne({ email }) as { _id: string, password: string } | null;
   if (!user) return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
   const valid = await bcrypt.compare(password, (user as any).password);
   if (!valid) return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });

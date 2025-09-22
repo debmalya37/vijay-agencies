@@ -14,7 +14,7 @@ declare module "next-auth" {
   }
 
   interface User extends DefaultUser {
-    usermail?: string;
+    email?: string;
     username?: string;
     isverified?: boolean;
     phone_number?: string;

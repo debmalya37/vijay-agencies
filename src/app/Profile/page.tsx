@@ -45,7 +45,7 @@ interface IAddress {
 
 interface IUserData {
   _id: string;
-  usermail: string;
+  email: string;
   username: string;
   phone_number?: string;
   full_name?: string;
@@ -273,7 +273,7 @@ export default function UserProfilePage() {
               <p className="text-sm font-medium text-gray-900 truncate">
                 {userData.full_name || userData.username}
               </p>
-              <p className="text-xs text-gray-500 truncate">{userData.usermail}</p>
+              <p className="text-xs text-gray-500 truncate">{userData.email}</p>
             </div>
           </div>
           
@@ -492,7 +492,7 @@ export default function UserProfilePage() {
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                         <div className="px-3 py-2 bg-gray-100 rounded-lg text-gray-600">
-                          {userData.usermail}
+                          {userData.email}
                           <span className="text-xs ml-2">(Cannot be changed)</span>
                         </div>
                       </div>

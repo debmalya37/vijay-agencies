@@ -28,7 +28,7 @@ export const authOptions: NextAuthOptions = {
           
           let user;
           if (isEmail) {
-            user = await User.findOne({ usermail: credentials.identifier });
+            user = await User.findOne({ email: credentials.identifier });
           } else {
             user = await User.findOne({ username: credentials.identifier });
           }
@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
           
           return {
             id: String(user._id),
-            usermail: user.usermail,
+            email: user.email,
             username: user.username,
             isverified: user.isverified,
             phone_number: user.phone_number,
@@ -70,12 +70,12 @@ export const authOptions: NextAuthOptions = {
         try {
           await dbConnect();
           
-          const existingUser = await User.findOne({ usermail: user.email });
+          const existingUser = await User.findOne({ email: user.email });
           
           if (!existingUser) {
             // Create new user for Google sign-in
             const newUser = new User({
-              usermail: user.email,
+              email: user.email,
               username: user.name || user.email?.split('@')[0],
               full_name: user.name,
               isverified: true, // Google accounts are pre-verified
@@ -100,7 +100,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
-        token.email = (user as any).usermail || user.email;
+        token.email = (user as any).email || user.email;
         token.username = (user as any).username || user.name;
         token.isverified = (user as any).isverified ?? true;
         token.phone_number = (user as any).phone_number;

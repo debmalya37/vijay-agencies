@@ -6,7 +6,7 @@ import axios from 'axios'
 
 interface User {
   _id: string
-  usermail: string
+  email: string
   username: string
   company_name?: string
   gst_number?: string
@@ -19,7 +19,7 @@ interface User {
 const demoUsers: User[] = [
   {
     _id: 'USR0001',
-    usermail: 'alice@corp.com',
+    email: 'alice@corp.com',
     username: 'alice_corp',
     company_name: 'Alice Industries',
     gst_number: '27AAACI1234K1Z2',
@@ -29,7 +29,7 @@ const demoUsers: User[] = [
   },
   {
     _id: 'USR0002',
-    usermail: 'bob@distribute.com',
+    email: 'bob@distribute.com',
     username: 'bob_dist',
     company_name: 'Bob Distributors',
     gst_number: '29BBBCD5678L3Z4',
@@ -69,7 +69,7 @@ export default function AdminUsersPage() {
   const filtered = useMemo(() => {
     return users.filter(u =>
       u.username.toLowerCase().includes(search.toLowerCase()) ||
-      u.usermail.toLowerCase().includes(search.toLowerCase()) ||
+      u.email.toLowerCase().includes(search.toLowerCase()) ||
       u.company_name?.toLowerCase().includes(search.toLowerCase()) ||
       u.business_type?.toLowerCase().includes(search.toLowerCase())
     )
@@ -137,7 +137,7 @@ export default function AdminUsersPage() {
             {paginated.map(u => (
               <tr key={u._id} className="border-b border-gray-700">
                 <td className="px-4 py-2">{u.username}</td>
-                <td className="px-4 py-2">{u.usermail}</td>
+                <td className="px-4 py-2">{u.email}</td>
                 <td className="px-4 py-2">{u.company_name || '—'}</td>
                 <td className="px-4 py-2">{u.business_type || '—'}</td>
                 <td className="px-4 py-2">{u.isverified ? '✔️' : '❌'}</td>

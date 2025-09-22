@@ -1,5 +1,6 @@
 // File: models/User.ts
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import bcrypt from "bcryptjs";
+import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IAddress {
   _id: string;
@@ -13,28 +14,28 @@ export interface IAddress {
   label?: string;
 }
 
-export interface IUser extends Document {
-  usermail: string;
+export interface IUser {
+  _id?: mongoose.Types.ObjectId;
+  email: string;
   username: string;
-  password?: string; 
+  password?: string;
+  role: "user" | "admin"; 
   phone_number: string;
   full_name: string;
-  age: number;
-  gender: 'male' | 'female' | 'other';
   isverified: boolean;
-  verification_method: string;
-  verification_timestamps: Date[];
-  verification_status_history: string[];
+  verification_method?: string;
+  verification_timestamps?: Date[];
+  verification_status_history?: string[];
   admin_approval: boolean;
   addresses: IAddress[];
-  pincode: string;
-  cart_id: mongoose.Types.ObjectId;
-  wishlist_id: mongoose.Types.ObjectId;
+  cart_id?: mongoose.Types.ObjectId;
+  wishlist_id?: mongoose.Types.ObjectId;
   purchase_history: mongoose.Types.ObjectId[];
-  // Additional for B2B marketplace
   company_name?: string;
   gst_number?: string;
-  business_type?: string; // e.g., manufacturer, distributor, retailer
+  business_type?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const AddressSchema: Schema = new Schema({
@@ -48,27 +49,39 @@ const AddressSchema: Schema = new Schema({
   label: String,
 });
 
-const UserSchema: Schema = new Schema({
-  usermail: { type: String, required: true, unique: true },
-  username: { type: String, required: true, unique: true },
-  password: String,   
-  phone_number: String,
-  full_name: String,
-  age: Number,
-  gender: String,
-  isverified: { type: Boolean, default: false },
-  verification_method: String,
-  verification_timestamps: [Date],
-  verification_status_history: [String],
-  admin_approval: { type: Boolean, default: false },
-  addresses: [AddressSchema],
-  pincode: String,
-  cart_id: { type: Schema.Types.ObjectId, ref: 'Cart' },
-  wishlist_id: { type: Schema.Types.ObjectId, ref: 'Wishlist' },
-  purchase_history: [{ type: Schema.Types.ObjectId, ref: 'Invoice' }],
-  company_name: String,
-  gst_number: String,
-  business_type: String,
+const UserSchema: Schema = new Schema(
+  {
+    email: { type: String, required: true, unique: true },
+    username: { type: String, required: true, unique: true },
+    password: String,
+    phone_number: String,
+    full_name: String,
+    isverified: { type: Boolean, default: false },
+    verification_method: String,
+    verification_timestamps: [Date],
+    verification_status_history: [String],
+    admin_approval: { type: Boolean, default: false },
+    addresses: [AddressSchema],
+    cart_id: { type: Schema.Types.ObjectId, ref: "Cart" },
+    wishlist_id: { type: Schema.Types.ObjectId, ref: "Wishlist" },
+    purchase_history: [{ type: Schema.Types.ObjectId, ref: "Order" }],
+    company_name: String,
+    gst_number: String,
+    business_type: String,
+  },
+  { timestamps: true }
+);
+
+UserSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    if (typeof this.password === "string") {
+      this.password = await bcrypt.hash(this.password, 10);
+    } else {
+      throw new Error("Password must be a string");
+    }
+  }
+  next();
 });
 
-export const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+export const User: Model<IUser> =
+  mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
