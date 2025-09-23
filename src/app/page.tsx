@@ -22,10 +22,19 @@ import {
   Instagram,
   Linkedin,
   Menu,
-  X
+  X,
+  Building2,
+  Users,
+  Package,
+  Headphones,
+  Sparkles,
+  Zap,
+  Heart,
+  TrendingUp
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import ProductCard from '@/components/ProductCard';
+import Link from 'next/link';
 
 // Type definitions
 interface Product {
@@ -74,101 +83,157 @@ interface Banner {
   created_at: string;
 }
 
-// Mock data for products (fallback)
-const mockProducts = [
-  {
-    _id: '1',
-    title: 'Organic Green Tea Collection',
-    price: 299,
-    originalPrice: 399,
-    image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300',
-    rating: 4.5,
-    reviews: 128,
-    category: 'Beverages'
-  },
-  {
-    _id: '2',
-    title: 'Premium Skincare Set',
-    price: 1299,
-    originalPrice: 1599,
-    image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300',
-    rating: 4.8,
-    reviews: 95,
-    category: 'Beauty'
-  },
-  {
-    _id: '3',
-    title: 'Natural Body Care Kit',
-    price: 899,
-    originalPrice: 1099,
-    image: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=300',
-    rating: 4.6,
-    reviews: 203,
-    category: 'Personal Care'
-  }
-];
-
-// Fallback categories with emojis
-const fallbackCategories = [
-  { _id: '1', name: "Dish & Kitchen Care", slug: "dish-kitchen-care", icon: "🧽", product_count: 45, is_active: true },
-  { _id: '2', name: "Laundry & Fabric Care", slug: "laundry-fabric-care", icon: "👕", product_count: 32, is_active: true },
-  { _id: '3', name: "Bathroom & Toilet Care", slug: "bathroom-toilet-care", icon: "🚿", product_count: 28, is_active: true },
-  { _id: '4', name: "Cleaning Accessories", slug: "cleaning-accessories", icon: "🧹", product_count: 18, is_active: true },
-  { _id: '5', name: "Floor Cleaner", slug: "floor-cleaner", icon: "🏠", product_count: 22, is_active: true },
-  { _id: '6', name: "Hand Washes", slug: "hand-washes", icon: "🧼", product_count: 15, is_active: true },
-  { _id: '7', name: "Air Care", slug: "air-care", icon: "🌸", product_count: 12, is_active: true }
-];
-
 const testimonials = [
   {
-    name: 'Sarah Johnson',
-    role: 'Procurement Manager',
-    company: 'TechCorp Ltd',
-    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b647?w=80',
-    text: 'Excellent quality products and outstanding customer service. Our bulk orders are always delivered on time.'
-  },
-  {
-    name: 'Michael Chen',
-    role: 'Operations Director',
-    company: 'Global Industries',
+    name: 'Rajesh Sharma',
+    role: 'Hotel Manager',
+    company: 'Grand Palace Hotel, Jaipur',
     image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80',
-    text: 'The best B2B platform we\'ve used. Great pricing for bulk orders and reliable delivery.'
+    text: 'Vijay Agencies has been our trusted partner for over 5 years. Their cleaning products are top quality and delivery is always on time.'
   },
   {
-    name: 'Emily Rodriguez',
-    role: 'Supply Chain Manager',
-    company: 'MegaCorp',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80',
-    text: 'Professional service and high-quality products. Highly recommend for business procurement.'
+    name: 'Priya Agarwal',
+    role: 'Procurement Head',
+    company: 'Rajputana Hotels',
+    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b647?w=80',
+    text: 'Excellent service and competitive prices for bulk orders. Their team understands our hotel requirements perfectly.'
+  },
+  {
+    name: 'Amit Kumar',
+    role: 'Operations Manager',
+    company: 'Heritage Resort, Jaipur',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80',
+    text: 'Professional approach and reliable supply chain. Highly recommend for all hotel and commercial cleaning needs.'
   }
 ];
 
-const blogPosts = [
+const companyStats = [
+  { number: '500+', label: 'Happy Clients', icon: Users },
+  { number: '15+', label: 'Years Experience', icon: Award },
+  { number: '1000+', label: 'Products', icon: Package },
+  { number: '24/7', label: 'Customer Support', icon: Headphones }
+];
+
+const whyChooseUs = [
   {
-    id: '1',
-    title: 'Sustainable Business Practices in 2024',
-    excerpt: 'How companies are adopting eco-friendly approaches...',
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300',
-    date: 'March 15, 2024',
-    category: 'Sustainability'
+    icon: Building2,
+    title: 'Hotel Industry Specialists',
+    description: 'Deep understanding of hospitality and commercial cleaning requirements'
   },
   {
-    id: '2',
-    title: 'Supply Chain Optimization Tips',
-    excerpt: 'Best practices for efficient procurement management...',
-    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=300',
-    date: 'March 10, 2024',
-    category: 'Business'
+    icon: Truck,
+    title: 'Reliable Delivery',
+    description: 'On-time delivery across Jaipur and surrounding areas'
   },
   {
-    id: '3',
-    title: 'Quality Standards in Manufacturing',
-    excerpt: 'Understanding international quality certifications...',
-    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=300',
-    date: 'March 5, 2024',
-    category: 'Quality'
+    icon: Shield,
+    title: 'Quality Assurance',
+    description: 'All products are tested and certified for commercial use'
+  },
+  {
+    icon: TrendingUp,
+    title: 'Competitive Pricing',
+    description: 'Best wholesale rates for bulk orders and regular customers'
   }
 ];
+
+// Animation keyframes for CSS
+const animationStyles = `
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes slideInFromBottom {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in-left {
+    animation: fadeInLeft 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in-right {
+    animation: fadeInRight 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-bottom {
+    animation: slideInFromBottom 0.8s ease-out forwards;
+  }
+
+  .animate-pulse-hover:hover {
+    animation: pulse 0.6s ease-in-out;
+  }
+
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+  }
+
+  .scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+
+  .glass-effect {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+`;
 
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -188,6 +253,27 @@ export default function HomePage() {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [bannersLoading, setBannersLoading] = useState(true);
   const [bannersError, setBannersError] = useState<string | null>(null);
+
+  // Scroll animations
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, observerOptions);
+
+    const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
+    scrollRevealElements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
 
   // Function to fetch banners from API
   const fetchBanners = async () => {
@@ -233,7 +319,6 @@ export default function HomePage() {
     } catch (err) {
       console.error('Error fetching categories:', err);
       setCategoriesError('Failed to load categories');
-      setCategories(fallbackCategories);
     } finally {
       setCategoriesLoading(false);
     }
@@ -301,7 +386,6 @@ export default function HomePage() {
     } catch (err) {
       console.error('Error fetching products:', err);
       setProductsError('Failed to load products');
-      setProducts(mockProducts);
     } finally {
       setProductsLoading(false);
     }
@@ -309,7 +393,16 @@ export default function HomePage() {
 
   // Helper function to get category color based on name or use a default rotation
   const getCategoryColor = (categoryName: string, index: number) => {
-    const colors = ['bg-green-100', 'bg-orange-100', 'bg-purple-100', 'bg-red-100', 'bg-blue-100', 'bg-yellow-100', 'bg-pink-100'];
+    const colors = [
+      'bg-gradient-to-br from-blue-100 to-blue-200', 
+      'bg-gradient-to-br from-green-100 to-green-200', 
+      'bg-gradient-to-br from-purple-100 to-purple-200', 
+      'bg-gradient-to-br from-orange-100 to-orange-200', 
+      'bg-gradient-to-br from-red-100 to-red-200', 
+      'bg-gradient-to-br from-yellow-100 to-yellow-200', 
+      'bg-gradient-to-br from-pink-100 to-pink-200', 
+      'bg-gradient-to-br from-indigo-100 to-indigo-200'
+    ];
     return colors[index % colors.length];
   };
 
@@ -320,18 +413,18 @@ export default function HomePage() {
     }
     
     const name = category.name.toLowerCase();
-    if (name.includes('dish') || name.includes('kitchen')) return '🧽';
-    if (name.includes('laundry') || name.includes('fabric')) return '👕';
-    if (name.includes('bathroom') || name.includes('toilet')) return '🚿';
-    if (name.includes('cleaning') || name.includes('accessor')) return '🧹';
+    if (name.includes('kitchen')) return '🍽️';
+    if (name.includes('washroom') || name.includes('bathroom') || name.includes('toilet')) return '🚿';
     if (name.includes('floor')) return '🏠';
-    if (name.includes('hand') || name.includes('wash')) return '🧼';
+    if (name.includes('vacuum') || name.includes('cleaner')) return '🔌';
+    if (name.includes('paper') || name.includes('towel')) return '🧻';
+    if (name.includes('soap') || name.includes('dispenser')) return '🧼';
     if (name.includes('air') || name.includes('fresh')) return '🌸';
-    if (name.includes('beauty') || name.includes('skincare')) return '💄';
-    if (name.includes('health') || name.includes('wellness')) return '💊';
-    if (name.includes('food') || name.includes('beverage')) return '🍽️';
+    if (name.includes('scrubber')) return '🧽';
+    if (name.includes('chemical')) return '⚗️';
+    if (name.includes('industrial')) return '🏭';
     
-    const defaultEmojis = ['🏷️', '📦', '🛒', '⭐', '🎯', '💡', '🔔'];
+    const defaultEmojis = ['🧽', '🧴', '🚿', '🧻', '🔌', '⚗️', '🏭', '🧼'];
     return defaultEmojis[index % defaultEmojis.length];
   };
 
@@ -374,6 +467,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
+      
       {/* <Navbar/> */}
       
       {/* Shop by Category Section */}
@@ -443,19 +538,40 @@ export default function HomePage() {
       </section>
 
       {/* Hero Banner Section */}
-      <section className="relative h-96 md:h-[500px] overflow-hidden">
+      <section className="relative h-[60vh] sm:h-[70vh] lg:h-[80vh] overflow-hidden scroll-reveal">
         {bannersLoading && (
-          <div className="w-full h-full bg-gray-200 animate-pulse flex items-center justify-center">
-            <p className="text-gray-600">Loading banners...</p>
+          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gray-400 rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600 text-lg">Loading banners...</p>
+            </div>
           </div>
         )}
 
         {bannersError && !bannersLoading && (
-          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-            <div className="text-center">
-              <p className="text-gray-600 mb-2">No banners available</p>
-              <p className="text-gray-400 text-sm">Check back later for updates</p>
+          <div className="w-full h-full bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 flex items-center justify-center text-white relative overflow-hidden">
+            <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+            <div className="text-center px-4 relative z-10 animate-slide-in-bottom">
+              <h1 className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-bold mb-4 leading-tight">
+                Vijay Agencies
+              </h1>
+              <p className="text-lg sm:text-xl lg:text-2xl mb-6 max-w-3xl mx-auto leading-relaxed">
+                Your Trusted Partner for Commercial Cleaning Solutions
+              </p>
+              <p className="text-base sm:text-lg lg:text-xl mb-8 opacity-90">
+                Serving Hotels & Businesses in Jaipur Since 2016
+              </p>
+              <button 
+                onClick={() => window.location.href = '/Products'}
+                className="bg-white text-blue-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 inline-flex items-center gap-2 shadow-xl hover:shadow-2xl hover:scale-105 text-base sm:text-lg"
+              >
+                Explore Products
+                <ArrowRight className="w-5 h-5" />
+              </button>
             </div>
+            {/* Decorative elements */}
+            <div className="absolute top-10 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full animate-pulse"></div>
+            <div className="absolute bottom-20 right-10 w-32 h-32 bg-white bg-opacity-10 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
           </div>
         )}
 
@@ -464,8 +580,8 @@ export default function HomePage() {
             {banners.map((banner, index) => (
               <div
                 key={banner._id}
-                className={`absolute inset-0 transition-opacity duration-1000 ${
-                  index === currentSlide ? 'opacity-100' : 'opacity-0'
+                className={`absolute inset-0 transition-all duration-1000 ${
+                  index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
                 } ${banner.link_url ? 'cursor-pointer' : ''}`}
                 onClick={() => handleBannerClick(banner)}
               >
@@ -475,9 +591,9 @@ export default function HomePage() {
                     alt={banner.title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-                  <div className="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg">
-                    <h2 className="text-lg font-semibold">{banner.title}</h2>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+                  <div className="absolute bottom-6 left-4 sm:left-6 glass-effect text-white px-4 sm:px-6 py-3 sm:py-4 rounded-xl backdrop-blur-md">
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold">{banner.title}</h2>
                   </div>
                 </div>
               </div>
@@ -488,25 +604,27 @@ export default function HomePage() {
               <>
                 <button
                   onClick={prevSlide}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full backdrop-blur-sm"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 glass-effect hover:bg-white hover:bg-opacity-20 text-white p-3 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110"
                 >
                   <ChevronLeft className="w-6 h-6" />
                 </button>
                 <button
                   onClick={nextSlide}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full backdrop-blur-sm"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 glass-effect hover:bg-white hover:bg-opacity-20 text-white p-3 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110"
                 >
                   <ChevronRight className="w-6 h-6" />
                 </button>
 
                 {/* Slide Indicators */}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-3">
                   {banners.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentSlide(index)}
-                      className={`w-3 h-3 rounded-full transition-colors ${
-                        index === currentSlide ? 'bg-white' : 'bg-white bg-opacity-50'
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === currentSlide 
+                          ? 'bg-white scale-125' 
+                          : 'bg-white bg-opacity-50 hover:bg-opacity-75'
                       }`}
                     />
                   ))}
@@ -517,72 +635,81 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* Features Section */}
-      <section className="py-16 bg-gray-50 text-black">
+      {/* Company Stats Section */}
+      <section className="py-12 sm:py-16 bg-white scroll-reveal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Truck className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Free Shipping</h3>
-              <p className="text-gray-600">Free delivery on orders above ₹50,000</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Quality Assured</h3>
-              <p className="text-gray-600">All products are quality tested</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Certified</h3>
-              <p className="text-gray-600">International certifications</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">24/7 Support</h3>
-              <p className="text-gray-600">Round the clock customer service</p>
-            </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {companyStats.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <div key={index} className="text-center animate-fade-in-up" style={{ animationDelay: `${index * 0.2}s` }}>
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse-hover">
+                    <Icon className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-blue-600" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{stat.number}</div>
+                  <div className="text-sm sm:text-base lg:text-lg text-gray-600 font-medium">{stat.label}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 sm:py-20 bg-gradient-to-br from-gray-50 to-white text-black scroll-reveal">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Why Choose Vijay Agencies?</h2>
+            <p className="text-gray-600 max-w-3xl mx-auto text-base sm:text-lg lg:text-xl leading-relaxed">Your trusted partner for all commercial cleaning needs in Jaipur and surrounding areas</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+            {whyChooseUs.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <div key={index} className="text-center group animate-fade-in-up" style={{ animationDelay: `${index * 0.2}s` }}>
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-300 shadow-lg group-hover:shadow-xl group-hover:scale-110 animate-pulse-hover">
+                    <Icon className="w-10 h-10 sm:w-12 sm:h-12 text-blue-600" />
+                  </div>
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-3 text-gray-900 group-hover:text-blue-600 transition-colors">{feature.title}</h3>
+                  <p className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-sm mx-auto">{feature.description}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Featured Products */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 sm:py-20 bg-white scroll-reveal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Featured Products
             </h2>
-            <p className="text-xl text-gray-600">Trusted by families nationwide</p>
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">Professional-grade cleaning solutions for commercial use</p>
           </div>
 
           {productsLoading && (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading products...</p>
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto"></div>
+              <p className="mt-6 text-gray-600 text-lg">Loading products...</p>
             </div>
           )}
 
           {productsError && !productsLoading && (
-            <div className="text-center py-8">
-              <p className="text-red-600 mb-4">{productsError}</p>
+            <div className="text-center py-12">
+              <p className="text-red-600 mb-6 text-lg">{productsError}</p>
               <button 
                 onClick={fetchProducts}
-                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                className="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
               >
                 Try Again
               </button>
             </div>
           )}
 
-          {!productsLoading && !productsError && products.length > 0 && (
+{!productsLoading && !productsError && products.length > 0 && (
             <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6">
               {products.slice(0, 8).map((product) => (
                 <div key={product._id} className="h-full">
@@ -593,14 +720,17 @@ export default function HomePage() {
           )}
 
           {!productsLoading && !productsError && products.length === 0 && (
-            <div className="text-center py-8">
-              <p className="text-gray-600">No products available at the moment.</p>
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">No products available at the moment.</p>
             </div>
           )}
 
           {!productsLoading && products.length > 8 && (
-            <div className="text-center mt-12">
-              <button className="bg-green-600 text-white px-8 py-4 rounded-lg hover:bg-green-700 transition-colors inline-flex items-center gap-2 text-lg font-semibold">
+            <div className="text-center mt-12 lg:mt-16 animate-fade-in-up stagger-4">
+              <button 
+                onClick={() => window.location.href = '/Products'}
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
+              >
                 View All Products ({products.length} total)
                 <ArrowRight className="w-5 h-5" />
               </button>
@@ -609,95 +739,111 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Trust & Benefits Section */}
-      <section className="py-16 bg-white">
+      {/* About Vijay Agencies Section */}
+      <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 scroll-reveal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Natural Products?
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                <Shield className="w-8 h-8 text-green-600" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="space-y-6 lg:space-y-8 animate-fade-in-left">
+              <div>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 lg:mb-6">About Vijay Agencies</h2>
+                <div className="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-blue-800 rounded-full mb-6"></div>
               </div>
-              <h3 className="text-lg font-semibold">Kid & Pet Safe</h3>
-              <p className="text-gray-600 text-sm">Non-toxic formulas safe for your entire family</p>
-            </div>
-            
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                <Award className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-semibold">Eco-Friendly</h3>
-              <p className="text-gray-600 text-sm">Biodegradable ingredients that protect our planet</p>
-            </div>
-            
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto">
-                <Truck className="w-8 h-8 text-yellow-600" />
-              </div>
-              <h3 className="text-lg font-semibold">Fast Delivery</h3>
-              <p className="text-gray-600 text-sm">Quick and reliable delivery to your doorstep</p>
-            </div>
-            
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
-                <Clock className="w-8 h-8 text-purple-600" />
-              </div>
-              <h3 className="text-lg font-semibold">24/7 Support</h3>
-              <p className="text-gray-600 text-sm">Always here to help with any questions</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Video Section */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Vijay Agency?</h2>
-              <p className="text-gray-600 text-lg mb-6">
-                We are committed to providing the highest quality natural products for businesses worldwide. 
-                Our sustainable practices and reliable supply chain make us the preferred choice for B2B partnerships.
+              
+              <p className="text-base sm:text-lg lg:text-xl text-gray-700 leading-relaxed">
+                Established as a trusted wholesale supplier in Jaipur, Rajasthan, Vijay Agencies has been 
+                serving the hospitality and commercial sector with high-quality cleaning solutions and equipment.
               </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-600" />
-                  <span>Certified organic and natural products</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-600" />
-                  <span>Competitive wholesale pricing</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-600" />
-                  <span>Reliable global shipping network</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-600" />
-                  <span>Dedicated account management</span>
-                </li>
-              </ul>
-              <button className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors">
-                Learn More About Us
-              </button>
+              
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-base lg:text-lg">
+                We specialize in providing comprehensive cleaning solutions to hotels, restaurants, and commercial 
+                establishments across Jaipur and surrounding areas. Our extensive range includes industrial cleaning 
+                equipment, chemicals, and consumables.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 lg:mt-10">
+                <div className="flex items-start space-x-4 animate-fade-in-up stagger-1">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
+                    <Check className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1">Industrial Equipment</h4>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">Vacuum cleaners, scrubber driers, floor sweepers</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-4 animate-fade-in-up stagger-2">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
+                    <Check className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1">Cleaning Chemicals</h4>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">Kitchen & washroom cleaning solutions</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-4 animate-fade-in-up stagger-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
+                    <Check className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1">Paper Products</h4>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">Toilet rolls, kitchen towels, tissues</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-4 animate-fade-in-up stagger-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
+                    <Check className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1">Dispensers & Accessories</h4>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">Soap dispensers, air fresheners</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-8">
+                <button 
+                  onClick={() => window.location.href = '/about'}
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 inline-flex items-center gap-3 font-semibold shadow-lg hover:shadow-xl hover:scale-105 text-base sm:text-lg"
+                >
+                  Learn More About Us
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
             </div>
             
-            <div className="relative">
-              <div className="relative rounded-lg overflow-hidden shadow-lg">
+            <div className="relative animate-fade-in-right">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-shadow duration-500">
                 <img
-                  src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600"
-                  alt="About Us Video"
-                  className="w-full h-80 object-cover"
+                  src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400"
+                  alt="Vijay Agencies Cleaning Solutions"
+                  className="w-full h-80 sm:h-96 lg:h-[28rem] object-cover hover:scale-105 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-                  <button className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center hover:bg-opacity-100 transition-colors">
-                    <Play className="w-6 h-6 text-gray-800 ml-1" />
-                  </button>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                <div className="absolute bottom-6 sm:bottom-8 left-6 sm:left-8 right-6 sm:right-8 text-white">
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3">Professional Cleaning Solutions</h3>
+                  <p className="text-sm sm:text-base opacity-90 leading-relaxed">Serving Jaipur&apos;s hospitality industry since 2016</p>
+                </div>
+              </div>
+              
+              {/* Floating contact card */}
+              <div className="absolute -bottom-8 -right-4 sm:-bottom-10 sm:-right-8 bg-white rounded-2xl shadow-2xl p-6 sm:p-8 border border-gray-100 max-w-xs animate-slide-in-bottom hover:scale-105 transition-transform duration-300">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Phone className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <h4 className="font-bold text-gray-900 mb-4 text-lg">Get In Touch</h4>
+                  <div className="space-y-3 text-sm text-gray-600">
+                    <div className="flex items-center gap-3 justify-center">
+                      <Phone className="w-4 h-4 text-blue-600" />
+                      <span className="font-medium">9351630408</span>
+                    </div>
+                    <div className="flex items-center gap-3 justify-center">
+                      <Mail className="w-4 h-4 text-blue-600" />
+                      <span className="text-xs font-medium">vijayagenciesjpr@yahoo.in</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -706,132 +852,133 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 sm:py-20 bg-white scroll-reveal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">What Our Clients Say</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Trusted by businesses worldwide</p>
+          <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">What Our Clients Say</h2>
+            <p className="text-gray-600 max-w-3xl mx-auto text-base sm:text-lg lg:text-xl leading-relaxed">Trusted by hotels and businesses across Jaipur</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                <div className="flex items-center gap-4 mb-4">
+              <div key={index} className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl border border-gray-100 hover:border-blue-200 transition-all duration-500 group animate-fade-in-up hover:scale-105" style={{ animationDelay: `${index * 0.2}s` }}>
+                <div className="flex items-center gap-4 mb-6">
                   <img
                     src={testimonial.image}
                     alt={testimonial.name}
-                    className="w-12 h-12 rounded-full object-cover"
+                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover ring-4 ring-blue-100 shadow-md"
                   />
                   <div>
-                    <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-600">{testimonial.role}</p>
-                    <p className="text-sm text-green-600">{testimonial.company}</p>
+                    <h4 className="font-bold text-gray-900 text-base sm:text-lg">{testimonial.name}</h4>
+                    <p className="text-sm text-gray-600 mb-1">{testimonial.role}</p>
+                    <p className="text-sm text-blue-600 font-semibold">{testimonial.company}</p>
                   </div>
                 </div>
-                <p className="text-gray-700 italic">&quot;{testimonial.text}&quot;</p>
+                <div className="flex mb-4">
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-700 italic leading-relaxed text-sm sm:text-base">&quot;{testimonial.text}&quot;</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Blog Section */}
-      <section className="py-16">
+      {/* Contact Information Section */}
+      <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white scroll-reveal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Latest Insights</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Stay updated with industry trends and insights</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {blogPosts.map((post) => (
-              <article key={post.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-6">
-                  <div className="flex items-center gap-4 mb-3">
-                    <span className="text-sm text-green-600 font-medium">{post.category}</span>
-                    <span className="text-sm text-gray-500">{post.date}</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="animate-fade-in-left">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 lg:mb-8">Ready to Partner With Us?</h2>
+              <p className="text-blue-100 text-base sm:text-lg lg:text-xl mb-8 lg:mb-10 leading-relaxed">
+                Contact Vijay Agencies today for all your commercial cleaning needs. 
+                We provide personalized solutions and competitive bulk pricing for hotels and businesses.
+              </p>
+              
+              <div className="space-y-6">
+                <div className="flex items-start gap-4 sm:gap-6 animate-fade-in-up stagger-1">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <MapPin className="w-6 h-6 sm:w-7 sm:h-7" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{post.title}</h3>
-                  <p className="text-gray-600 mb-4">{post.excerpt}</p>
-                  <button className="text-green-600 hover:text-green-700 font-medium inline-flex items-center gap-1">
-                    Read More
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                  <div>
+                    <h4 className="font-bold mb-2 text-lg sm:text-xl">Visit Our Store</h4>
+                    <p className="text-blue-100 leading-relaxed">
+                      A 917 Siddarth Nagar, Near Jain Mandir<br />
+                      Jaipur, Rajasthan - 302025
+                    </p>
+                  </div>
                 </div>
-              </article>
-            ))}
+                
+                <div className="flex items-start gap-4 sm:gap-6 animate-fade-in-up stagger-2">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <Phone className="w-6 h-6 sm:w-7 sm:h-7" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold mb-2 text-lg sm:text-xl">Call Us</h4>
+                    <p className="text-blue-100 leading-relaxed">
+                      +91 9351630408<br />
+                      +91 9414073671
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-4 sm:gap-6 animate-fade-in-up stagger-3">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <Mail className="w-6 h-6 sm:w-7 sm:h-7" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold mb-2 text-lg sm:text-xl">Email Us</h4>
+                    <p className="text-blue-100">vijayagenciesjpr@yahoo.in</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-2xl animate-fade-in-right">
+              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">Get a Quote</h3>
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  <input
+                    type="text"
+                    placeholder="Your Name"
+                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Phone Number"
+                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
+                  />
+                </div>
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
+                />
+                <input
+                  type="text"
+                  placeholder="Business Name"
+                  className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
+                />
+                <textarea
+                  placeholder="Tell us about your requirements..."
+                  rows={4}
+                  className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none"
+                ></textarea>
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105"
+                >
+                  Request Quote
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="text-2xl font-bold text-green-400 mb-4">Vijay Agency</div>
-              <p className="text-gray-300 mb-4">
-                Your trusted partner for premium natural products and sustainable business solutions.
-              </p>
-              <div className="flex gap-4">
-                <Facebook className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer" />
-                <Twitter className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer" />
-                <Instagram className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer" />
-                <Linkedin className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer" />
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-300 hover:text-white">About Us</a></li>
-                <li><a href="#" className="text-gray-300 hover:text-white">Products</a></li>
-                <li><a href="#" className="text-gray-300 hover:text-white">Services</a></li>
-                <li><a href="#" className="text-gray-300 hover:text-white">Contact</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Support</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-300 hover:text-white">Help Center</a></li>
-                <li><a href="#" className="text-gray-300 hover:text-white">Shipping Info</a></li>
-                <li><a href="#" className="text-gray-300 hover:text-white">Returns</a></li>
-                <li><a href="#" className="text-gray-300 hover:text-white">FAQ</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-green-400" />
-                  <span className="text-gray-300">+1 (555) 123-4567</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-green-400" />
-                  <span className="text-gray-300">info@vijayagencies.com</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-green-400" />
-                  <span className="text-gray-300">123 Business St, City, ST 12345</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-            <p className="text-gray-400">
-              © 2024 Vijay Agencies. All rights reserved. | Privacy Policy | Terms of Service
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

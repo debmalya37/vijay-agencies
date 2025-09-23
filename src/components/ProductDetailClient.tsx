@@ -1,6 +1,6 @@
 // components/ProductDetailClient.tsx
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Star,
   ShoppingCart,
@@ -17,6 +17,7 @@ import {
   Minus,
   Users as UsersIcon,
 } from "lucide-react";
+import { useCart } from "@/components/cart/CartProvider"; // <<-- added
 
 // Updated interfaces to match the new product model
 interface IVariant {
@@ -79,6 +80,9 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
 
+  // CART
+  const { addItem, items: cartItems } = useCart();
+
   const reviews = product.reviews ?? [];
   const avgRating = reviews.length ? reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length : 0;
 
@@ -93,9 +97,9 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
   // Calculate current price based on selected variant or base price
   const getCurrentPrice = () => {
     if (selectedVariant) {
-      return selectedVariant.discounted_price || selectedVariant.price;
+      return selectedVariant.discounted_price ?? selectedVariant.price;
     }
-    return product.discounted_price || product.base_price || 0;
+    return product.discounted_price ?? product.base_price ?? 0;
   };
 
   // Calculate original price for discount display
@@ -111,7 +115,7 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
 
   // Get current stock
   const getCurrentStock = () => {
-    return selectedVariant?.stock || 0;
+    return selectedVariant?.stock ?? (product.is_in_stock ? Infinity : 0);
   };
 
   // Calculate discount percentage
@@ -129,9 +133,7 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
 
   const tabs = [
     { id: 'details', label: 'Product Details' },
-    // { id: 'specifications', label: 'Specifications' },
     { id: 'reviews', label: `Reviews (${reviews.length})` },
-    // { id: 'seller', label: 'Seller Information' }
   ];
 
   const specifications = [
@@ -157,6 +159,40 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
     setShowReviewForm(false);
     setNewReview({ rating: 5, comment: '' });
     alert('Review submitted successfully!');
+  };
+
+  // Unique cart id uses productId::size (size we use variant _id to make it unique)
+  const currentSizeKey = selectedVariant ? String(selectedVariant._id) : "";
+  const cartItemId = `${product._id}::${currentSizeKey}`;
+
+  // Derived boolean to disable/label the button
+  const isInCart = useMemo(() => cartItems.some(ci => ci.id === cartItemId), [cartItems, cartItemId]);
+
+  const handleAddToCart = () => {
+    // if product has variants but none selected, guard
+    if (product.variants && product.variants.length > 0 && !selectedVariant) {
+      alert("Please select a variant/size first.");
+      return;
+    }
+
+    const price = getCurrentPrice();
+    const originalPrice = getOriginalPrice() ?? price;
+    const image = (selectedVariant && selectedVariant.images && selectedVariant.images[0]) || product.images?.[0] || "";
+
+    addItem({
+      productId: product._id,
+      title: product.title,
+      variantId: selectedVariant ? String(selectedVariant._id) : undefined,
+      size: currentSizeKey, // used by CartProvider to form unique key
+      price,
+      originalPrice,
+      image,
+      quantity,
+      minOrderQuantity: product.min_order_quantity ?? 1,
+      inStock: getCurrentStock() > 0,
+    });
+
+    // UI will update because CartProvider dispatches synchronously; isInCart will become true
   };
 
   return (
@@ -341,12 +377,14 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <button 
-                  disabled={!selectedVariant || getCurrentStock() === 0}
-                  className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={handleAddToCart}
+                  disabled={!selectedVariant || getCurrentStock() === 0 || isInCart}
+                  className={`flex-1 ${isInCart ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"} text-white py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-lg font-semibold disabled:opacity-60 disabled:cursor-not-allowed`}
                 >
                   <ShoppingCart className="w-5 h-5" /> 
-                  {getCurrentStock() === 0 ? 'Out of Stock' : 'Add to Cart'}
+                  {isInCart ? 'Added to Cart' : (getCurrentStock() === 0 ? 'Out of Stock' : 'Add to Cart')}
                 </button>
+
                 <button title="like" className="px-6 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                   <Heart className="w-5 h-5 mx-auto sm:mr-2" />
                   <span className="hidden sm:inline">Wishlist</span>
@@ -414,20 +452,6 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
               </div>
             )}
 
-            {/* {activeTab === 'specifications' && (
-              <div>
-                <h3 className="text-xl font-semibold mb-4">Technical Specifications</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {specifications.map((spec, index) => (
-                    <div key={index} className="flex justify-between py-3 border-b border-gray-100">
-                      <span className="font-medium text-gray-900">{spec.label}:</span>
-                      <span className="text-gray-600">{spec.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )} */}
-
             {activeTab === 'reviews' && (
               <div>
                 <div className="flex items-center justify-between mb-6">
@@ -490,125 +514,78 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
                   </div>
                 )}
 
-                {/* Rating Summary */}
-                {reviews.length > 0 && (
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-8 p-4 bg-gray-50 rounded-lg">
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-gray-900">{avgRating.toFixed(1)}</div>
-                      <div className="flex items-center justify-center mb-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            className={`w-4 h-4 ${i < Math.floor(avgRating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} 
-                          />
-                        ))}
+                {/* Rating Summary & Reviews List */}
+                {reviews.length > 0 ? (
+                  <>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-8 p-4 bg-gray-50 rounded-lg">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-gray-900">{avgRating.toFixed(1)}</div>
+                        <div className="flex items-center justify-center mb-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star 
+                              key={i} 
+                              className={`w-4 h-4 ${i < Math.floor(avgRating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} 
+                            />
+                          ))}
+                        </div>
+                        <div className="text-sm text-gray-600">{reviews.length} reviews</div>
                       </div>
-                      <div className="text-sm text-gray-600">{reviews.length} reviews</div>
-                    </div>
-                    
-                    <div className="flex-1">
-                      {[5, 4, 3, 2, 1].map(rating => {
-                        const count = reviews.filter(r => r.rating === rating).length;
-                        const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
-                        return (
-                          <div key={rating} className="flex items-center gap-2 mb-1">
-                            <span className="text-sm w-2">{rating}</span>
-                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                            <div className="flex-1 bg-gray-200 rounded-full h-2">
-                              <div 
-                                className="bg-yellow-400 h-2 rounded-full" 
-                                style={{ width: `${percentage}%` }}
-                              ></div>
+                      
+                      <div className="flex-1">
+                        {[5, 4, 3, 2, 1].map(rating => {
+                          const count = reviews.filter(r => r.rating === rating).length;
+                          const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+                          return (
+                            <div key={rating} className="flex items-center gap-2 mb-1">
+                              <span className="text-sm w-2">{rating}</span>
+                              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                              <div className="flex-1 bg-gray-200 rounded-full h-2">
+                                <div 
+                                  className="bg-yellow-400 h-2 rounded-full" 
+                                  style={{ width: `${percentage}%` }}
+                                ></div>
+                              </div>
+                              <span className="text-sm text-gray-600 w-8">{count}</span>
                             </div>
-                            <span className="text-sm text-gray-600 w-8">{count}</span>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
+
+                    <div className="space-y-6">
+                      {reviews.map(review => (
+                        <div key={review._id} className="border-b border-gray-100 pb-6 last:border-b-0">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <Users className="w-4 h-4 text-blue-600" />
+                              </div>
+                              <span className="font-medium">User {review.user_id}</span>
+                            </div>
+                            <span className="text-sm text-gray-500">
+                              {new Date(review.created_at).toLocaleDateString()}
+                            </span>
+                          </div>
+                          
+                          <div className="flex items-center mb-2">
+                            {[...Array(5)].map((_, i) => (
+                              <Star 
+                                key={i} 
+                                className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} 
+                              />
+                            ))}
+                          </div>
+                          
+                          <p className="text-gray-600">{review.comment}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>No reviews yet. Be the first to review this product!</p>
                   </div>
                 )}
-
-                {/* Reviews List */}
-                <div className="space-y-6">
-                  {reviews.length > 0 ? reviews.map(review => (
-                    <div key={review._id} className="border-b border-gray-100 pb-6 last:border-b-0">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                            <Users className="w-4 h-4 text-blue-600" />
-                          </div>
-                          <span className="font-medium">User {review.user_id}</span>
-                        </div>
-                        <span className="text-sm text-gray-500">
-                          {new Date(review.created_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                      
-                      <div className="flex items-center mb-2">
-                        {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} 
-                          />
-                        ))}
-                      </div>
-                      
-                      <p className="text-gray-600">{review.comment}</p>
-                    </div>
-                  )) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <p>No reviews yet. Be the first to review this product!</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'seller' && sellerInfo && (
-              <div>
-                <h3 className="text-xl font-semibold mb-4">Seller Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div>
-                      <span className="font-medium text-gray-900">Company:</span>
-                      <span className="ml-2 text-gray-600">{sellerInfo.name}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-900">Rating:</span>
-                      <span className="ml-2 text-gray-600">{sellerInfo.rating}/5</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-900">Years in Business:</span>
-                      <span className="ml-2 text-gray-600">{sellerInfo.yearsInBusiness} years</span>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <div>
-                      <span className="font-medium text-gray-900">Total Orders:</span>
-                      <span className="ml-2 text-gray-600">{sellerInfo.totalOrders?.toLocaleString()}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-900">Response Time:</span>
-                      <span className="ml-2 text-gray-600">{sellerInfo.responseTime}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-900">Location:</span>
-                      <span className="ml-2 text-gray-600">{sellerInfo.location}</span>
-                    </div>
-                  </div>
-                  {sellerInfo.certifications && sellerInfo.certifications.length > 0 && (
-                    <div className="md:col-span-2">
-                      <span className="font-medium text-gray-900 block mb-2">Certifications:</span>
-                      <div className="flex flex-wrap gap-2">
-                        {sellerInfo.certifications.map((cert) => (
-                          <span key={cert} className="px-3 py-1 bg-green-100 text-green-700 text-sm rounded-full">
-                            {cert}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
               </div>
             )}
           </div>

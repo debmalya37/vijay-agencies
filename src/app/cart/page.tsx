@@ -521,7 +521,7 @@ export default function CartPage() {
       )}
 
       {/* Newsletter Section */}
-      <div className="bg-teal-600 text-white">
+      {/* <div className="bg-teal-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="text-center lg:text-left">
@@ -549,42 +549,10 @@ export default function CartPage() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Footer */}
-      <footer className="bg-gray-100 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8">
-            <div className="col-span-2 sm:col-span-3 lg:col-span-1">
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6 tracking-wider">SHOP</h3>
-            </div>
-
-            {footerSections.map((section, index) => (
-              <div key={index}>
-                <h4 className="text-xs sm:text-sm font-bold text-gray-900 mb-3 sm:mb-4 tracking-wider">
-                  {section.title}
-                </h4>
-                <ul className="space-y-1 sm:space-y-2">
-                  {section.links.map((link, linkIndex) => (
-                    <li key={linkIndex}>
-                      <a href="#" className="text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          {/* Copyright */}
-          <div className="border-t border-gray-200 mt-8 pt-6 text-center">
-            <p className="text-xs sm:text-sm text-gray-500">
-              © 2024 SHOP. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      {/*  */}
     </div>
   );
 }

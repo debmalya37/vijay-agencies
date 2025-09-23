@@ -5,6 +5,7 @@ import { Providers } from "@/components/providers";
 import { CartProvider } from "@/components/cart/CartProvider";
 import Script from "next/script";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
         <Providers>
           <Navbar/>
           {children}
+          <Footer/>
         </Providers>
       </CartProvider>
       </body>

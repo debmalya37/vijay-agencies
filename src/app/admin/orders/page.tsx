@@ -282,7 +282,7 @@ export default function OrdersPage() {
       <Dialog
         open={!!selected}
         onClose={() => setSelected(null)}
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        className="fixed inset-0 flex items-center justify-center bg-black text-white bg-opacity-50 z-50"
       >
         <Dialog.Panel className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl">
           <Dialog.Title className="text-xl font-semibold mb-4">Order Details</Dialog.Title>
