@@ -351,7 +351,8 @@ export default function ContactPage(): JSX.Element {
                 onClick={handleSubmit}
                 disabled={sending}
                 className="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-60"
-                aria-disabled={sending.toString()}
+                aria-disabled={sending}
+
               >
                 {sending ? <Loader2 className="animate-spin w-4 h-4" /> : null}
                 {sending ? "Opening Mail Client..." : "Send Message"}
