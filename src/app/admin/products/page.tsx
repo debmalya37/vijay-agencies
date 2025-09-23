@@ -97,6 +97,7 @@ export default function ProductsPage() {
           className="w-full md:w-1/3 p-2 bg-gray-800 rounded border border-gray-700 focus:outline-none"
         />
         <select
+        title='Filter by Category'
           value={filterCat}
           onChange={e => { setFilterCat(e.target.value); setPage(1); }}
           className="p-2 bg-gray-800 rounded border border-gray-700"

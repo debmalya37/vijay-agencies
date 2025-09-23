@@ -5,115 +5,127 @@ import { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import { Dialog } from '@headlessui/react';
 
-interface OrderItem {
-  product_id: { title: string };
+type OrderItem = {
+  // server may return either productId populated or just an id
+  productId?: { _id?: string; title?: string } | string;
+  product?: { _id?: string; title?: string };
   quantity: number;
   price: number;
-}
+  // variant id optionally
+  variantId?: string;
+};
 
-interface Order {
+type ApiOrder = {
   _id: string;
-  user_id: { username: string; usermail: string };
-  total_amount: number;
-  created_at: string;
-  status: string;
-  product_details: OrderItem[];
-  address_id: {
-    address_line1: string;
-    city: string;
-    state: string;
-    country: string;
-    pincode: string;
-  };
-}
-
-const demoOrders: Order[] = [
-  {
-    _id: 'ORD12345',
-    user_id: { username: 'john_doe', usermail: 'john@example.com' },
-    total_amount: 1499,
-    created_at: '2025-07-28T10:30:00Z',
-    status: 'pending',
-    product_details: [
-      { product_id: { title: 'Premium Leather Wallet' }, quantity: 1, price: 799 },
-      { product_id: { title: 'Stainless Water Bottle' }, quantity: 2, price: 350 },
-    ],
-    address_id: {
-      address_line1: '123 Main St',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      country: 'India',
-      pincode: '400001',
-    },
-  },
-  {
-    _id: 'ORD67890',
-    user_id: { username: 'jane_smith', usermail: 'jane@example.com' },
-    total_amount: 2599,
-    created_at: '2025-07-29T14:45:00Z',
-    status: 'shipped',
-    product_details: [
-      { product_id: { title: 'Wireless Earbuds' }, quantity: 1, price: 1999 },
-      { product_id: { title: 'City Backpack' }, quantity: 1, price: 600 },
-    ],
-    address_id: {
-      address_line1: '456 Park Ave',
-      city: 'Delhi',
-      state: 'Delhi',
-      country: 'India',
-      pincode: '110001',
-    },
-  },
-];
+  userId?: { username?: string; email?: string } | string;
+  user?: { username?: string; email?: string };
+  amount?: number; // often stored in paise on your server; we'll detect/display accordingly
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  items?: OrderItem[];
+  // optional address fields if your server stored them
+  address?: {
+    address_line1?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    pincode?: string;
+  } | null;
+};
 
 export default function OrdersPage() {
-  const [orders, setOrders] = useState<Order[]>(demoOrders);
+  const [orders, setOrders] = useState<ApiOrder[]>([]);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [search, setSearch] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const [selected, setSelected] = useState<Order | null>(null);
+  const [selected, setSelected] = useState<ApiOrder | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
   const perPage = 10;
 
   useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
     axios.get('/api/admin/orders')
       .then(res => {
-        if (res.data.length) {
-          setOrders(res.data);
+        if (!cancelled) {
+          // Expecting array of orders
+          const data = Array.isArray(res.data) ? res.data : (res.data.orders || []);
+          setOrders(data);
         }
       })
-      .catch(() => {
-        // keep demo orders on error
+      .catch(err => {
+        console.error('Failed to fetch admin orders', err);
+        // Keep empty list on error
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
       });
+
+    return () => { cancelled = true; };
   }, []);
 
   const stats = useMemo(() => {
     const total = orders.length;
     const pending = orders.filter(o => o.status === 'pending').length;
+    const confirmed = orders.filter(o => o.status === 'confirmed').length;
     const shipped = orders.filter(o => o.status === 'shipped').length;
     const delivered = orders.filter(o => o.status === 'delivered').length;
     const cancelled = orders.filter(o => o.status === 'cancelled').length;
-    return { total, pending, shipped, delivered, cancelled };
+    return { total, pending, confirmed, shipped, delivered, cancelled };
   }, [orders]);
 
   const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
     return orders.filter(o => {
-      const matchStatus = filterStatus === 'all' || o.status === filterStatus;
-      const matchSearch =
-        o._id.includes(search) ||
-        o.user_id.usermail.toLowerCase().includes(search.toLowerCase());
-      return matchStatus && matchSearch;
+      const matchStatus = filterStatus === 'all' || (o.status ?? '').toLowerCase() === filterStatus.toLowerCase();
+      const idMatches = o._id?.toLowerCase().includes(q);
+      const userObj = (o.user ?? o.userId) as any;
+      const emailMatches = !!userObj?.email && userObj.email.toLowerCase().includes(q);
+      return matchStatus && (q.length === 0 || idMatches || emailMatches);
     });
   }, [orders, filterStatus, search]);
 
-  const totalPages = Math.ceil(filtered.length / perPage);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
   const paginated = useMemo(() => {
     const start = (page - 1) * perPage;
     return filtered.slice(start, start + perPage);
   }, [filtered, page]);
 
+  // Utility: display amount in rupees. If server stores paise (common), convert to rupees.
+  const formatAmount = (amount?: number) => {
+    if (amount == null) return '—';
+    // Heuristic: treat as paise if amount >= 1000
+    // (this is conservative; adjust if you always return paise)
+    const rupees = amount > 1000 ? amount / 100 : amount;
+    return `₹${Number(rupees).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  };
+
+  const getPaymentMethod = (o: ApiOrder) => {
+    if (o.razorpayPaymentId) return 'Online (Razorpay)';
+    if (o.razorpayOrderId) return 'Online (Razorpay - unpaid)';
+    // fallback: if amount present and no razorpay fields, assume COD
+    return 'Cash on Delivery';
+  };
+
   const updateStatus = async (id: string, status: string) => {
-    await axios.patch('/api/admin/orders', { id, status });
-    setOrders(o => o.map(x => (x._id === id ? { ...x, status } : x)));
+    try {
+      setUpdatingId(id);
+      // Try PATCH to a RESTful endpoint; adjust if your backend expects different path/body
+      await axios.patch('/api/admin/orders', { id, status });
+
+      // optimistic UI update
+      setOrders(prev => prev.map(o => (o._id === id ? { ...o, status } : o)));
+    } catch (err) {
+      console.error('Failed to update order status', err);
+      alert('Failed to update order status');
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   return (
@@ -121,13 +133,31 @@ export default function OrdersPage() {
       <h1 className="text-3xl font-bold mb-6">Order Management</h1>
 
       {/* Stats */}
-      <div className="grid grid-cols-5 gap-4 mb-8">
-        {Object.entries(stats).map(([key, val]) => (
-          <div key={key} className="bg-gray-800 p-4 rounded-lg shadow">
-            <p className="text-sm uppercase">{key.replace('_', ' ')}</p>
-            <p className="text-2xl font-semibold">{val}</p>
-          </div>
-        ))}
+      <div className="grid grid-cols-6 gap-4 mb-8">
+        <div className="col-span-1 bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm uppercase">Total</p>
+          <p className="text-2xl font-semibold">{stats.total}</p>
+        </div>
+        <div className="col-span-1 bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm uppercase">Pending</p>
+          <p className="text-2xl font-semibold">{stats.pending}</p>
+        </div>
+        <div className="col-span-1 bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm uppercase">Confirmed</p>
+          <p className="text-2xl font-semibold">{stats.confirmed}</p>
+        </div>
+        <div className="col-span-1 bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm uppercase">Shipped</p>
+          <p className="text-2xl font-semibold">{stats.shipped}</p>
+        </div>
+        <div className="col-span-1 bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm uppercase">Delivered</p>
+          <p className="text-2xl font-semibold">{stats.delivered}</p>
+        </div>
+        <div className="col-span-1 bg-gray-800 p-4 rounded-lg shadow">
+          <p className="text-sm uppercase">Cancelled</p>
+          <p className="text-2xl font-semibold">{stats.cancelled}</p>
+        </div>
       </div>
 
       {/* Filters */}
@@ -135,17 +165,21 @@ export default function OrdersPage() {
         <div className="flex items-center space-x-2">
           <label className="text-sm">Status:</label>
           <select
+            title="Filter by status"
             className="bg-gray-800 border border-gray-700 p-2 rounded"
             value={filterStatus}
             onChange={e => { setFilterStatus(e.target.value); setPage(1); }}
           >
             <option value="all">All</option>
             <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
             <option value="shipped">Shipped</option>
             <option value="delivered">Delivered</option>
             <option value="cancelled">Cancelled</option>
+            <option value="failed">Failed</option>
           </select>
         </div>
+
         <input
           type="text"
           placeholder="Search by ID or email..."
@@ -160,43 +194,67 @@ export default function OrdersPage() {
         <table className="min-w-full">
           <thead>
             <tr className="bg-gray-700">
-              {['Order ID', 'Customer', 'Amount', 'Date', 'Status', 'Actions'].map(h => (
-                <th key={h} className="px-4 py-3 text-left text-sm font-medium">{h}</th>
-              ))}
+              <th className="px-4 py-3 text-left text-sm font-medium">Order ID</th>
+              <th className="px-4 py-3 text-left text-sm font-medium">Customer</th>
+              <th className="px-4 py-3 text-left text-sm font-medium">Amount</th>
+              <th className="px-4 py-3 text-left text-sm font-medium">Date</th>
+              <th className="px-4 py-3 text-left text-sm font-medium">Payment</th>
+              <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
+              <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {paginated.map(o => (
-              <tr key={o._id} className="border-b border-gray-700 hover:bg-gray-700">
-                <td className="px-4 py-2 truncate max-w-xs">{o._id}</td>
-                <td className="px-4 py-2">
-                  {o.user_id.username}
-                  <br/>
-                  <span className="text-xs text-gray-400">{o.user_id.usermail}</span>
-                </td>
-                <td className="px-4 py-2">₹{o.total_amount.toLocaleString()}</td>
-                <td className="px-4 py-2">{new Date(o.created_at).toLocaleDateString()}</td>
-                <td className="px-4 py-2">
-                  <select
-                    value={o.status}
-                    onChange={e => updateStatus(o._id, e.target.value)}
-                    className="bg-gray-800 border border-gray-600 p-1 rounded"
-                  >
-                    {['pending','shipped','delivered','cancelled'].map(s => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </td>
-                <td className="px-4 py-2">
-                  <button
-                    onClick={() => setSelected(o)}
-                    className="px-3 py-1 bg-green-600 rounded hover:bg-green-500 text-sm"
-                  >
-                    View
-                  </button>
-                </td>
+            {loading && (
+              <tr>
+                <td colSpan={7} className="p-6 text-center">Loading orders...</td>
               </tr>
-            ))}
+            )}
+
+            {!loading && paginated.length === 0 && (
+              <tr>
+                <td colSpan={7} className="p-6 text-center">No orders found</td>
+              </tr>
+            )}
+
+            {!loading && paginated.map(o => {
+              const user = (o.user ?? o.userId) as any;
+              const date = o.createdAt ?? o.updatedAt ?? '';
+              return (
+                <tr key={o._id} className="border-b border-gray-700 hover:bg-gray-700">
+                  <td className="px-4 py-2 truncate max-w-xs">{o._id}</td>
+                  <td className="px-4 py-2">
+                    <div className="font-medium">{user?.username ?? '—'}</div>
+                    <div className="text-xs text-gray-400">{user?.email ?? '—'}</div>
+                  </td>
+                  <td className="px-4 py-2">{formatAmount(o.amount)}</td>
+                  <td className="px-4 py-2">{date ? new Date(date).toLocaleDateString() : '—'}</td>
+                  <td className="px-4 py-2">{getPaymentMethod(o)}</td>
+                  <td className="px-4 py-2">
+                    <select
+                      title="Update order status"
+                      value={o.status ?? 'pending'}
+                      onChange={e => updateStatus(o._id, e.target.value)}
+                      className="bg-gray-800 border border-gray-600 p-1 rounded"
+                      disabled={updatingId === o._id}
+                    >
+                      {['pending','confirmed','shipped','delivered','cancelled','failed'].map(s => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </td>
+                  <td className="px-4 py-2">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setSelected(o)}
+                        className="px-3 py-1 bg-green-600 rounded hover:bg-green-500 text-sm"
+                      >
+                        View
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -224,7 +282,7 @@ export default function OrdersPage() {
       <Dialog
         open={!!selected}
         onClose={() => setSelected(null)}
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+        className="fixed inset-0 flex items-center justify-center bg-black text-white bg-opacity-50 z-50"
       >
         <Dialog.Panel className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl">
           <Dialog.Title className="text-xl font-semibold mb-4">Order Details</Dialog.Title>
@@ -232,36 +290,44 @@ export default function OrdersPage() {
             <div className="space-y-4">
               <p><strong>Order ID:</strong> {selected._id}</p>
               <p>
-                <strong>Customer:</strong> {selected.user_id.username} ({selected.user_id.usermail})
+                <strong>Customer:</strong> {(selected.user ?? selected.userId) ? `${(selected.user ?? selected.userId as any).username ?? '—'} (${(selected.user ?? selected.userId as any).email ?? '—'})` : '—'}
               </p>
-              <p>
-                <strong>Address:</strong>{' '}
-                {`${selected.address_id.address_line1}, ${selected.address_id.city}, ${selected.address_id.state}, ${selected.address_id.country} - ${selected.address_id.pincode}`}
-              </p>
+              {selected.address && (
+                <p>
+                  <strong>Address:</strong>{' '}
+                  {`${selected.address.address_line1 ?? ''}, ${selected.address.city ?? ''}, ${selected.address.state ?? ''}, ${selected.address.country ?? ''} - ${selected.address.pincode ?? ''}`}
+                </p>
+              )}
               <p>
                 <strong>Ordered on:</strong>{' '}
-                {new Date(selected.created_at).toLocaleString()}
+                {selected.createdAt ? new Date(selected.createdAt).toLocaleString() : '—'}
               </p>
-              <p><strong>Total:</strong> ₹{selected.total_amount.toLocaleString()}</p>
+              <p><strong>Total:</strong> {formatAmount(selected.amount)}</p>
 
               <div>
                 <h4 className="font-semibold mb-2">Items:</h4>
                 <ul className="space-y-2 max-h-48 overflow-y-auto">
-                  {selected.product_details.map((item, idx) => (
-                    <li key={idx} className="flex justify-between">
-                      <span>{item.product_id.title} x {item.quantity}</span>
-                      <span>₹{item.price.toLocaleString()}</span>
-                    </li>
-                  ))}
+                  {(selected.items ?? []).map((item, idx) => {
+                    const product = typeof item.productId === 'object' ? item.productId : (item.product ?? undefined);
+                    const title = product?.title ?? (typeof item.productId === 'string' ? item.productId : 'Unknown product');
+                    return (
+                      <li key={idx} className="flex justify-between">
+                        <span>{title} x {item.quantity}</span>
+                        <span>{`₹${Number(item.price).toLocaleString()}`}</span>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
 
-              <button
-                onClick={() => setSelected(null)}
-                className="mt-4 px-4 py-2 bg-red-600 rounded hover:bg-red-500"
-              >
-                Close
-              </button>
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={() => setSelected(null)}
+                  className="px-4 py-2 bg-red-600 rounded hover:bg-red-500"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           )}
         </Dialog.Panel>

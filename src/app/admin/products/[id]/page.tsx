@@ -45,7 +45,7 @@ export default function EditProductPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
+    <div className="min-h-screen bg-gray-900 p-6">
       <h1 className="text-3xl font-bold mb-6">Edit Product</h1>
       <div className="space-y-6 max-w-3xl">
         {/* Basic fields */}
