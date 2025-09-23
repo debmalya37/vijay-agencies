@@ -104,7 +104,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
         )}
 
-        <div className="relative bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-4 mb-3 flex items-center justify-center overflow-hidden">
+        <div className="relative bg-gradient-to-br from-white to-white rounded-xl p-4 mb-3 flex items-center justify-center overflow-hidden">
           {product.badge && (
             <div className="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded shadow-sm">
               {product.badge}
