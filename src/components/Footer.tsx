@@ -102,6 +102,12 @@ export default function Footer(): JSX.Element {
                 <li>
                   <Link href="/privacy" className="text-gray-300 hover:text-white">Privacy Policy</Link>
                 </li>
+                <li>
+                  <Link href="/cancellation-refunds" className="text-gray-300 hover:text-white">Cancellation-refunds</Link>
+                </li>
+                <li>
+                  <Link href="/shipping" className="text-gray-300 hover:text-white">shipping</Link>
+                </li>
                 {/* <li>
                   <Link href="/returns" className="text-gray-300 hover:text-white">Return Policy</Link>
                 </li>
