@@ -4,20 +4,21 @@ import ProductDetailClient from "@/components/ProductDetailClient";
 
 type Params = { id: string };
 
-const getBaseUrl = () => {
-  // Use an env var in production; fallback to localhost for local dev
-  return process.env.NEXT_PUBLIC_BASE_URL ?? `http://localhost:3000`;
-};
+// const getBaseUrl = () => {
+//   // Use an env var in production; fallback to localhost for local dev
+//   return process.env.NEXT_PUBLIC_BASE_URL ?? `http://localhost:3000`;
+// };
 
 async function fetchProductById(id: string) {
-  const base = getBaseUrl();
-  const res = await fetch(`${base}/api/products/${id}`, { cache: "no-store" });
-  if (!res.ok) {
-    // throw so we can show notFound or fallback
-    throw new Error("Failed to fetch product");
-  }
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || `https://www.vijayagenciesjpr.com`}/api/products/${id}`, {
+    cache: "no-store",
+    // crucial: tell fetch to resolve relative path in prod
+    next: { revalidate: 0 }
+  });
+  if (!res.ok) throw new Error("Failed to fetch product");
   return res.json();
 }
+
 
 export default async function ProductPage({ params }: { params: Params }) {
   const { id } = params;
