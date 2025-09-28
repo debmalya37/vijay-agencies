@@ -254,10 +254,10 @@ export default function ProductsClient(): JSX.Element {
         <div onClick={navigateToDetail} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-lg transition-all duration-300 hover:border-blue-200">
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
             <div className="relative w-full sm:w-48 h-48 sm:h-32 flex-shrink-0">
-              <img
+              <img onClick={navigateToDetail}
                 src={product.images?.[0] || "/placeholder.png"}
                 alt={product.title}
-                className="w-full h-full object-cover rounded-lg"
+                className="w-full h-full object-cover rounded-lg cursor-pointer"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src = "/placeholder.png";
                 }}
@@ -276,8 +276,8 @@ export default function ProductsClient(): JSX.Element {
 
             <div className="flex-1 flex flex-col justify-between space-y-3">
               <div>
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 line-clamp-2">{product.title}</h3>
-                <p className="text-gray-600 mb-3 line-clamp-2 text-sm sm:text-base">{product.description}</p>
+                <h3 onClick={navigateToDetail} className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 line-clamp-2 cursor-pointer">{product.title}</h3>
+                <p  onClick={navigateToDetail} className="text-gray-600 mb-3 line-clamp-2 text-sm sm:text-base cursor-pointer">{product.description}</p>
 
                 <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-3 text-xs sm:text-sm">
                   {product.reviews && product.reviews.length > 0 && (
@@ -367,10 +367,10 @@ export default function ProductsClient(): JSX.Element {
     return (
       <div onClick={navigateToDetail} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-blue-200 group">
         <div className="relative">
-          <img
+          <img onClick={navigateToDetail}
             src={product.images?.[0] || "/placeholder.png"}
             alt={product.title}
-            className="w-full h-48 sm:h-56 object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-48 sm:h-56 object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).src = "/placeholder.png";
             }}
@@ -412,8 +412,8 @@ export default function ProductsClient(): JSX.Element {
             )}
           </div>
 
-          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2 line-clamp-2">{product.title}</h3>
-          <p className="text-gray-600 text-xs sm:text-sm mb-3 line-clamp-2">{product.description}</p>
+          <h3 onClick={navigateToDetail} className="text-base sm:text-lg font-semibold text-gray-800 mb-2 line-clamp-2 cursor-pointer">{product.title}</h3>
+          <p onClick={navigateToDetail} className="text-gray-600 text-xs sm:text-sm mb-3 line-clamp-2 cursor-pointer cursor-pointer">{product.description}</p>
 
           {product.reviews && product.reviews.length > 0 && (
             <div className="flex items-center gap-2 mb-3">
