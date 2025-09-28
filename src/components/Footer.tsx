@@ -119,7 +119,7 @@ export default function Footer(): JSX.Element {
           </div>
 
           {/* Newsletter & Social */}
-          <div className="md:col-span-3">
+          {/* <div className="md:col-span-3">
             <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wide">Stay in touch</h3>
             {/* <p className="mt-3 text-sm text-gray-300">
               Subscribe to get product updates, offers and useful tips.
@@ -160,7 +160,7 @@ export default function Footer(): JSX.Element {
               >
                 Subscribe
               </button>
-            </form> */}
+            </form> 
 
             <div className="mt-6">
               <h4 className="text-sm font-semibold text-gray-200 uppercase tracking-wide">Follow us</h4>
@@ -195,7 +195,7 @@ export default function Footer(): JSX.Element {
                 </Link>
               </div>
             </div>
-          </div>
+          </div>  */}
         </div>
 
         {/* Divider */}

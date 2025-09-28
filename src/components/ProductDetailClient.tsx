@@ -23,7 +23,7 @@ import { useCart } from "@/components/cart/CartProvider"; // <<-- added
 interface IVariant {
   _id: string;
   label: string; // e.g. "2kg", "5kg", "10L"
-  unit: "kg" | "g" | "l" | "ml";
+  unit: "kg" | "g" | "l" | "ml" | "ps"; // standard unit types
   value: number; // numeric value (e.g., 2, 5, 10)
   price: number; // regular price
   discounted_price?: number; // discounted price if available

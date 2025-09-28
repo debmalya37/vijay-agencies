@@ -7,7 +7,7 @@ import axios from 'axios';
 
 interface Variant {
   label: string; // e.g. "2kg", "5kg", "10L"
-  unit: "kg" | "g" | "l" | "ml";
+  unit: "kg" | "g" | "l" | "ml" | "ps";
   value: number; // numeric value (e.g., 2, 5, 10)
   price: number; // regular price
   discounted_price?: number; // discounted price if available
@@ -763,6 +763,7 @@ export default function NewProductPage() {
                         <option value="g">Gram (g)</option>
                         <option value="l">Liter (l)</option>
                         <option value="ml">Milliliter (ml)</option>
+                        <option value="ps">Pieces (ps)</option>
                       </select>
                     </div>
                     

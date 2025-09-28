@@ -2,9 +2,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import { Banner } from '@/models/Banner';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { v2 as cloudinary } from 'cloudinary';
+import streamifier from 'streamifier';
+
+// 🔹 Cloudinary config
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// 🔹 Helper function to upload buffer to Cloudinary
+async function uploadToCloudinary(buffer: Buffer, folder = 'banners'): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream({ folder }, (error, result) => {
+      if (error) return reject(error);
+      resolve(result?.secure_url || '');
+    });
+    streamifier.createReadStream(buffer).pipe(uploadStream);
+  });
+}
 
 export async function GET() {
   try {
@@ -23,10 +40,10 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     await dbConnect();
-    
+
     const formData = await request.formData();
     const image = formData.get('image') as File;
-    
+
     if (!image) {
       return NextResponse.json(
         { success: false, error: 'Image file is required' },
@@ -34,7 +51,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate image file
+    // ✅ Validate image type
     if (!image.type.startsWith('image/')) {
       return NextResponse.json(
         { success: false, error: 'Invalid file type. Only images are allowed.' },
@@ -42,7 +59,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check file size (limit to 5MB)
+    // ✅ Validate file size (max 5MB)
     if (image.size > 5 * 1024 * 1024) {
       return NextResponse.json(
         { success: false, error: 'File size too large. Maximum 5MB allowed.' },
@@ -50,40 +67,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'public', 'uploads', 'banners');
-    try {
-      await mkdir(uploadsDir, { recursive: true });
-    } catch (error) {
-      // Directory might already exist, ignore error
-    }
-
-    // Generate unique filename
-    const fileExtension = image.name.split('.').pop();
-    const filename = `${uuidv4()}.${fileExtension}`;
-    const filepath = join(uploadsDir, filename);
-
-    // Convert File to Buffer and save
+    // ✅ Convert to Buffer
     const bytes = await image.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    await writeFile(filepath, buffer);
 
-    // Create banner data
+    // ✅ Upload to Cloudinary
+    const imageUrl = await uploadToCloudinary(buffer, 'banners');
+
+    // ✅ Create banner data
     const bannerData = {
       title: formData.get('title') as string,
       description: formData.get('description') as string || undefined,
-      image_url: `/uploads/banners/${filename}`,
+      image_url: imageUrl, // Cloudinary secure URL
       link_url: formData.get('link_url') as string || undefined,
       position: formData.get('position') as string,
       priority: parseInt(formData.get('priority') as string) || 0,
       is_active: formData.get('is_active') === 'true',
-      start_date: formData.get('start_date') ? new Date(formData.get('start_date') as string) : undefined,
-      end_date: formData.get('end_date') ? new Date(formData.get('end_date') as string) : undefined,
+      start_date: formData.get('start_date')
+        ? new Date(formData.get('start_date') as string)
+        : undefined,
+      end_date: formData.get('end_date')
+        ? new Date(formData.get('end_date') as string)
+        : undefined,
       target_audience: formData.get('target_audience') as string,
       device_targeting: formData.get('device_targeting') as string,
     };
 
-    // Validate required fields
+    // ✅ Validate required fields
     if (!bannerData.title || !bannerData.position) {
       return NextResponse.json(
         { success: false, error: 'Title and position are required' },
@@ -91,8 +101,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate dates if provided
-    if (bannerData.start_date && bannerData.end_date && bannerData.end_date <= bannerData.start_date) {
+    // ✅ Validate date range
+    if (
+      bannerData.start_date &&
+      bannerData.end_date &&
+      bannerData.end_date <= bannerData.start_date
+    ) {
       return NextResponse.json(
         { success: false, error: 'End date must be after start date' },
         { status: 400 }

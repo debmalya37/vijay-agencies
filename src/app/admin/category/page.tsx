@@ -542,6 +542,7 @@ export default function CategoryManagement() {
                       Parent Category
                     </label>
                     <select
+                    title='Select Parent Category'
                       value={categoryForm.parent_category}
                       onChange={(e) => setCategoryForm({...categoryForm, parent_category: e.target.value})}
                       className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

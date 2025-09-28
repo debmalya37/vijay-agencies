@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 export interface IVariant {
   _id: string;
   label: string; // e.g. "2kg", "5kg", "10L"
-  unit: "kg" | "g" | "l" | "ml"; // standard unit types
+  unit: "kg" | "g" | "l" | "ml" | "ps"; // standard unit types
   value: number; // numeric value (e.g., 2, 5, 10)
   price: number; // regular price
   discounted_price?: number; // discounted price if available
@@ -43,7 +43,7 @@ export interface IProduct extends Document {
 
 const VariantSchema: Schema = new Schema({
   label: { type: String, required: true },
-  unit: { type: String, enum: ["kg", "g", "l", "ml"], required: true },
+  unit: { type: String, enum: ["kg", "g", "l", "ml", "ps"], required: true },
   value: { type: Number, required: true },
   price: { type: Number, required: true, min: 0 },
   discounted_price: { type: Number, min: 0 }, // NEW
