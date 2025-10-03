@@ -55,8 +55,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Update the address
-    user.addresses[addressIndex] = {
-      _id: new mongoose.Types.ObjectId(addressId).toString(),
+    user.addresses[addressIndex].set({
       address_line1: addressData.address_line1,
       address_line2: addressData.address_line2 || '',
       city: addressData.city,
@@ -65,7 +64,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       pincode: addressData.pincode,
       is_default: addressData.is_default || false,
       label: addressData.label || 'Home'
-    };
+    });
 
     await user.save();
 
