@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       // Update order
       const order = await Order.findOneAndUpdate(
         { razorpayOrderId: payment.order_id },
-        { status: "completed", razorpayPaymentId: payment.id },
+        { status: "confirmed", razorpayPaymentId: payment.id },
         { new: true }
       ).populate([
         { path: "items.productId", select: "title" },
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
         const productNames = order.items
           .map((it: any) => it.productId?.title)
           .join(", ");
-
+ 
         await transporter.sendMail({
           from: "debmalyasen37@gmail.com",
           to: userEmail,

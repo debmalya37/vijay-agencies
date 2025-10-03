@@ -120,6 +120,30 @@ export default function OrderPage({ params }: { params: { id: string } }) {
     // You could add a toast notification here
   };
 
+  const handleDownloadInvoice = async () => {
+    try {
+      const res = await fetch(`/api/invoice/${params.id}`, {
+        method: "GET",
+      });
+  
+      if (!res.ok) throw new Error("Failed to download invoice");
+  
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+  
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `invoice-${params.id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Invoice download error:", err);
+    }
+  };
+  
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -213,6 +237,14 @@ export default function OrderPage({ params }: { params: { id: string } }) {
               >
                 <Copy className="w-4 h-4" />
               </button>
+              <button
+  onClick={handleDownloadInvoice}
+  className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors"
+>
+  <Download className="w-4 h-4" />
+  Download Invoice
+</button>
+
             </div>
           </div>
 

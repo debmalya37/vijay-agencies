@@ -30,7 +30,10 @@ import {
   Sparkles,
   Zap,
   Heart,
-  TrendingUp
+  TrendingUp,
+  Leaf,
+  Recycle,
+  ThumbsUp
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import ProductCard from '@/components/ProductCard';
@@ -537,8 +540,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Hero Banner Section */}
-      <section className="relative h-[60vh] sm:h-[70vh] lg:h-[80vh] overflow-hidden scroll-reveal">
+      {/* Hero Banner Section - Fixed for mobile */}
+      <section className="relative h-[30vh] sm:h-[60vh] lg:h-[80vh] overflow-hidden scroll-reveal">
         {bannersLoading && (
           <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
             <div className="text-center">
@@ -589,11 +592,11 @@ export default function HomePage() {
                   <img
                     src={banner.image_url}
                     alt={banner.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain sm:object-cover object-center bg-gray-100"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
-                  <div className="absolute bottom-6 left-4 sm:left-6 glass-effect text-white px-4 sm:px-6 py-3 sm:py-4 rounded-xl backdrop-blur-md">
-                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold">{banner.title}</h2>
+                  <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 glass-effect text-white px-3 sm:px-6 py-2 sm:py-4 rounded-xl backdrop-blur-md max-w-[90%] sm:max-w-none">
+                    <h2 className="text-base sm:text-xl lg:text-2xl font-bold line-clamp-2">{banner.title}</h2>
                   </div>
                 </div>
               </div>
@@ -604,24 +607,24 @@ export default function HomePage() {
               <>
                 <button
                   onClick={prevSlide}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 glass-effect hover:bg-white hover:bg-opacity-20 text-white p-3 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110"
+                  className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 glass-effect hover:bg-white hover:bg-opacity-20 text-white p-2 sm:p-3 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110"
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
                 </button>
                 <button
                   onClick={nextSlide}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 glass-effect hover:bg-white hover:bg-opacity-20 text-white p-3 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110"
+                  className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 glass-effect hover:bg-white hover:bg-opacity-20 text-white p-2 sm:p-3 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110"
                 >
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
                 </button>
 
                 {/* Slide Indicators */}
-                <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-3">
+                <div className="absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 sm:gap-3">
                   {banners.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentSlide(index)}
-                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
                         index === currentSlide 
                           ? 'bg-white scale-125' 
                           : 'bg-white bg-opacity-50 hover:bg-opacity-75'
@@ -633,6 +636,183 @@ export default function HomePage() {
             )}
           </div>
         )}
+      </section>
+
+      {/* Why Choose Vijay Agencies Section - NEW */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-white scroll-reveal">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 sm:mb-12 lg:mb-16 animate-fade-in-up">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
+              Why Vijay Agencies Over Others?
+            </h2>
+            <p className="text-gray-600 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
+              What makes us the preferred choice for commercial cleaning solutions
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* Vijay Agencies Side (Green) */}
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-left">
+              <div className="flex items-center justify-between mb-6 sm:mb-8">
+                <div className="bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base shadow-md">
+                  Vijay Agencies
+                </div>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-600 rounded-full flex items-center justify-center shadow-md">
+                  <ThumbsUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </div>
+              </div>
+
+              <div className="space-y-4 sm:space-y-5 mb-6 sm:mb-8">
+                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  </div>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Toxin-free</span>
+                </div>
+                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  </div>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Biodegradable</span>
+                </div>
+                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  </div>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Recyclable</span>
+                </div>
+                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  </div>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Locally crafted</span>
+                </div>
+                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  </div>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Plant-based</span>
+                </div>
+              </div>
+
+              <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-green-200">
+                <img
+                  src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600"
+                  alt="Eco-friendly cleaning products"
+                  className="w-full h-40 sm:h-48 lg:h-56 object-cover rounded-2xl shadow-md"
+                />
+              </div>
+            </div>
+
+            {/* Others Side (Red) */}
+            <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-right">
+              <div className="flex items-center justify-between mb-6 sm:mb-8">
+                <div className="bg-red-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base shadow-md">
+                  Others
+                </div>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-600 rounded-full flex items-center justify-center shadow-md">
+                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </div>
+              </div>
+
+              <div className="space-y-4 sm:space-y-5 mb-6 sm:mb-8">
+                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  </div>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Harsh chemicals</span>
+                </div>
+                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  </div>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Limited trust</span>
+                </div>
+                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  </div>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Non recyclable</span>
+                </div>
+                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  </div>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Hides ingredients</span>
+                </div>
+                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  </div>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Lacks local focus</span>
+                </div>
+              </div>
+
+              <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-red-200">
+                <img
+                  src="https://images.unsplash.com/photo-1585421514738-01798e348b17?w=600"
+                  alt="Chemical cleaning products"
+                  className="w-full h-40 sm:h-48 lg:h-56 object-cover rounded-2xl shadow-md"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Info Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mt-10 sm:mt-12 lg:mt-16">
+            {/* The Power of Coconut */}
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up stagger-1">
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="flex-1">
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
+                    The Power of Coconut
+                  </h3>
+                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed mb-4">
+                    At the core of Vijay Agencies&apos;s cleaning products is coconut. Derived from a coconut oil base, all surfactants that goes into each of every ingredient naturally sourced, plant-based, toxin-free, safe, efficient and completely free from harmful toxins, gentle on your family&apos;s health and safety, it&apos;s gentle effective, and completely free from harmful toxins, making it a powerful yet gentle choice for maintaining them into safe, healthier homes.
+                  </p>
+                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
+                    By harnessing the natural strength of coconuts, Vijay Agencies combines eco-friendliness with high performance, transforming surfactants into effective cleaning agents that truly care for your home and the environment.
+                  </p>
+                </div>
+                <div className="flex-shrink-0">
+                  <img
+                    src="https://images.unsplash.com/photo-1598511757337-fe2cafc31ba0?w=200"
+                    alt="Coconut"
+                    className="w-full md:w-32 lg:w-40 h-32 lg:h-40 object-cover rounded-2xl shadow-md"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* About Vijay Agencies */}
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up stagger-2">
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="flex-1">
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
+                    About Vijay Agencies
+                  </h3>
+                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed mb-4">
+                    Simran Khara founded Vijay Agencies in 2021, driven by her passion for creating a safer everyday for families. During the pandemic, she became acutely aware of the harmful chemicals in common cleaning products and their impact on health and environment. This realization led her to create Vijay Agencies, a brand that offers plant-based cleaning solutions, free from harmful chemicals.
+                  </p>
+                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
+                    Simran Khara founded Vijay Agencies in 2021, driven by her passion for creating a safer everyday for families. During the pandemic, she became acutely aware of the harmful chemicals used in cleaning products. Vijay Agencies now offers plant-based solutions that are safer for families, without compromising on performance.
+                  </p>
+                </div>
+                <div className="flex-shrink-0">
+                  <img
+                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200"
+                    alt="Simran Khara"
+                    className="w-full md:w-32 lg:w-40 h-40 lg:h-48 object-contain rounded-2xl shadow-md"
+                  />
+                  <div className="mt-3 bg-green-600 text-white px-3 py-2 rounded-lg text-center">
+                    <p className="font-bold text-xs sm:text-sm">Simran Khara</p>
+                    <p className="text-xs">Founder of Vijay Agencies</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Company Stats Section */}
@@ -709,7 +889,7 @@ export default function HomePage() {
             </div>
           )}
 
-{!productsLoading && !productsError && products.length > 0 && (
+          {!productsLoading && !productsError && products.length > 0 && (
             <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6">
               {products.slice(0, 8).map((product) => (
                 <div key={product._id} className="h-full">

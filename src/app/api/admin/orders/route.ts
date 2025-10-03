@@ -3,8 +3,33 @@ import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import dbConnect from '@/lib/dbConnect';
 import { Order } from '@/models/Order';
+import nodemailer from 'nodemailer';
 
 const ALLOWED_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled', 'failed'];
+
+// Create nodemailer transporter using Gmail SMTP
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+// Utility function to send email
+async function sendEmail(to: string, subject: string, html: string) {
+  try {
+    await transporter.sendMail({
+      from: `"Your Company" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html,
+    });
+    console.log(`Email sent to ${to}`);
+  } catch (err) {
+    console.error('Error sending email:', err);
+  }
+}
 
 // GET /api/admin/orders
 export async function GET(req: NextRequest) {
@@ -49,7 +74,7 @@ export async function PATCH(req: NextRequest) {
 
     let updated: any = null;
 
-    // If id looks like a Mongo ObjectId, try to update by _id first
+    // Try update by Mongo ObjectId
     if (mongoose.Types.ObjectId.isValid(id)) {
       updated = await Order.findByIdAndUpdate(
         id,
@@ -61,7 +86,7 @@ export async function PATCH(req: NextRequest) {
         .lean();
     }
 
-    // If not found by _id, try using razorpayOrderId (useful if frontend sends that)
+    // If not found by _id, try using razorpayOrderId
     if (!updated) {
       updated = await Order.findOneAndUpdate(
         { razorpayOrderId: id },
@@ -76,6 +101,21 @@ export async function PATCH(req: NextRequest) {
     // If still not found, return 404
     if (!updated) {
       return NextResponse.json({ message: 'Order not found (by _id or razorpayOrderId)' }, { status: 404 });
+    }
+
+    // ✅ Send email notification to user
+    const userEmail = updated.userId?.email;
+    const username = updated.userId?.username || 'User';
+
+    if (userEmail) {
+      const subject = `Your Order #${updated.razorpayOrderId} status updated`;
+      const html = `
+        <h2>Hello ${username},</h2>
+        <p>Your order with ID <b>${updated.razorpayOrderId}</b> has been updated to status: <b>${updated.status}</b>.</p>
+        <p>Thank you for shopping with us!</p>
+      `;
+      // send email asynchronously
+      sendEmail(userEmail, subject, html);
     }
 
     return NextResponse.json({ message: 'Order updated', order: updated }, { status: 200 });
