@@ -38,6 +38,7 @@ import {
 import Navbar from '@/components/Navbar';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Type definitions
 interface Product {
@@ -496,11 +497,15 @@ export default function HomePage() {
               >
                 <div className={`w-16 h-16 ${getCategoryColor(category.name, index)} rounded-full flex items-center justify-center text-2xl mb-2 hover:shadow-lg transition-all duration-200 group-hover:scale-110`}>
                   {category.image_url ? (
-                    <img 
-                      src={category.image_url} 
-                      alt={category.name}
-                      className="w-10 h-10 object-cover rounded-full"
-                    />
+                    
+                    <Image
+  src={category.image_url}
+  alt={category.name}
+  width={40}   // corresponds to w-10
+  height={40}  // corresponds to h-10
+  className="w-10 h-10 object-cover rounded-full"
+/>
+
                   ) : (
                     <span>{getCategoryIcon(category, index)}</span>
                   )}
@@ -589,11 +594,14 @@ export default function HomePage() {
                 onClick={() => handleBannerClick(banner)}
               >
                 <div className="relative w-full h-full">
-                  <img
-                    src={banner.image_url}
-                    alt={banner.title}
-                    className="w-full h-full object-contain sm:object-cover object-center bg-gray-100"
-                  />
+                <Image
+  src={banner.image_url}
+  alt={banner.title}
+  width={1200}      // reasonable default width
+  height={600}      // reasonable default height
+  className="w-full h-auto object-cover sm:object-cover object-center bg-gray-100 rounded-md"
+/>
+
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
                   <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 glass-effect text-white px-3 sm:px-6 py-2 sm:py-4 rounded-xl backdrop-blur-md max-w-[90%] sm:max-w-none">
                     <h2 className="text-base sm:text-xl lg:text-2xl font-bold line-clamp-2">{banner.title}</h2>
