@@ -1,6 +1,126 @@
 // lib/InvoiceTemplateHTML.ts
+
+// Helper function to convert number to words (Indian format)
+function numberToWords(num: number): string {
+  if (num === 0) return 'Zero';
+  
+  const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+  const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  
+  function convertLessThanThousand(n: number): string {
+    if (n === 0) return '';
+    if (n < 10) return ones[n];
+    if (n < 20) return teens[n - 10];
+    if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
+    return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' ' + convertLessThanThousand(n % 100) : '');
+  }
+  
+  if (num < 1000) return convertLessThanThousand(num);
+  if (num < 100000) {
+    const thousands = Math.floor(num / 1000);
+    const remainder = num % 1000;
+    return convertLessThanThousand(thousands) + ' Thousand' + (remainder ? ' ' + convertLessThanThousand(remainder) : '');
+  }
+  if (num < 10000000) {
+    const lakhs = Math.floor(num / 100000);
+    let remainder = num % 100000;
+    let result = convertLessThanThousand(lakhs) + ' Lakh';
+    if (remainder >= 1000) {
+      result += ' ' + convertLessThanThousand(Math.floor(remainder / 1000)) + ' Thousand';
+      remainder = remainder % 1000;
+    }
+    if (remainder > 0) {
+      result += ' ' + convertLessThanThousand(remainder);
+    }
+    return result;
+  }
+  
+  const crores = Math.floor(num / 10000000);
+  const remainder = num % 10000000;
+  let result = convertLessThanThousand(crores) + ' Crore';
+  if (remainder > 0) {
+    result += ' ' + numberToWords(remainder);
+  }
+  return result;
+}
+
 export function generateInvoiceHTML(order: any) {
-    return `
+  // Calculate subtotal from items
+  const subtotal = order.items.reduce((sum: number, item: any) => {
+    return sum + (item.rate * item.quantity);
+  }, 0);
+  
+  // Delivery charge logic: ₹150 if subtotal < ₹50,000, else ₹0
+  const deliveryCharge = subtotal < 50000 ? 150 : 0;
+  
+  // Calculate tax breakdown by HSN
+  const hsnBreakdown: { [key: string]: { taxable: number, cgst: number, sgst: number, gstRate: number } } = {};
+  
+  // Process order items
+  order.items.forEach((item: any) => {
+    const hsn = item.hsn || '00000000';
+    const gstRate = item.gst || 18;
+    const itemTotal = item.rate * item.quantity;
+    
+    // Calculate taxable value (reverse calculation from price including GST)
+    const taxableValue = itemTotal / (1 + gstRate / 100);
+    const totalTax = itemTotal - taxableValue;
+    const cgst = totalTax / 2;
+    const sgst = totalTax / 2;
+    
+    if (!hsnBreakdown[hsn]) {
+      hsnBreakdown[hsn] = { taxable: 0, cgst: 0, sgst: 0, gstRate };
+    }
+    
+    hsnBreakdown[hsn].taxable += taxableValue;
+    hsnBreakdown[hsn].cgst += cgst;
+    hsnBreakdown[hsn].sgst += sgst;
+  });
+  
+  // Add delivery charge to HSN breakdown if applicable
+  if (deliveryCharge > 0) {
+    const deliveryHSN = '996819';
+    const deliveryGST = 18;
+    const deliveryTaxable = deliveryCharge / (1 + deliveryGST / 100);
+    const deliveryTax = deliveryCharge - deliveryTaxable;
+    
+    hsnBreakdown[deliveryHSN] = {
+      taxable: deliveryTaxable,
+      cgst: deliveryTax / 2,
+      sgst: deliveryTax / 2,
+      gstRate: deliveryGST
+    };
+  }
+  
+  const totalTaxableValue = Object.values(hsnBreakdown).reduce((sum, val) => sum + val.taxable, 0);
+  const totalCGST = Object.values(hsnBreakdown).reduce((sum, val) => sum + val.cgst, 0);
+  const totalSGST = Object.values(hsnBreakdown).reduce((sum, val) => sum + val.sgst, 0);
+  const totalTax = totalCGST + totalSGST;
+  
+  const grandTotal = subtotal + deliveryCharge;
+  
+  // Total quantity
+  const totalQuantity = order.items.reduce((sum: number, item: any) => sum + item.quantity, 0);
+  
+  // Convert amounts to words
+  const amountInWords = numberToWords(Math.round(grandTotal)) + ' Only';
+  const taxAmountInWords = numberToWords(Math.round(totalTax)) + ' Only';
+  
+  // Format date
+  const invoiceDate = new Date(order.date || Date.now()).toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: '2-digit'
+  });
+  
+  const currentTime = new Date().toLocaleTimeString('en-IN', { 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    hour12: false 
+  });
+  
+  return `
     <html>
       <head>
         <style>
@@ -112,8 +232,8 @@ export function generateInvoiceHTML(order: any) {
             </td>
             <td style="width: 200px; vertical-align: top;">
               <table class="invoice-info-table" style="border: none; width: 100%;">
-                <tr><td class="no-border"><strong>Invoice No.</strong></td><td class="no-border">${order.invoiceNo || 'VA/25-26/4383'}</td></tr>
-                <tr><td class="no-border"><strong>Dated</strong></td><td class="no-border">${order.date || '18-Sep-25'}</td></tr>
+                <tr><td class="no-border"><strong>Invoice No.</strong></td><td class="no-border">${order.invoiceNo}</td></tr>
+                <tr><td class="no-border"><strong>Dated</strong></td><td class="no-border">${invoiceDate}</td></tr>
                 <tr><td class="no-border"><strong>Delivery Note</strong></td><td class="no-border"></td></tr>
                 <tr><td class="no-border"><strong>Reference No. & Date.</strong></td><td class="no-border"><strong>Other References</strong></td></tr>
                 <tr><td class="no-border"><strong>Buyer's Order No.</strong></td><td class="no-border"><strong>Dated</strong></td></tr>
@@ -129,8 +249,11 @@ export function generateInvoiceHTML(order: any) {
           <tr>
             <td>
               <strong>Buyer (Bill to)</strong><br/>
-              <strong>${order.buyer?.name || 'Vimal Vittas'}</strong><br/>
-              ${order.buyer?.address || 'Plot No 2 Prahlad Colony<br/>Sanganer Jaipur<br/>GSTIN/UIN : 08AAAPV2631B1ZCS<br/>State Name : Rajasthan, Code : 08<br/>Place of Supply : Rajasthan'}
+              <strong>${order.buyer.name}</strong><br/>
+              ${order.buyer.address}<br/>
+              ${order.buyer.gstin ? `GSTIN/UIN : ${order.buyer.gstin}<br/>` : ''}
+              State Name : ${order.buyer.state}, Code : 08<br/>
+              Place of Supply : ${order.buyer.state}
             </td>
           </tr>
         </table>
@@ -151,38 +274,34 @@ export function generateInvoiceHTML(order: any) {
             </tr>
           </thead>
           <tbody>
-            ${order.items?.map((item: any, index: number) => `
+            ${order.items.map((item: any, index: number) => `
               <tr>
                 <td class="center">${index + 1}</td>
-                <td>${item.description || 'Wet Wipe Tissue'}<br/>
-                    <span style="font-size: 9px; color: #666;">${item.subDescription || '350ml with Dorn Lid'}</span>
-                </td>
-                <td class="center">${item.hsn || '48182000'}</td>
-                <td class="center">${item.gstRate || '18'} %</td>
-                <td class="center">${item.quantity || '6,000'} ${item.unit || 'Pcs.'}</td>
-                <td class="right">${item.rate?.toFixed(2) || '1.40'} ${item.unit || 'Pcs.'}</td>
-                <td class="center">${item.unit || 'Pcs.'}</td>
-                <td class="center">${item.discount || ''}</td>
-                <td class="right">${item.amount?.toFixed(2) || '8,400.00'}</td>
+                <td>${item.description}</td>
+                <td class="center">${item.hsn || '-'}</td>
+                <td class="center">${item.gst || 18}%</td>
+                <td class="center">${item.quantity.toLocaleString('en-IN')} Pcs.</td>
+                <td class="right">₹${item.rate.toFixed(2)}</td>
+                <td class="center">Pcs.</td>
+                <td class="center">-</td>
+                <td class="right">₹${(item.rate * item.quantity).toFixed(2)}</td>
               </tr>
             `).join('')}
-            ${order.items?.length > 1 ? order.items.slice(1).map((item: any, index: number) => `
+            ${deliveryCharge > 0 ? `
               <tr>
-                <td class="center">${index + 2}</td>
-                <td>${item.description}<br/>
-                    <span style="font-size: 9px; color: #666;">${item.subDescription || ''}</span>
-                </td>
-                <td class="center">${item.hsn}</td>
-                <td class="center">${item.gstRate} %</td>
-                <td class="center">${item.quantity} ${item.unit}</td>
-                <td class="right">${item.rate?.toFixed(2)} ${item.unit}</td>
-                <td class="center">${item.unit}</td>
-                <td class="center">${item.discount || ''}</td>
-                <td class="right">${item.amount?.toFixed(2)}</td>
+                <td class="center">${order.items.length + 1}</td>
+                <td>Delivery Charges</td>
+                <td class="center">996819</td>
+                <td class="center"></td>
+                <td class="center">1 Pcs.</td>
+                <td class="right">₹${deliveryCharge.toFixed(2)}</td>
+                <td class="center">Pcs.</td>
+                <td class="center">-</td>
+                <td class="right">₹${deliveryCharge.toFixed(2)}</td>
               </tr>
-            `).join('') : ''}
+            ` : ''}
             <!-- Empty rows for spacing -->
-            ${Array(8).fill(0).map(() => `
+            ${Array(Math.max(0, 8 - order.items.length - (deliveryCharge > 0 ? 1 : 0))).fill(0).map(() => `
               <tr>
                 <td>&nbsp;</td>
                 <td></td>
@@ -197,11 +316,11 @@ export function generateInvoiceHTML(order: any) {
             `).join('')}
             <tr>
               <td colspan="4" class="right"><strong>Total</strong></td>
-              <td class="center"><strong>${order.totals?.totalQuantity || '6,500 Pcs.'}</strong></td>
+              <td class="center"><strong>${totalQuantity.toLocaleString('en-IN')} Pcs.</strong></td>
               <td></td>
               <td></td>
               <td></td>
-              <td class="right"><strong>₹ ${order.totals?.subtotal?.toFixed(2) || '12,862.00'}</strong><br/>
+              <td class="right"><strong>₹${grandTotal.toFixed(2)}</strong><br/>
                   <span style="font-size: 9px;">E. & O.E</span>
               </td>
             </tr>
@@ -213,7 +332,7 @@ export function generateInvoiceHTML(order: any) {
           <tr>
             <td style="width: 70%;">
               <strong>Amount Chargeable (in words)</strong><br/>
-              <span class="amount-words">INR ${order.totals?.amountInWords || 'Twelve Thousand Eight Hundred Sixty Two Only'}</span>
+              <span class="amount-words">INR ${amountInWords}</span>
             </td>
             <td style="width: 30%;">
               <table class="tax-breakdown" style="border: none; width: 100%;">
@@ -226,32 +345,25 @@ export function generateInvoiceHTML(order: any) {
                   <td class="no-border center"><strong>Amount<br/>₹</strong></td>
                   <td class="no-border center"><strong>Total<br/>Tax Amount</strong></td>
                 </tr>
-                <tr>
-                  <td class="no-border">48182000</td>
-                  <td class="no-border right">8,400.00</td>
-                  <td class="no-border center">9%</td>
-                  <td class="no-border right">756.00</td>
-                  <td class="no-border center">9%</td>
-                  <td class="no-border right">756.00</td>
-                  <td class="no-border right">1,512.00</td>
-                </tr>
-                <tr>
-                  <td class="no-border">48236000</td>
-                  <td class="no-border right">2,500.00</td>
-                  <td class="no-border center">9%</td>
-                  <td class="no-border right">225.00</td>
-                  <td class="no-border center">9%</td>
-                  <td class="no-border right">225.00</td>
-                  <td class="no-border right">450.00</td>
-                </tr>
+                ${Object.entries(hsnBreakdown).map(([hsn, data]) => `
+                  <tr>
+                    <td class="no-border">${hsn}</td>
+                    <td class="no-border right">${data.taxable.toFixed(2)}</td>
+                    <td class="no-border center">${(data.gstRate / 2)}%</td>
+                    <td class="no-border right">${data.cgst.toFixed(2)}</td>
+                    <td class="no-border center">${(data.gstRate / 2)}%</td>
+                    <td class="no-border right">${data.sgst.toFixed(2)}</td>
+                    <td class="no-border right">${(data.cgst + data.sgst).toFixed(2)}</td>
+                  </tr>
+                `).join('')}
                 <tr style="border-top: 1px solid black;">
                   <td class="no-border"><strong>Total</strong></td>
-                  <td class="no-border right"><strong>10,900.00</strong></td>
+                  <td class="no-border right"><strong>${totalTaxableValue.toFixed(2)}</strong></td>
                   <td class="no-border"></td>
-                  <td class="no-border right"><strong>981.00</strong></td>
+                  <td class="no-border right"><strong>${totalCGST.toFixed(2)}</strong></td>
                   <td class="no-border"></td>
-                  <td class="no-border right"><strong>981.00</strong></td>
-                  <td class="no-border right"><strong>1,962.00</strong></td>
+                  <td class="no-border right"><strong>${totalSGST.toFixed(2)}</strong></td>
+                  <td class="no-border right"><strong>${totalTax.toFixed(2)}</strong></td>
                 </tr>
               </table>
             </td>
@@ -262,7 +374,7 @@ export function generateInvoiceHTML(order: any) {
         <table style="margin-top: 0;">
           <tr>
             <td>
-              <strong>Tax Amount (in words) : INR ${order.totals?.taxAmountInWords || 'One Thousand Nine Hundred Sixty Two Only'}</strong>
+              <strong>Tax Amount (in words) : INR ${taxAmountInWords}</strong>
             </td>
           </tr>
         </table>
@@ -284,7 +396,7 @@ export function generateInvoiceHTML(order: any) {
               08022201132<br/>
               08022201132<br/>
               <strong>AAJPV2631B</strong><br/><br/>
-              <strong>Date & Time &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 18-Sep-25 at 12:58</strong><br/><br/>
+              <strong>Date & Time &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${invoiceDate} at ${currentTime}</strong><br/><br/>
               <strong>Company's Bank Details</strong><br/>
               <strong>A/c Holder's Name &nbsp;&nbsp; : Vijay Agencies</strong><br/>
               <strong>Bank Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : HDFC U Bank OD 9419</strong><br/>
@@ -312,5 +424,5 @@ export function generateInvoiceHTML(order: any) {
         </div>
       </body>
     </html>
-    `;
+  `;
 }

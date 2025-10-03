@@ -1,43 +1,118 @@
-// app/api/invoice/[id]/route.ts
+// File: app/api/invoice/[id]/route.ts
 import puppeteer from "puppeteer";
 import { generateInvoiceHTML } from "@/lib/InvoiceTemplateHTML";
+import dbConnect from "@/lib/dbConnect";
+import { Order } from "@/models/Order";
+import { IUser } from "@/models/User";
+import mongoose from "mongoose";
 
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  // ✅ Fetch order data from DB (here mocked)
-  const order = {
-    invoiceNo: "VA/25-26/4383",
-    date: "18-Sep-25",
-    buyer: {
-      name: "Vimal Vilas",
-      address: "Plot No 2 Prahlad Colony, Jaipur",
-      gstin: "08MAPJ217C1ZS",
-      state: "Rajasthan",
-    },
-    items: [
-      { description: "Wet Wipe Tissue", hsn: "48182000", qty: 6000, rate: 1.4, gst: 18 },
-      { description: "Paper Glass", hsn: "48236000", qty: 500, rate: 5, gst: 18 },
-    ],
-    totals: { subtotal: 10900, cgst: 981, sgst: 981, total: 12862 },
-  };
+  try {
+    await dbConnect();
 
-  // ✅ Generate HTML
-  const html = generateInvoiceHTML(order);
+    const rawId = params.id;
+    let order = null;
 
-  // ✅ Puppeteer PDF
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.setContent(html, { waitUntil: "networkidle0" });
+    // Find order by MongoDB _id or razorpayOrderId
+    if (mongoose.Types.ObjectId.isValid(rawId)) {
+      order = await Order.findById(rawId)
+        .populate<{ userId: IUser }>("userId")
+        .populate("items.productId");
+    } else {
+      order = await Order.findOne({ razorpayOrderId: rawId })
+        .populate<{ userId: IUser }>("userId")
+        .populate("items.productId");
+    }
 
-  const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
-  await browser.close();
+    if (!order) {
+      return new Response(JSON.stringify({ error: "Order not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
 
-  return new Response(new Blob([new Uint8Array(pdfBuffer.buffer as ArrayBuffer)], { type: "application/pdf" }), {
-    headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename=invoice-${order.invoiceNo}.pdf`,
-    },
-  });
+    const buyer = order.userId as IUser;
+
+    // Pick default address or first available
+    const defaultAddress = buyer?.addresses?.find((a) => a.is_default) || buyer?.addresses?.[0];
+
+    // Format buyer address
+    const buyerAddress = defaultAddress
+      ? [
+          defaultAddress.address_line1,
+          defaultAddress.address_line2,
+          defaultAddress.city,
+          defaultAddress.state,
+          defaultAddress.country,
+          `Pincode: ${defaultAddress.pincode}`
+        ].filter(Boolean).join('<br/>')
+      : "N/A";
+
+    // Format invoice data
+    const invoiceData = {
+      invoiceNo: `VA/25-26/${order._id.toString().slice(-6).toUpperCase()}`,
+      date: order.createdAt || new Date(),
+      buyer: {
+        name: buyer?.full_name || buyer?.username || "Customer",
+        address: buyerAddress,
+        gstin: buyer?.gst_number || "",
+        state: defaultAddress?.state || "Rajasthan",
+      },
+      items: order.items.map((item: any) => {
+        const product = item.productId;
+        return {
+          description: product?.title || "Product",
+          hsn: product?.hsn || "",
+          quantity: item.quantity, // Changed from qty to quantity
+          rate: item.price, // Price already includes GST
+          gst: product?.gst || 18,
+        };
+      }),
+    };
+
+    // Generate HTML
+    const html = generateInvoiceHTML(invoiceData);
+
+    // Generate PDF
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+    
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    const pdfBuffer = await page.pdf({ 
+      format: "A4", 
+      printBackground: true,
+      margin: {
+        top: "10mm",
+        right: "10mm",
+        bottom: "10mm",
+        left: "10mm"
+      }
+    });
+    
+    await browser.close();
+
+    const pdfBlob = new Blob([new Uint8Array((pdfBuffer.buffer as ArrayBuffer).slice(pdfBuffer.byteOffset, pdfBuffer.byteOffset + pdfBuffer.byteLength))], { type: "application/pdf" });
+    return new Response(pdfBlob, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename=invoice-${invoiceData.invoiceNo}.pdf`,
+      },
+    });
+  } catch (error) {
+    console.error("Error generating invoice:", error);
+    return new Response(
+      JSON.stringify({ error: "Failed to generate invoice" }), 
+      { 
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+  }
 }
