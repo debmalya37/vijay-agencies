@@ -113,7 +113,7 @@ const testimonials = [
 
 const companyStats = [
   { number: '500+', label: 'Happy Clients', icon: Users },
-  { number: '15+', label: 'Years Experience', icon: Award },
+  { number: '25+', label: 'Years Experience', icon: Award },
   { number: '1000+', label: 'Products', icon: Package },
   { number: '24/7', label: 'Customer Support', icon: Headphones }
 ];
@@ -793,7 +793,7 @@ export default function HomePage() {
             </div>
 
             {/* About Vijay Agencies */}
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up stagger-2">
+            <div className="bg-gradient-to-br from-red-50 to-emerald-50 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up stagger-2">
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex-1">
                   <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
@@ -831,8 +831,8 @@ export default function HomePage() {
               const Icon = stat.icon;
               return (
                 <div key={index} className="text-center animate-fade-in-up" style={{ animationDelay: `${index * 0.2}s` }}>
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse-hover">
-                    <Icon className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-blue-600" />
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-red-100 to-red-200 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse-hover">
+                    <Icon className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-red-600" />
                   </div>
                   <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{stat.number}</div>
                   <div className="text-sm sm:text-base lg:text-lg text-gray-600 font-medium">{stat.label}</div>
@@ -856,10 +856,10 @@ export default function HomePage() {
               const Icon = feature.icon;
               return (
                 <div key={index} className="text-center group animate-fade-in-up" style={{ animationDelay: `${index * 0.2}s` }}>
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-300 shadow-lg group-hover:shadow-xl group-hover:scale-110 animate-pulse-hover">
-                    <Icon className="w-10 h-10 sm:w-12 sm:h-12 text-blue-600" />
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-red-100 to-blue-red rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-300 shadow-lg group-hover:shadow-xl group-hover:scale-110 animate-pulse-hover">
+                    <Icon className="w-10 h-10 sm:w-12 sm:h-12 text-red-600" />
                   </div>
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-3 text-gray-900 group-hover:text-blue-600 transition-colors">{feature.title}</h3>
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-3 text-gray-900 group-hover:text-red-600 transition-colors">{feature.title}</h3>
                   <p className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-sm mx-auto">{feature.description}</p>
                 </div>
               );
@@ -880,7 +880,7 @@ export default function HomePage() {
 
           {productsLoading && (
             <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-red-600 mx-auto"></div>
               <p className="mt-6 text-gray-600 text-lg">Loading products...</p>
             </div>
           )}
@@ -993,7 +993,7 @@ export default function HomePage() {
               <div className="pt-8">
                 <button 
                   onClick={() => window.location.href = '/about'}
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 inline-flex items-center gap-3 font-semibold shadow-lg hover:shadow-xl hover:scale-105 text-base sm:text-lg"
+                  className="bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-4 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 inline-flex items-center gap-3 font-semibold shadow-lg hover:shadow-xl hover:scale-105 text-base sm:text-lg"
                 >
                   Learn More About Us
                   <ArrowRight className="w-5 h-5" />
@@ -1075,7 +1075,7 @@ export default function HomePage() {
       </section>
 
       {/* Contact Information Section */}
-      <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white scroll-reveal">
+      <section className="py-16 sm:py-20 bg-gradient-to-br from-red-600 via-red-700 to-red-900 text-white scroll-reveal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="animate-fade-in-left">
@@ -1131,32 +1131,32 @@ export default function HomePage() {
                   <input
                     type="text"
                     placeholder="Your Name"
-                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
+                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
                   />
                   <input
                     type="tel"
                     placeholder="Phone Number"
-                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
+                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
                   />
                 </div>
                 <input
                   type="email"
                   placeholder="Email Address"
-                  className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
+                  className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
                 />
                 <input
                   type="text"
                   placeholder="Business Name"
-                  className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
+                  className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
                 />
                 <textarea
                   placeholder="Tell us about your requirements..."
                   rows={4}
-                  className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none"
+                  className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none"
                 ></textarea>
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105"
+                  className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105"
                 >
                   Request Quote
                 </button>
