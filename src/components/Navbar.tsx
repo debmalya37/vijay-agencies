@@ -203,7 +203,7 @@ export default function Navbar(): JSX.Element {
                   >
                     <LogIn className="w-4 h-4" /> Login
                   </button>
-                  <Link href="/auth/signup" className="px-3 py-1 rounded-lg bg-green-600 text-white text-sm hover:bg-green-700">
+                  <Link href="/auth/signup" className="px-3 py-1 rounded-lg bg-red-600 text-white text-sm hover:bg-red-700">
                     Sign up
                   </Link>
                 </div>

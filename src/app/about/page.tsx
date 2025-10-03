@@ -75,8 +75,8 @@ export default function AboutPage() {
   ];
 
   const stats = [
-    { number: "8+", label: "Years of Excellence" },
-    { number: "1000+", label: "Happy Customers" },
+    { number: "25+", label: "Years of Excellence" },
+    { number: "10,000+", label: "Happy Customers" },
     { number: "500+", label: "Products Available" },
     { number: "24/7", label: "Customer Support" }
   ];
@@ -111,9 +111,9 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-red-900 via-red-800 to-red-600 overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-10"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-purple-600/20"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="text-center">
@@ -198,7 +198,7 @@ export default function AboutPage() {
             </div>
             
             <div className="relative">
-              <div className="aspect-square bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-8 text-white">
+              <div className="aspect-square bg-gradient-to-br from-red-500 to-purple-600 rounded-2xl p-8 text-white">
                 <div className="h-full flex flex-col justify-center">
                   <div className="text-center mb-8">
                     <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -243,7 +243,7 @@ export default function AboutPage() {
                 const Icon = value.icon;
                 return (
                   <div key={index} className="text-center group hover:transform hover:scale-105 transition-all duration-300">
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg">
+                    <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg">
                       <Icon className="w-8 h-8 text-white" />
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-3">{value.title}</h3>
@@ -271,7 +271,7 @@ export default function AboutPage() {
                 const Icon = feature.icon;
                 return (
                   <div key={index} className="flex items-start gap-4 p-6 bg-gray-50 rounded-2xl hover:bg-white hover:shadow-lg transition-all duration-300">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -303,7 +303,7 @@ export default function AboutPage() {
               {productCategories.map((category, index) => (
                 <div key={index} className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg hover:border-blue-200 transition-all duration-300 group">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-purple-600 rounded-lg flex items-center justify-center">
                       <CheckCircle className="w-5 h-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900">{category.name}</h3>
@@ -320,7 +320,7 @@ export default function AboutPage() {
 
           {/* Payment Methods */}
           <div className="mb-20">
-            <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-3xl p-8 sm:p-12">
+            <div className="bg-gradient-to-r from-gray-50 to-red-50 rounded-3xl p-8 sm:p-12">
               <div className="text-center mb-8">
                 <div className="inline-flex items-center gap-2 bg-red-100 text-red-800 px-4 py-2 rounded-full mb-4">
                   <CreditCard className="w-4 h-4" />
@@ -353,7 +353,7 @@ export default function AboutPage() {
           </div>
 
           {/* Contact Information */}
-          <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-3xl p-8 sm:p-12 text-white">
+          <div className="bg-gradient-to-br from-red-900 to-red-800 rounded-3xl p-8 sm:p-12 text-white">
             <div className="text-center mb-12">
               <div className="inline-flex items-center gap-2 bg-white/20 text-white px-4 py-2 rounded-full mb-4">
                 <MapPin className="w-4 h-4" />
