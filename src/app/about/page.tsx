@@ -167,7 +167,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-20">
             <div>
-              <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full mb-6">
+              <div className="inline-flex items-center gap-2 bg-red-100 text-red-800 px-4 py-2 rounded-full mb-6">
                 <Sparkles className="w-4 h-4" />
                 <span className="text-sm font-medium">Our Story</span>
               </div>
@@ -322,7 +322,7 @@ export default function AboutPage() {
           <div className="mb-20">
             <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-3xl p-8 sm:p-12">
               <div className="text-center mb-8">
-                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full mb-4">
+                <div className="inline-flex items-center gap-2 bg-red-100 text-red-800 px-4 py-2 rounded-full mb-4">
                   <CreditCard className="w-4 h-4" />
                   <span className="text-sm font-medium">Payment Options</span>
                 </div>

@@ -259,7 +259,7 @@ export default function CategoryManagement() {
           </td>
           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
             {category.parent_category ? (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-red-800">
                 {category.parent_category.name}
               </span>
             ) : (
@@ -372,7 +372,7 @@ export default function CategoryManagement() {
               resetForm();
               setShowModal(true);
             }}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center gap-2"
           >
             <Plus size={20} />
             Add Category
@@ -646,7 +646,7 @@ export default function CategoryManagement() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? 'Saving...' : editingCategory ? 'Update Category' : 'Create Category'}
                   </button>

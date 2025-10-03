@@ -890,7 +890,7 @@ export default function HomePage() {
               <p className="text-red-600 mb-6 text-lg">{productsError}</p>
               <button 
                 onClick={fetchProducts}
-                className="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
+                className="bg-red-600 text-white px-8 py-3 rounded-xl hover:bg-red-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
               >
                 Try Again
               </button>
@@ -1087,7 +1087,7 @@ export default function HomePage() {
               
               <div className="space-y-6">
                 <div className="flex items-start gap-4 sm:gap-6 animate-fade-in-up stagger-1">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-red-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
                     <MapPin className="w-6 h-6 sm:w-7 sm:h-7" />
                   </div>
                   <div>
@@ -1100,7 +1100,7 @@ export default function HomePage() {
                 </div>
                 
                 <div className="flex items-start gap-4 sm:gap-6 animate-fade-in-up stagger-2">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-red-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
                     <Phone className="w-6 h-6 sm:w-7 sm:h-7" />
                   </div>
                   <div>
@@ -1113,7 +1113,7 @@ export default function HomePage() {
                 </div>
                 
                 <div className="flex items-start gap-4 sm:gap-6 animate-fade-in-up stagger-3">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-red-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
                     <Mail className="w-6 h-6 sm:w-7 sm:h-7" />
                   </div>
                   <div>

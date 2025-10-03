@@ -200,7 +200,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className={`w-full py-3 rounded-xl flex items-center justify-center gap-3 font-semibold text-base sm:text-lg transition-all transform
               ${isInCart || adding
                 ? "bg-gray-300 text-white cursor-not-allowed scale-100"
-                : "bg-black text-white hover:bg-gray-800 active:scale-95"
+                : "bg-[#CC1A29] text-white hover:bg-[#d64e59] active:scale-95"
               }`}
             aria-label={isInCart ? "Added to cart" : `Add ${product.title} to cart`}
           >

@@ -304,7 +304,7 @@ export default function ProductsClient(): JSX.Element {
                     <button
                       key={cat}
                       onClick={() => handleCategoryChange(cat)}
-                      className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-medium hover:bg-blue-100 transition-colors"
+                      className="px-2 py-1 bg-red-50 text-red-600 rounded-full text-xs font-medium hover:bg-blue-100 transition-colors"
                     >
                       {cat}
                     </button>
@@ -347,7 +347,7 @@ export default function ProductsClient(): JSX.Element {
                         });
                       }
                     }}
-                    className="px-4 sm:px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base"
+                    className="px-4 sm:px-6 py-2 bg-[#CC1A29] text-white rounded-lg hover:bg-[#6c2329] transition-colors flex items-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base"
                   >
                     <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4" />
                     <span className="hidden sm:inline">
@@ -402,7 +402,7 @@ export default function ProductsClient(): JSX.Element {
                   e.stopPropagation();
                   handleCategoryChange(cat);
                 }}
-                className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-medium hover:bg-blue-100 transition-colors"
+                className="px-2 py-1 bg-red-50 text-red-600 rounded-full text-xs font-medium hover:bg-red-100 transition-colors"
               >
                 {cat}
               </button>
@@ -463,7 +463,7 @@ export default function ProductsClient(): JSX.Element {
                 });
               }
             }}
-            className="w-full bg-blue-600 text-white py-2 sm:py-2.5 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base"
+            className="w-full bg-[#CC1A29] text-white py-2 sm:py-2.5 rounded-lg hover:bg-[#7a2229] transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base"
           >
             <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4" />
             {product.is_in_stock ? (isInCart ? "Added to Cart" : "Add to Cart") : "Out of Stock"}
@@ -836,7 +836,7 @@ export default function ProductsClient(): JSX.Element {
                       setSelectedCategory("All");
                       router.replace("/Products", { scroll: false });
                     }}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
+                    className="px-4 py-2 bg-[#CC1A29] text-white rounded-lg hover:bg-[#CC1A29] transition-colors text-sm sm:text-base"
                   >
                     Clear Filters
                   </button>
