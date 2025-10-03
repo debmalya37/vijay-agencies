@@ -1,5 +1,6 @@
 // File: app/api/invoice/[id]/route.ts
-import puppeteer from "puppeteer";
+import chromium from "chrome-aws-lambda";
+import puppeteer from "puppeteer-core";
 import { generateInvoiceHTML } from "@/lib/InvoiceTemplateHTML";
 import dbConnect from "@/lib/dbConnect";
 import { Order } from "@/models/Order";
@@ -37,9 +38,8 @@ export async function GET(
     const buyer = order.userId as IUser;
 
     // Pick default address or first available
-    const defaultAddress = buyer?.addresses?.find((a) => a.is_default) || buyer?.addresses?.[0];
+    const defaultAddress = buyer?.addresses?.find(a => a.is_default) || buyer?.addresses?.[0];
 
-    // Format buyer address
     const buyerAddress = defaultAddress
       ? [
           defaultAddress.address_line1,
@@ -51,7 +51,6 @@ export async function GET(
         ].filter(Boolean).join('<br/>')
       : "N/A";
 
-    // Format invoice data
     const invoiceData = {
       invoiceNo: `VA/25-26/${order._id.toString().slice(-6).toUpperCase()}`,
       date: order.createdAt || new Date(),
@@ -66,27 +65,27 @@ export async function GET(
         return {
           description: product?.title || "Product",
           hsn: product?.hsn || "",
-          quantity: item.quantity, // Changed from qty to quantity
-          rate: item.price, // Price already includes GST
+          quantity: item.quantity,
+          rate: item.price,
           gst: product?.gst || 18,
         };
       }),
     };
 
-    // Generate HTML
     const html = generateInvoiceHTML(invoiceData);
 
-    // Generate PDF
+    // Launch headless browser using chrome-aws-lambda
     const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: chromium.args,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
     });
-    
+
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });
 
-    const pdfBuffer = await page.pdf({ 
-      format: "A4", 
+    const pdfBuffer = await page.pdf({
+      format: "A4",
       printBackground: true,
       margin: {
         top: "10mm",
@@ -95,21 +94,22 @@ export async function GET(
         left: "10mm"
       }
     });
-    
+
     await browser.close();
 
     const pdfBlob = new Blob([new Uint8Array((pdfBuffer.buffer as ArrayBuffer).slice(pdfBuffer.byteOffset, pdfBuffer.byteOffset + pdfBuffer.byteLength))], { type: "application/pdf" });
-    return new Response(pdfBlob, {
+    return new Response(pdfBlob,{
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename=invoice-${invoiceData.invoiceNo}.pdf`,
       },
     });
+
   } catch (error) {
     console.error("Error generating invoice:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to generate invoice" }), 
-      { 
+      JSON.stringify({ error: "Failed to generate invoice" }),
+      {
         status: 500,
         headers: { "Content-Type": "application/json" }
       }
