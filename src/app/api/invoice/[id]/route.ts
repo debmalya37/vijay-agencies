@@ -1,11 +1,10 @@
-// File: app/api/invoice/[id]/route.ts
-import chromium from "chrome-aws-lambda";
-import puppeteer from "puppeteer-core";
 import { generateInvoiceHTML } from "@/lib/InvoiceTemplateHTML";
 import dbConnect from "@/lib/dbConnect";
 import { Order } from "@/models/Order";
 import { IUser } from "@/models/User";
 import mongoose from "mongoose";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 
 export async function GET(
   req: Request,
@@ -17,7 +16,6 @@ export async function GET(
     const rawId = params.id;
     let order = null;
 
-    // Find order by MongoDB _id or razorpayOrderId
     if (mongoose.Types.ObjectId.isValid(rawId)) {
       order = await Order.findById(rawId)
         .populate<{ userId: IUser }>("userId")
@@ -31,14 +29,14 @@ export async function GET(
     if (!order) {
       return new Response(JSON.stringify({ error: "Order not found" }), {
         status: 404,
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
     }
 
     const buyer = order.userId as IUser;
 
-    // Pick default address or first available
-    const defaultAddress = buyer?.addresses?.find(a => a.is_default) || buyer?.addresses?.[0];
+    const defaultAddress =
+      buyer?.addresses?.find((a) => a.is_default) || buyer?.addresses?.[0];
 
     const buyerAddress = defaultAddress
       ? [
@@ -47,8 +45,10 @@ export async function GET(
           defaultAddress.city,
           defaultAddress.state,
           defaultAddress.country,
-          `Pincode: ${defaultAddress.pincode}`
-        ].filter(Boolean).join('<br/>')
+          `Pincode: ${defaultAddress.pincode}`,
+        ]
+          .filter(Boolean)
+          .join("<br/>")
       : "N/A";
 
     const invoiceData = {
@@ -74,12 +74,23 @@ export async function GET(
 
     const html = generateInvoiceHTML(invoiceData);
 
-    // Launch headless browser using chrome-aws-lambda
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
-    });
+    // ✅ Handle local vs serverless
+    let browser;
+    if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+      // Serverless environment → use @sparticuz/chromium
+      browser = await puppeteer.launch({
+        args: chromium.args,
+        // Removed defaultViewport as it does not exist on chromium
+        executablePath: await chromium.executablePath(),
+        headless: true,
+      });
+    } else {
+      // Local dev → use full puppeteer (not puppeteer-core)
+      const localPuppeteer = (await import("puppeteer")).default;
+      browser = await localPuppeteer.launch({
+        headless: true,
+      });
+    }
 
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });
@@ -87,32 +98,22 @@ export async function GET(
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
-      margin: {
-        top: "10mm",
-        right: "10mm",
-        bottom: "10mm",
-        left: "10mm"
-      }
+      margin: { top: "10mm", right: "10mm", bottom: "10mm", left: "10mm" },
     });
 
     await browser.close();
 
-    const pdfBlob = new Blob([new Uint8Array((pdfBuffer.buffer as ArrayBuffer).slice(pdfBuffer.byteOffset, pdfBuffer.byteOffset + pdfBuffer.byteLength))], { type: "application/pdf" });
-    return new Response(pdfBlob,{
+    return new Response(new Blob([Buffer.from(pdfBuffer)], { type: "application/pdf" }), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename=invoice-${invoiceData.invoiceNo}.pdf`,
       },
     });
-
   } catch (error) {
     console.error("Error generating invoice:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to generate invoice" }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
-      }
-    );
+    return new Response(JSON.stringify({ error: "Failed to generate invoice" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
