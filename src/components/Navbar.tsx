@@ -89,16 +89,20 @@ export default function Navbar(): JSX.Element {
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
       {/* promo bar */}
-      <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white text-xs py-2">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-          <div className="flex gap-6 whitespace-nowrap text-[12px]">
-            <span>✓ Timely Delivery</span>
-            <span>✓ Quality Product</span>
-            <span>✓ COD Available</span>
-            <span>✓ 4-5 day delivery</span>
-          </div>
-        </div>
-      </div>
+      {/* promo bar */}
+<div className="bg-gradient-to-r from-green-600 to-teal-600 text-white text-xs py-2 overflow-hidden">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <div
+      className="flex gap-6 whitespace-nowrap text-[12px] animate-marquee md:animate-none"
+    >
+      <span>✓ Timely Delivery</span>
+      <span>✓ Quality Product</span>
+      <span>✓ COD Available</span>
+      <span>✓ 4-5 day delivery</span>
+    </div>
+  </div>
+</div>
+
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
