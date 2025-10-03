@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create new address with ID
-    const newAddress = {
+    const newAddress = User.schema.path('addresses').cast({
       _id: new (require('mongoose').Types.ObjectId)(),
       address_line1: addressData.address_line1,
       address_line2: addressData.address_line2 || '',
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
       pincode: addressData.pincode,
       is_default: addressData.is_default || false,
       label: addressData.label || 'Home'
-    };
+    });
 
     user.addresses.push(newAddress);
     await user.save();
