@@ -214,9 +214,11 @@ export function generateInvoiceHTML(order: any) {
         <table style="margin-bottom: 0;">
           <tr>
             <td class="logo-cell">
-              <div style="font-size: 24px; font-weight: bold; color: #8B0000;">VA</div>
-              <div style="font-size: 8px; margin-top: -5px;">LOGO</div>
-            </td>
+  <img src="https://www.vijayagenciesjpr.com/X.JPEG.jpg" 
+       alt="Vijay Agencies Logo" 
+       style="max-width: 70px; max-height: 70px; border-radius: 50%;" />
+</td>
+
             <td class="company-details">
               <div class="company-name">Vijay Agencies</div>
               <div style="font-size: 10px; margin-top: 2px;">

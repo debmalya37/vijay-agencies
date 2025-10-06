@@ -85,7 +85,7 @@ export default function CheckoutPage() {
     label: "Home",
   });
 
-  const [paymentMethod, setPaymentMethod] = useState<"cod" | "razorpay">("cod");
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod");
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -272,9 +272,9 @@ export default function CheckoutPage() {
 
   const applyPromoCode = () => {
     if (promoCode.toLowerCase() === "save20") {
-      setDiscount(0.2);
+      setDiscount(0.99);
     } else if (promoCode.toLowerCase() === "welcome10") {
-      setDiscount(0.1);
+      setDiscount(0.99);
     } else {
       setDiscount(0);
     }
@@ -316,7 +316,7 @@ export default function CheckoutPage() {
       const razorpayOrderId = result.razorpayOrderId ?? result.orderId ?? result.dbOrderId;
       const razorpayAmount = result.amount ?? result.orderAmount ?? Math.round(total * 100);
   
-      if (paymentMethod === "razorpay" && razorpayOrderId) {
+      if (paymentMethod === "online" && razorpayOrderId) {
         const options = {
           key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
           amount: razorpayAmount, // paise
@@ -829,11 +829,11 @@ export default function CheckoutPage() {
                   {/* Razorpay Payment */}
                   <div
                     className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                      paymentMethod === 'razorpay'
+                      paymentMethod === 'online'
                         ? 'border-blue-500 bg-blue-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
-                    onClick={() => setPaymentMethod('razorpay')}
+                    onClick={() => setPaymentMethod('online')}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -846,11 +846,11 @@ export default function CheckoutPage() {
                         </div>
                       </div>
                       <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${
-                        paymentMethod === 'razorpay'
+                        paymentMethod === 'online'
                           ? 'border-blue-500 bg-blue-500'
                           : 'border-gray-300'
                       }`}>
-                        {paymentMethod === 'razorpay' && (
+                        {paymentMethod === 'online' && (
                           <div className="w-full h-full rounded-full bg-white scale-50" />
                         )}
                       </div>

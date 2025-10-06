@@ -14,6 +14,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
+import Image from "next/image";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -109,9 +110,15 @@ export default function Navbar(): JSX.Element {
           {/* left: logo */}
           <div className="flex items-center gap-4">
             <Link href="/" onClick={onNavigate} className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-lg">
-                VA
-              </div>
+            <div className="w-10 h-10 relative">
+    <Image
+      src="/X.JPEG.jpg"   // ✅ path relative to /public
+      alt="Vijay Agencies Logo"
+      fill                // fills the div
+      className="object-cover rounded-full"
+      priority            // loads faster
+    />
+  </div>
               <div className="hidden sm:block">
                 <div className="text-lg font-bold text-gray-900">Vijay Agencies</div>
                 <div className="text-xs text-gray-500">Quality Products • Trusted</div>

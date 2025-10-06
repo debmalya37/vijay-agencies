@@ -1,7 +1,6 @@
 // File: models/Order.ts
 import mongoose, { Schema, Document, Model } from "mongoose";
 import { IUser } from "./User";   // ✅ Import IUser for type safety
-import products from "razorpay/dist/types/products";
 interface IOrderItem {
   productId: mongoose.Types.ObjectId; // can later be populated with IProduct
   variantId: mongoose.Types.ObjectId;
@@ -13,9 +12,11 @@ export interface IOrder extends Document {
   _id: mongoose.Types.ObjectId;   // ✅ fix _id being 'unknown'
   userId: mongoose.Types.ObjectId | IUser; // ✅ can be populated User
   items: IOrderItem[];
-  razorpayOrderId: string;
+  razorpayOrderId?: string;
   razorpayPaymentId?: string;
   amount: number;
+  paymentMethod?: "cod" | "online";
+  paymentStatus?: "pending" | "unpaid" | "paid";
   status:
     | "pending"
     | "confirmed"
@@ -38,9 +39,19 @@ const OrderSchema = new Schema<IOrder>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     items: [OrderItemSchema],
-    razorpayOrderId: { type: String, required: true },
+    razorpayOrderId: { type: String },
     razorpayPaymentId: { type: String },
     amount: { type: Number, required: true },
+    paymentMethod: {
+      type: String,
+      enum: ["cod", "online"],
+      required: true,
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "unpaid", "paid"],
+      default: "unpaid",
+    },
     status: {
       type: String,
       enum: [
