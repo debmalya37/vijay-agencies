@@ -111,6 +111,45 @@ const testimonials = [
   }
 ];
 
+const messCategories = [
+  {
+    title: "Grease and Grime",
+    image: "/icons/grease.png",
+    link: "#",
+  },
+  {
+    title: "Stain Removal",
+    image: "/icons/stain.png",
+    link: "#",
+  },
+  {
+    title: "Muddy Floors",
+    image: "/icons/muddy.png",
+    link: "#",
+  },
+  {
+    title: "Dirty Toilets",
+    image: "/icons/toilet.png",
+    link: "#",
+  },
+  {
+    title: "Sticky Kitchens",
+    image: "/icons/kitchen.png",
+    link: "#",
+  },
+  {
+    title: "Machine",
+    image: "/icons/machine.png",
+    link: "#",
+  },
+  {
+    title: "Dirty Hands",
+    image: "/icons/dirty.png",
+    link: "#",
+  },
+];
+
+
 const companyStats = [
   { number: '500+', label: 'Happy Clients', icon: Users },
   { number: '25+', label: 'Years Experience', icon: Award },
@@ -395,6 +434,15 @@ export default function HomePage() {
     }
   };
 
+  // Filter housekeeping products
+  const housekeepingProducts = products.filter(
+    (p) => p.category.toLowerCase() === "housekeeping"
+  );
+
+  const cleaningProducts = products.filter(
+    (p) => p.category === "Cleaning"
+  );
+  
   // Helper function to get category color based on name or use a default rotation
   const getCategoryColor = (categoryName: string, index: number) => {
     const colors = [
@@ -476,175 +524,280 @@ export default function HomePage() {
       {/* <Navbar/> */}
       
       {/* Shop by Category Section */}
-      <section className="bg-white py-6 text-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Shop by Category</h2>
-            {categoriesLoading && <p className="text-gray-600">Loading categories...</p>}
-            {categoriesError && !categoriesLoading && (
-              <p className="text-red-600 text-sm">
-                {categoriesError} - Showing default categories
-              </p>
-            )}
-          </div>
-          
-          <div className="flex items-center justify-start overflow-x-auto pb-4 gap-4">
-            {!categoriesLoading && categories.map((category, index) => (
-              <div 
-                key={category._id} 
-                className="flex flex-col items-center min-w-0 flex-shrink-0 cursor-pointer group"
-                onClick={() => handleCategoryClick(category)}
-              >
-                <div className={`w-16 h-16 ${getCategoryColor(category.name, index)} rounded-full flex items-center justify-center text-2xl mb-2 hover:shadow-lg transition-all duration-200 group-hover:scale-110`}>
-                  {category.image_url ? (
-                    
-                    <Image
-  src={category.image_url}
-  alt={category.name}
-  width={40}   // corresponds to w-10
-  height={40}  // corresponds to h-10
-  className="w-10 h-10 object-cover rounded-full"
-/>
+      {/* Shop by Category Section */}
+      <section className="bg-white py-10 text-black">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {/* Section Title */}
+    <div className="text-center mb-8">
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">Shop by Category</h2>
+      {categoriesLoading && <p className="text-gray-600">Loading categories...</p>}
+      {categoriesError && !categoriesLoading && (
+        <p className="text-red-600 text-sm">
+          {categoriesError} - Showing default categories
+        </p>
+      )}
+    </div>
 
-                  ) : (
-                    <span>{getCategoryIcon(category, index)}</span>
-                  )}
-                </div>
-                <span className="text-sm text-gray-700 text-center leading-tight max-w-20 group-hover:text-green-600 transition-colors">
-                  {category.name}
-                </span>
-                <span className="text-xs text-gray-500 mt-1">
-                  {category.product_count} items
-                </span>
-              </div>
-            ))}
-            
-            {categoriesLoading && (
-              <div className="flex gap-4">
-                {Array.from({ length: 7 }, (_, i) => (
-                  <div key={i} className="flex flex-col items-center min-w-0 flex-shrink-0">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full animate-pulse mb-2"></div>
-                    <div className="w-16 h-4 bg-gray-200 rounded animate-pulse"></div>
-                  </div>
-                ))}
-              </div>
-            )}
+    {/* Categories Container */}
+    <div className="flex items-center justify-start md:justify-evenly gap-6 pb-4 overflow-x-auto md:overflow-visible scrollbar-hide px-4 snap-x snap-mandatory">
+      {!categoriesLoading &&
+        categories.slice(0, 6).map((category, index) => (
+          <div
+            key={category._id}
+            className="flex flex-col items-center min-w-[100px] flex-shrink-0 cursor-pointer group snap-start"
+            onClick={() => handleCategoryClick(category)}
+          >
+            <div
+              className={`w-24 h-24 ${getCategoryColor(category.name, index)} rounded-full flex items-center justify-center text-3xl mb-3 hover:shadow-lg transition-all duration-200 group-hover:scale-110`}
+            >
+              {category.image_url ? (
+                <Image
+                  src={category.image_url}
+                  alt={category.name}
+                  width={70}
+                  height={70}
+                  className="w-16 h-16 object-cover rounded-full"
+                />
+              ) : (
+                <span>{getCategoryIcon(category, index)}</span>
+              )}
+            </div>
+            <span className="text-base font-medium text-gray-800 text-center leading-tight max-w-[100px] group-hover:text-green-600 transition-colors">
+              {category.name}
+            </span>
+            <span className="text-xs text-gray-500 mt-1">
+              {category.product_count} items
+            </span>
           </div>
-          
-          {!categoriesLoading && categories.length > 0 && (
-            <div className="text-center mt-6">
+        ))}
+
+      {/* Skeleton Loader */}
+      {categoriesLoading &&
+        Array.from({ length: 6 }, (_, i) => (
+          <div
+            key={i}
+            className="flex flex-col items-center min-w-[100px] flex-shrink-0 snap-start"
+          >
+            <div className="w-24 h-24 bg-gray-200 rounded-full animate-pulse mb-3"></div>
+            <div className="w-20 h-4 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+        ))}
+    </div>
+
+    {/* View All Button */}
+    {!categoriesLoading && categories.length > 0 && (
+      <div className="text-center mt-8">
+        <button
+          onClick={() => (window.location.href = "/Products")}
+          className="text-green-600 hover:text-green-700 font-medium inline-flex items-center gap-2 border border-green-600 px-5 py-2 rounded-lg hover:bg-green-50 transition-colors"
+        >
+          View All Categories
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+    )}
+  </div>
+</section>
+
+
+
+
+      {/* Hero Banner Section - Fixed for mobile */}
+      <section className="relative h-[30vh] sm:h-[60vh] lg:h-[80vh] overflow-hidden scroll-reveal">
+  {bannersLoading && (
+    <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-16 h-16 bg-gray-400 rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-gray-600 text-lg">Loading banners...</p>
+      </div>
+    </div>
+  )}
+
+  {bannersError && !bannersLoading && (
+    <div className="w-full h-full bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 flex items-center justify-center text-white relative overflow-hidden">
+      <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+      <div className="text-center px-4 relative z-10 animate-slide-in-bottom">
+        <h1 className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-bold mb-4 leading-tight">
+          Vijay Agencies
+        </h1>
+        <p className="text-lg sm:text-xl lg:text-2xl mb-6 max-w-3xl mx-auto leading-relaxed">
+          Your Trusted Partner for Commercial Cleaning Solutions
+        </p>
+        <p className="text-base sm:text-lg lg:text-xl mb-8 opacity-90">
+          Serving Hotels & Businesses in Jaipur Since 2016
+        </p>
+        <button 
+          onClick={() => window.location.href = '/Products'}
+          className="bg-white text-blue-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 inline-flex items-center gap-2 shadow-xl hover:shadow-2xl hover:scale-105 text-base sm:text-lg"
+        >
+          Explore Products
+          <ArrowRight className="w-5 h-5" />
+        </button>
+      </div>
+      {/* Decorative elements */}
+      <div className="absolute top-10 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full animate-pulse"></div>
+      <div className="absolute bottom-20 right-10 w-32 h-32 bg-white bg-opacity-10 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+    </div>
+  )}
+
+  {!bannersLoading && !bannersError && banners.length > 0 && (
+    <div className="relative w-full h-full">
+      {banners.map((banner, index) => {
+  const BannerContent = (
+    <div className={`absolute inset-0 transition-all duration-1000 flex items-center justify-center
+      ${index === currentSlide ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-105 pointer-events-none'}`}
+    >
+      <div className="relative w-full h-full cursor-pointer">
+        <Image
+          src={banner.image_url}
+          alt={banner.title}
+          width={1200}
+          height={600}
+          className="w-full h-auto object-cover sm:object-cover object-center bg-gray-100 rounded-md"
+        />
+        {/* <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div> */}
+        {/* <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 glass-effect text-white px-3 sm:px-6 py-2 sm:py-4 rounded-xl backdrop-blur-md max-w-[90%] sm:max-w-none">
+          <h2 className="text-base sm:text-xl lg:text-2xl font-bold line-clamp-2">{banner.title}</h2>
+        </div> */}
+      </div>
+    </div>
+  );
+
+  return banner.link_url ? (
+    <a
+      key={banner._id}
+      href={banner.link_url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block w-full h-full"
+    >
+      {BannerContent}
+    </a>
+  ) : (
+    <div key={banner._id} className="block w-full h-full">
+      {BannerContent}
+    </div>
+  );
+})}
+
+
+
+      {/* Navigation Arrows */}
+      {banners.length > 1 && (
+        <>
+          <button
+            onClick={prevSlide}
+            className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 glass-effect hover:bg-white hover:bg-opacity-20 text-white p-2 sm:p-3 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110"
+          >
+            <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 glass-effect hover:bg-white hover:bg-opacity-20 text-white p-2 sm:p-3 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110"
+          >
+            <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
+          </button>
+
+          {/* Slide Indicators */}
+          <div className="absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 sm:gap-3">
+            {banners.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${idx === currentSlide ? 'bg-red-500 scale-125' : 'bg-gray-600 bg-opacity-50 hover:bg-opacity-75'}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )}
+</section>
+
+
+       {/* Featured Products */}
+       <section className="py-16 sm:py-20 bg-white scroll-reveal">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              Featured Products
+            </h2>
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">Professional-grade cleaning solutions for commercial use</p>
+          </div>
+
+          {productsLoading && (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-red-600 mx-auto"></div>
+              <p className="mt-6 text-gray-600 text-lg">Loading products...</p>
+            </div>
+          )}
+
+          {productsError && !productsLoading && (
+            <div className="text-center py-12">
+              <p className="text-red-600 mb-6 text-lg">{productsError}</p>
+              <button 
+                onClick={fetchProducts}
+                className="bg-red-600 text-white px-8 py-3 rounded-xl hover:bg-red-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
+              >
+                Try Again
+              </button>
+            </div>
+          )}
+
+          {!productsLoading && !productsError && products.length > 0 && (
+            <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6">
+              {products.slice(0, 8).map((product) => (
+                <div key={product._id} className="h-full">
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!productsLoading && !productsError && products.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">No products available at the moment.</p>
+            </div>
+          )}
+
+          {!productsLoading && products.length > 8 && (
+            <div className="text-center mt-12 lg:mt-16 animate-fade-in-up stagger-4">
               <button 
                 onClick={() => window.location.href = '/Products'}
-                className="text-green-600 hover:text-green-700 font-medium inline-flex items-center gap-1 border border-green-600 px-4 py-2 rounded-lg hover:bg-green-50 transition-colors"
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
               >
-                View All Categories
-                <ArrowRight className="w-4 h-4" />
+                View All Products ({products.length} total)
+                <ArrowRight className="w-5 h-5" />
               </button>
             </div>
           )}
         </div>
       </section>
 
-      {/* Hero Banner Section - Fixed for mobile */}
-      <section className="relative h-[30vh] sm:h-[60vh] lg:h-[80vh] overflow-hidden scroll-reveal">
-        {bannersLoading && (
-          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gray-400 rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-600 text-lg">Loading banners...</p>
-            </div>
+
+      {/* Housekeeping Products */}
+      {!productsLoading && !productsError && housekeepingProducts.length > 0 && (
+        <section className="py-16 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              Housekeeping Essentials
+            </h2>
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Trusted housekeeping solutions for hotels, restaurants, and businesses
+            </p>
           </div>
-        )}
-
-        {bannersError && !bannersLoading && (
-          <div className="w-full h-full bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 flex items-center justify-center text-white relative overflow-hidden">
-            <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-            <div className="text-center px-4 relative z-10 animate-slide-in-bottom">
-              <h1 className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-bold mb-4 leading-tight">
-                Vijay Agencies
-              </h1>
-              <p className="text-lg sm:text-xl lg:text-2xl mb-6 max-w-3xl mx-auto leading-relaxed">
-                Your Trusted Partner for Commercial Cleaning Solutions
-              </p>
-              <p className="text-base sm:text-lg lg:text-xl mb-8 opacity-90">
-                Serving Hotels & Businesses in Jaipur Since 2016
-              </p>
-              <button 
-                onClick={() => window.location.href = '/Products'}
-                className="bg-white text-blue-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 inline-flex items-center gap-2 shadow-xl hover:shadow-2xl hover:scale-105 text-base sm:text-lg"
-              >
-                Explore Products
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
-            {/* Decorative elements */}
-            <div className="absolute top-10 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full animate-pulse"></div>
-            <div className="absolute bottom-20 right-10 w-32 h-32 bg-white bg-opacity-10 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-          </div>
-        )}
-
-        {!bannersLoading && !bannersError && banners.length > 0 && (
-          <div className="relative w-full h-full">
-            {banners.map((banner, index) => (
-              <div
-                key={banner._id}
-                className={`absolute inset-0 transition-all duration-1000 ${
-                  index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
-                } ${banner.link_url ? 'cursor-pointer' : ''}`}
-                onClick={() => handleBannerClick(banner)}
-              >
-                <div className="relative w-full h-full">
-                <Image
-  src={banner.image_url}
-  alt={banner.title}
-  width={1200}      // reasonable default width
-  height={600}      // reasonable default height
-  className="w-full h-auto object-cover sm:object-cover object-center bg-gray-100 rounded-md"
-/>
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
-                  <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 glass-effect text-white px-3 sm:px-6 py-2 sm:py-4 rounded-xl backdrop-blur-md max-w-[90%] sm:max-w-none">
-                    <h2 className="text-base sm:text-xl lg:text-2xl font-bold line-clamp-2">{banner.title}</h2>
-                  </div>
-                </div>
+          <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6">
+            {housekeepingProducts.slice(0, 8).map((product) => (
+              <div key={product._id} className="h-full">
+                <ProductCard product={product} />
               </div>
             ))}
-
-            {/* Navigation Arrows - only show if there are multiple banners */}
-            {banners.length > 1 && (
-              <>
-                <button
-                  onClick={prevSlide}
-                  className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 glass-effect hover:bg-white hover:bg-opacity-20 text-white p-2 sm:p-3 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110"
-                >
-                  <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
-                </button>
-                <button
-                  onClick={nextSlide}
-                  className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 glass-effect hover:bg-white hover:bg-opacity-20 text-white p-2 sm:p-3 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110"
-                >
-                  <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
-                </button>
-
-                {/* Slide Indicators */}
-                <div className="absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 sm:gap-3">
-                  {banners.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentSlide(index)}
-                      className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
-                        index === currentSlide 
-                          ? 'bg-white scale-125' 
-                          : 'bg-white bg-opacity-50 hover:bg-opacity-75'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
           </div>
-        )}
+        </div>
       </section>
+      
+      )}
 
       {/* Why Choose Vijay Agencies Section - NEW */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white scroll-reveal">
@@ -767,8 +920,8 @@ export default function HomePage() {
           </div>
 
           {/* Bottom Info Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mt-10 sm:mt-12 lg:mt-16">
-            {/* The Power of Coconut */}
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mt-10 sm:mt-12 lg:mt-16">
+            {/* The Power of Coconut 
             <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up stagger-1">
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex-1">
@@ -792,7 +945,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* About Vijay Agencies */}
+            {/* About Vijay Agencies 
             <div className="bg-gradient-to-br from-red-50 to-emerald-50 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up stagger-2">
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex-1">
@@ -819,9 +972,51 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
+
+{/* Cleaning Products */}
+{!productsLoading && !productsError && cleaningProducts.length > 0 && (
+  <section className="py-16 sm:py-20 bg-white">
+    <div className="text-center mb-10">
+<span className="px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
+      Cleaning Products
+    </span>
+    </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center mb-12 lg:mb-16">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+          Cleaning Essentials
+        </h2>
+        <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          Powerful cleaning solutions for kitchens, bathrooms, and commercial use
+        </p>
+      </div>
+
+      <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6">
+        {cleaningProducts.slice(0, 8).map((product) => (
+          <div key={product._id} className="h-full">
+            <ProductCard product={product} />
+          </div>
+        ))}
+      </div>
+
+      {cleaningProducts.length > 8 && (
+        <div className="text-center mt-12 lg:mt-16">
+          <button
+            onClick={() => (window.location.href = "/Products?category=Cleaning")}
+            className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
+          >
+            View All Cleaning Products ({cleaningProducts.length} total)
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+    </div>
+  </section>
+)}
+
 
       {/* Company Stats Section */}
       <section className="py-12 sm:py-16 bg-white scroll-reveal">
@@ -843,89 +1038,99 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="px-4 md:px-12 py-10 bg-white shadow-md border-spacing-2 rounded-xl">
+  <div className="text-center mb-10">
+    <span className="px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
+      Shop by Concern
+    </span>
+    <h2 className="text-3xl md:text-4xl font-bold mt-4">
+      Which Mess Matters?
+    </h2>
+  </div>
+
+  {/* Mobile Horizontal Scroll / Desktop Grid */}
+  <div className="max-w-6xl mx-auto">
+    <div
+      className="
+        flex gap-6 overflow-x-auto pb-4 
+        sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 sm:overflow-visible
+        scrollbar-thin scrollbar-thumb-amber-300 scrollbar-track-transparent
+      "
+    >
+      {messCategories.map((item, index) => (
+        <div
+          key={index}
+          className="min-w-[250px] sm:min-w-0 bg-amber-50 rounded-xl p-6 shadow-sm flex flex-col items-start justify-between hover:shadow-md transition"
+        >
+          <div className="flex items-center justify-between w-full">
+            <h3 className="text-lg font-semibold text-gray-800 max-w-[60%]">
+              {item.title}
+            </h3>
+            <Image
+              src={item.image}
+              alt={item.title}
+              width={80}
+              height={80}
+              className="object-contain"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "/icons/fallback.png";
+              }}
+            />
+          </div>
+          <a
+            href={item.link}
+            className="mt-4 text-sm font-medium text-black underline hover:text-amber-700"
+          >
+            View Products &gt;
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+
       {/* Features Section */}
-      <section className="py-16 sm:py-20 bg-gradient-to-br from-gray-50 to-white text-black scroll-reveal">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Why Choose Vijay Agencies?</h2>
-            <p className="text-gray-600 max-w-3xl mx-auto text-base sm:text-lg lg:text-xl leading-relaxed">Your trusted partner for all commercial cleaning needs in Jaipur and surrounding areas</p>
+      <section className="py-16 sm:py-20 bg-gray-50">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {/* Heading */}
+    <div className="text-center mb-12 lg:mb-16">
+      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+        Why Choose Vijay Agencies?
+      </h2>
+      <p className="text-gray-600 max-w-3xl mx-auto text-base sm:text-lg lg:text-xl leading-relaxed">
+        We are committed to delivering top-quality commercial cleaning solutions
+        trusted by businesses across Jaipur.
+      </p>
+    </div>
+
+    {/* Features Grid */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {whyChooseUs.map((feature, index) => (
+        <div
+          key={index}
+          className="rounded-xl bg-white p-6 shadow-sm hover:shadow-md transition flex flex-col items-start"
+        >
+          {/* Icon */}
+          <div className="w-14 h-14 rounded-full flex items-center justify-center bg-amber-100 mb-4">
+            <feature.icon className="w-7 h-7 text-amber-700" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
-            {whyChooseUs.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <div key={index} className="text-center group animate-fade-in-up" style={{ animationDelay: `${index * 0.2}s` }}>
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-red-100 to-blue-red rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:from-blue-200 group-hover:to-blue-300 transition-all duration-300 shadow-lg group-hover:shadow-xl group-hover:scale-110 animate-pulse-hover">
-                    <Icon className="w-10 h-10 sm:w-12 sm:h-12 text-red-600" />
-                  </div>
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-3 text-gray-900 group-hover:text-red-600 transition-colors">{feature.title}</h3>
-                  <p className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-sm mx-auto">{feature.description}</p>
-                </div>
-              );
-            })}
-          </div>
+          {/* Title */}
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            {feature.title}
+          </h3>
+
+          {/* Description */}
+          <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+            {feature.description}
+          </p>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
-      {/* Featured Products */}
-      <section className="py-16 sm:py-20 bg-white scroll-reveal">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Featured Products
-            </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">Professional-grade cleaning solutions for commercial use</p>
-          </div>
-
-          {productsLoading && (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-red-600 mx-auto"></div>
-              <p className="mt-6 text-gray-600 text-lg">Loading products...</p>
-            </div>
-          )}
-
-          {productsError && !productsLoading && (
-            <div className="text-center py-12">
-              <p className="text-red-600 mb-6 text-lg">{productsError}</p>
-              <button 
-                onClick={fetchProducts}
-                className="bg-red-600 text-white px-8 py-3 rounded-xl hover:bg-red-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
-              >
-                Try Again
-              </button>
-            </div>
-          )}
-
-          {!productsLoading && !productsError && products.length > 0 && (
-            <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6">
-              {products.slice(0, 8).map((product) => (
-                <div key={product._id} className="h-full">
-                  <ProductCard product={product} />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {!productsLoading && !productsError && products.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-600 text-lg">No products available at the moment.</p>
-            </div>
-          )}
-
-          {!productsLoading && products.length > 8 && (
-            <div className="text-center mt-12 lg:mt-16 animate-fade-in-up stagger-4">
-              <button 
-                onClick={() => window.location.href = '/Products'}
-                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
-              >
-                View All Products ({products.length} total)
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
-          )}
-        </div>
-      </section>
 
       {/* About Vijay Agencies Section */}
       <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 scroll-reveal">
@@ -1113,7 +1318,7 @@ export default function HomePage() {
                 </div>
                 
                 <div className="flex items-start gap-4 sm:gap-6 animate-fade-in-up stagger-3">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-red-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#d81921] rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
                     <Mail className="w-6 h-6 sm:w-7 sm:h-7" />
                   </div>
                   <div>

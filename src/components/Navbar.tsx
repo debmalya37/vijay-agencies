@@ -94,7 +94,7 @@ export default function Navbar(): JSX.Element {
 <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white text-xs py-2 overflow-hidden">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
     <div
-      className="flex gap-6 whitespace-nowrap text-[12px] animate-marquee md:animate-none"
+      className="flex gap-3 whitespace-nowrap text-[12px] animate-marquee md:animate-marquee md:justify-evenly md:repeat-infinite"
     >
       <span>✓ Timely Delivery</span>
       <span>✓ Quality Product</span>

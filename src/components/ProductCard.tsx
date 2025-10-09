@@ -1,8 +1,8 @@
-// components/ProductCard.tsx
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Star, Check } from "lucide-react";
+import Image from "next/image";
+import { ShoppingCart, Check, Star, Share2 } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 
 interface Product {
@@ -14,13 +14,12 @@ interface Product {
   rating?: number;
   reviews?: number;
   category?: string;
-  badge?: string;
-  asSeenOnTV?: boolean;
-  discount?: string;
-  size?: string;
   sizes?: string[];
-  description?: string;
+  size?: string;
+  discount?: string;
+  asSeenOnTV?: boolean;
   minOrderQuantity?: number;
+  description?: string;
 }
 
 interface ProductCardProps {
@@ -33,13 +32,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     product.size || product.sizes?.[0] || ""
   );
   const [adding, setAdding] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [showShareToast, setShowShareToast] = useState(false);
 
   const availableSizes = product.sizes ?? (product.size ? [product.size] : []);
-
-  // detect if same product+size exists in cart
   const isInCart = items.some(
     (item) =>
-      item.productId === product._id && (item.size ?? "") === (selectedSize ?? "")
+      item.productId === product._id &&
+      (item.size ?? "") === (selectedSize ?? "")
   );
 
   const discountPercentage =
@@ -47,190 +47,250 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     (product.originalPrice && product.originalPrice > product.price
       ? `${Math.round(
           ((product.originalPrice - product.price) / product.originalPrice) * 100
-        )}% off`
+        )}% OFF`
       : "");
 
-  const handleSizeSelect = (size: string) => {
-    setSelectedSize(size);
-  };
-
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation();
     e.preventDefault();
-
+    e.stopPropagation();
     if (isInCart || adding) return;
-
     setAdding(true);
-    // add optimistic delay for UX animation
     setTimeout(() => {
       addItem({
         productId: product._id,
         title: product.title,
-        price: Number(product.price) || 0,
+        price: product.price,
         originalPrice: product.originalPrice,
         image: product.image,
         size: selectedSize || product.size,
-        color: undefined,
         quantity: 1,
         minOrderQuantity: product.minOrderQuantity ?? 1,
         inStock: true,
       });
       setAdding(false);
-    }, 220);
+    }, 200);
+  };
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const productUrl = `${window.location.origin}/Products/${product._id}`;
+    const shareData = {
+      title: product.title,
+      text: `Check out ${product.title} for ₹${product.price.toLocaleString()}!`,
+      url: productUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(productUrl);
+        setShowShareToast(true);
+        setTimeout(() => setShowShareToast(false), 2000);
+      }
+    } catch (err) {
+      console.log("Share failed:", err);
+    }
   };
 
   return (
-    <article
-      className="h-full flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transform transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 group"
-      role="article"
-      aria-label={product.title}
+    <article 
+      className="relative flex flex-col w-full max-w-[280px] sm:max-w-[320px] rounded-2xl overflow-hidden
+        bg-gradient-to-br from-white to-gray-50 shadow-lg hover:shadow-2xl
+        transition-all duration-500 ease-out group cursor-pointer
+        border border-gray-100"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative p-3 sm:p-4">
-        {product.asSeenOnTV && (
-          <div className="absolute top-3 right-3 z-10">
-            <div className="bg-blue-700 text-white text-xs font-bold px-2 py-1 rounded transform rotate-6 shadow-md">
-              AS SEEN
-              <br />
-              ON TV
-            </div>
-          </div>
-        )}
+      {/* Animated gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-red-500/0 via-rose-500/0 to-pink-500/0 
+        group-hover:from-red-500/5 group-hover:via-rose-500/5 group-hover:to-pink-500/5 
+        transition-all duration-700 pointer-events-none z-10" />
 
-        {selectedSize && (
-          <div className="absolute left-3 top-3 z-10">
-            <div className="bg-green-600 text-white text-xs sm:text-sm font-semibold px-3 py-1 rounded-full shadow-sm">
-              {selectedSize}
-            </div>
-          </div>
-        )}
-
-        <div className="relative bg-gradient-to-br from-white to-white rounded-xl p-4 mb-3 flex items-center justify-center overflow-hidden">
-          {product.badge && (
-            <div className="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded shadow-sm">
-              {product.badge}
-            </div>
-          )}
-
-          <Link
-            href={`/Products/${product._id}`}
-            className="w-full block"
-            aria-label={`Open product ${product.title}`}
-          >
-            <div
-              className="w-full flex items-center justify-center p-2 sm:p-6 transition-transform duration-300 group-hover:scale-105"
-              style={{ minHeight: 120 }}
-            >
-              <img
-                src={product.image || "/placeholder.png"}
-                alt={product.title}
-                className="w-full max-w-[220px] h-36 sm:h-44 object-contain transition-transform duration-300"
-              />
-            </div>
-          </Link>
+      {/* Discount Badge */}
+      {discountPercentage && (
+        <div className="absolute top-3 left-3 z-20 px-3 py-1 rounded-full
+          bg-gradient-to-r from-red-500 to-rose-500 text-white text-xs font-bold
+          shadow-lg transform -rotate-3 animate-pulse">
+          {discountPercentage}
         </div>
+      )}
+
+      {/* Share Button */}
+      <div className="absolute top-3 right-3 z-20">
+        <button
+          onClick={handleShare}
+          className="w-9 h-9 rounded-full backdrop-blur-md border border-white/50
+            bg-white/80 text-gray-700 hover:bg-white flex items-center justify-center
+            transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-lg"
+        >
+          <Share2 className="w-4 h-4" />
+        </button>
       </div>
 
-      <div className="p-4 sm:p-5 flex-1 flex flex-col">
-        {/* rating */}
+      {/* Share Toast */}
+      {showShareToast && (
+        <div className="absolute top-16 right-3 z-30 px-3 py-2 rounded-lg
+          bg-gray-900 text-white text-xs font-medium shadow-lg
+          animate-pulse">
+          Link copied!
+        </div>
+      )}
+
+      {/* Product Image Container */}
+      <Link href={`/Products/${product._id}`} className="relative w-full aspect-square bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+        {/* Shimmer effect */}
+        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full 
+          transition-transform duration-1000 ease-out
+          bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
+        
+        <div className="relative w-full h-full p-6 flex items-center justify-center">
+          <Image
+            src={product.image || "/placeholder.png"}
+            alt={product.title}
+            fill
+            className="object-contain transition-all duration-500 
+              group-hover:scale-110 group-hover:rotate-2 p-6"
+          />
+        </div>
+
+        {/* Quick size selector overlay */}
+        {availableSizes.length > 0 && (
+          <div className={`absolute bottom-0 left-0 right-0 p-3 
+            bg-gradient-to-t from-black/60 to-transparent backdrop-blur-sm
+            transform transition-all duration-300 ease-out
+            ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+            <div className="flex gap-1.5 justify-center flex-wrap">
+              {availableSizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setSelectedSize(size);
+                  }}
+                  className={`px-3 py-1 text-xs font-semibold rounded-lg border-2
+                    transition-all duration-200 transform hover:scale-105
+                    ${selectedSize === size
+                      ? "bg-white text-black border-white shadow-lg scale-105"
+                      : "bg-white/20 text-white border-white/40 hover:bg-white/30"
+                    }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </Link>
+
+      {/* Product Details */}
+      <div className="p-4 flex flex-col gap-2.5 relative z-10">
+        {/* Rating */}
         {product.rating !== undefined && (
-          <div className="flex items-center gap-2 mb-2">
-            <div className="flex items-center">
+          <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-4 h-4 ${
-                    i < Math.floor(product.rating!) ? "fill-yellow-400 text-yellow-400" : "text-gray-200"
-                  }`}
+                  className={`w-3.5 h-3.5 transition-all duration-200
+                    ${i < Math.floor(product.rating!) 
+                      ? "fill-yellow-400 text-yellow-400" 
+                      : "text-gray-300"}`}
                 />
               ))}
             </div>
-            {typeof product.reviews === "number" && (
-              <span className="text-xs text-gray-500">({product.reviews})</span>
-            )}
+            <span className="text-xs font-medium text-gray-600">
+              {product.rating?.toFixed(1)} <span className="text-gray-400">({product.reviews})</span>
+            </span>
           </div>
         )}
 
-        {/* title */}
-        <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 line-clamp-2 mb-2">
-          <Link href={`/Products/${product._id}`} className="hover:underline">
-            {product.title}
-          </Link>
-        </h3>
+        {/* Category */}
+        {product.category && (
+          <span className="text-xs font-semibold text-red-600 uppercase tracking-wide">
+            {product.category}
+          </span>
+        )}
 
-        {/* pricing */}
-        <div className="flex items-baseline gap-3 mb-3">
-          <span className="text-lg sm:text-xl font-bold text-gray-900">₹{product.price.toLocaleString()}</span>
-          {product.originalPrice && product.originalPrice > product.price && (
+        {/* Title */}
+        <Link href={`/Products/${product._id}`}>
+          <h3 className="text-base sm:text-lg font-bold line-clamp-2 text-gray-900 
+            group-hover:text-red-600 transition-colors duration-300 leading-snug">
+            {product.title}
+          </h3>
+        </Link>
+
+        {/* Price Section */}
+        <div className="flex items-end justify-between gap-2 mt-1">
+          <div className="flex flex-col">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-black bg-gradient-to-r from-red-600 to-rose-600 
+                bg-clip-text text-transparent">
+                ₹{product.price.toLocaleString()}
+              </span>
+              {product.originalPrice && product.originalPrice > product.price && (
+                <span className="text-sm line-through text-gray-400 font-medium">
+                  ₹{product.originalPrice.toLocaleString()}
+                </span>
+              )}
+            </div>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span className="text-xs font-semibold text-green-600">
+                Save ₹{(product.originalPrice - product.price).toLocaleString()}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Add to Cart Button */}
+        <button
+          onClick={handleAddToCart}
+          disabled={isInCart || adding}
+          className={`mt-2 w-full py-3 rounded-xl font-bold text-sm
+            transition-all duration-300 transform hover:scale-105 active:scale-95
+            flex items-center justify-center gap-2 shadow-lg hover:shadow-xl
+            ${isInCart
+              ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white cursor-default"
+              : adding
+              ? "bg-gradient-to-r from-gray-400 to-gray-500 text-white cursor-wait"
+              : "bg-gradient-to-r from-red-600 via-rose-600 to-pink-600 text-white hover:from-red-700 hover:via-rose-700 hover:to-pink-700"
+            }`}
+        >
+          {isInCart ? (
             <>
-              <span className="text-sm text-gray-400 line-through">₹{product.originalPrice.toLocaleString()}</span>
-              {discountPercentage && <span className="text-xs font-semibold text-green-600">{discountPercentage}</span>}
+              <Check className="w-5 h-5" />
+              Added to Cart
+            </>
+          ) : adding ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Adding...
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="w-5 h-5" />
+              Add to Cart
             </>
           )}
-        </div>
+        </button>
 
-        {/* sizes */}
-        {availableSizes.length > 0 && (
-          <div className="flex gap-2 items-center mb-4 flex-wrap">
-            {availableSizes.map((size) => (
-              <button
-                key={size}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSizeSelect(size);
-                }}
-                className={`px-3 py-1.5 text-xs sm:text-sm rounded-full border transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-green-300 ${
-                  selectedSize === size
-                    ? "bg-green-600 text-white border-green-600 shadow-sm"
-                    : "bg-white text-gray-700 border-gray-200 hover:border-green-500"
-                }`}
-                aria-pressed={selectedSize === size}
-              >
-                {size}
-              </button>
-            ))}
+        {/* Size indicator (when sizes available and card not hovered) */}
+        {availableSizes.length > 0 && !isHovered && (
+          <div className="text-xs text-gray-500 text-center">
+            Size: <span className="font-semibold text-gray-700">{selectedSize}</span>
           </div>
         )}
+      </div>
 
-        <p className="text-sm text-gray-600 line-clamp-2 mb-4">{product.description}</p>
-
-        <div className="mt-auto">
-          <button
-            onClick={handleAddToCart}
-            disabled={isInCart || adding}
-            className={`w-full py-3 rounded-xl flex items-center justify-center gap-3 font-semibold text-base sm:text-lg transition-all transform
-              ${isInCart || adding
-                ? "bg-gray-300 text-white cursor-not-allowed scale-100"
-                : "bg-[#CC1A29] text-white hover:bg-[#d64e59] active:scale-95"
-              }`}
-            aria-label={isInCart ? "Added to cart" : `Add ${product.title} to cart`}
-          >
-            {isInCart ? (
-              <>
-                <Check className="w-4 h-4" />
-                Added
-              </>
-            ) : adding ? (
-              <>
-                <svg
-                  className="w-4 h-4 animate-spin text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  aria-hidden
-                >
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                </svg>
-                Adding...
-              </>
-            ) : (
-              <>
-                <ShoppingCart className="w-4 h-4" />
-                Add to cart
-              </>
-            )}
-          </button>
-        </div>
+      {/* Shine effect on hover */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] 
+          transition-transform duration-1000 ease-out
+          bg-gradient-to-r from-transparent via-white/20 to-transparent 
+          skew-x-12" />
       </div>
     </article>
   );
