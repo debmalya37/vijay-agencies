@@ -13,6 +13,7 @@ import {
   Linkedin,
   ExternalLink,
 } from "lucide-react";
+import Image from "next/image";
 
 /**
  * Responsive, modern footer for Vijay Agencies
@@ -35,8 +36,16 @@ export default function Footer(): JSX.Element {
           {/* Brand & Description */}
           <div className="md:col-span-4">
             <Link href="/" className="inline-flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold">
-                VA
+              <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold">
+                <div className="w-10 h-10 relative">
+                    <Image
+                      src="/X.JPEG.jpg"   // ✅ path relative to /public
+                      alt="Vijay Agencies Logo"
+                      fill                // fills the div
+                      className="object-cover rounded-full"
+                      priority            // loads faster
+                    />
+                  </div>
               </div>
               <div>
                 <div className="text-lg font-semibold text-white">Vijay Agencies</div>
@@ -63,6 +72,7 @@ export default function Footer(): JSX.Element {
               >
                 <Mail className="w-4 h-4 text-green-400" /> Support@vijayagenciesjpr.com
               </Link>
+              <span>   </span>
               <Link
                 href="tel:+911234567890"
                 className="inline-flex items-center gap-2 text-gray-200 hover:text-white"
