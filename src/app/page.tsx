@@ -115,37 +115,37 @@ const messCategories = [
   {
     title: "Grease and Grime",
     image: "/icons/grease.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?category=Cleaning",
   },
   {
     title: "Stain Removal",
     image: "/icons/stain.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?category=Cleaning&sort=name&max_price=50000",
   },
   {
     title: "Muddy Floors",
     image: "/icons/muddy.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?sort=name&max_price=50000&category=Cleaning",
   },
   {
     title: "Dirty Toilets",
     image: "/icons/toilet.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?sort=name&max_price=50000&category=housekeeping",
   },
   {
     title: "Sticky Kitchens",
     image: "/icons/kitchen.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?sort=name&max_price=50000&category=housekeeping",
   },
   {
     title: "Machine",
     image: "/icons/machine.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?sort=name&max_price=50000",
   },
   {
     title: "Dirty Hands",
     image: "/icons/dirty.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?sort=name&max_price=50000&category=Tissues",
   },
 ];
 
@@ -1063,7 +1063,7 @@ export default function HomePage() {
           className="min-w-[250px] sm:min-w-0 bg-amber-50 rounded-xl p-6 shadow-sm flex flex-col items-start justify-between hover:shadow-md transition"
         >
           <div className="flex items-center justify-between w-full">
-            <h3 className="text-lg font-semibold text-gray-800 max-w-[60%]">
+            <h3 className="text-2xl font-semibold text-gray-800 max-w-[60%]">
               {item.title}
             </h3>
             <Image
