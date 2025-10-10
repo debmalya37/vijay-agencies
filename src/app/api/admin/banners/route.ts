@@ -76,42 +76,29 @@ export async function POST(request: NextRequest) {
 
     // ✅ Create banner data
     const bannerData = {
-      title: formData.get('title') as string,
-      description: formData.get('description') as string || undefined,
       image_url: imageUrl, // Cloudinary secure URL
       link_url: formData.get('link_url') as string || undefined,
-      position: formData.get('position') as string,
-      priority: parseInt(formData.get('priority') as string) || 0,
-      is_active: formData.get('is_active') === 'true',
-      start_date: formData.get('start_date')
-        ? new Date(formData.get('start_date') as string)
-        : undefined,
-      end_date: formData.get('end_date')
-        ? new Date(formData.get('end_date') as string)
-        : undefined,
-      target_audience: formData.get('target_audience') as string,
-      device_targeting: formData.get('device_targeting') as string,
     };
 
-    // ✅ Validate required fields
-    if (!bannerData.title || !bannerData.position) {
-      return NextResponse.json(
-        { success: false, error: 'Title and position are required' },
-        { status: 400 }
-      );
-    }
+    // // ✅ Validate required fields
+    // if (!bannerData.title || !bannerData.position) {
+    //   return NextResponse.json(
+    //     { success: false, error: 'Title and position are required' },
+    //     { status: 400 }
+    //   );
+    // }
 
-    // ✅ Validate date range
-    if (
-      bannerData.start_date &&
-      bannerData.end_date &&
-      bannerData.end_date <= bannerData.start_date
-    ) {
-      return NextResponse.json(
-        { success: false, error: 'End date must be after start date' },
-        { status: 400 }
-      );
-    }
+    // // ✅ Validate date range
+    // if (
+    //   bannerData.start_date &&
+    //   bannerData.end_date &&
+    //   bannerData.end_date <= bannerData.start_date
+    // ) {
+    //   return NextResponse.json(
+    //     { success: false, error: 'End date must be after start date' },
+    //     { status: 400 }
+    //   );
+    // }
 
     const banner = new Banner(bannerData);
     await banner.save();

@@ -144,7 +144,7 @@ export default function AdminPage() {
     formData.append('image', selectedFile);
 
     try {
-      const response = await fetch('/api/banners', {
+      const response = await fetch('/api/admin/banners', {
         method: 'POST',
         body: formData
       });
@@ -586,7 +586,7 @@ export default function AdminPage() {
                       onChange={(e) => setBannerForm({...bannerForm, title: e.target.value})}
                       className="w-full p-2 border border-gray-300 rounded-md"
                       placeholder="Enter banner title"
-                      required
+                      
                     />
                   </div>
                   
