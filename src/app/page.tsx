@@ -1,5 +1,8 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { useKeenSlider } from "keen-slider/react";
+import "keen-slider/keen-slider.min.css";
+// import { ArrowRight } from "lucide-react";
 import { 
   Search, 
   ShoppingCart, 
@@ -342,6 +345,23 @@ export default function HomePage() {
       setBannersLoading(false);
     }
   };
+
+
+  const [sliderRef] = useKeenSlider<HTMLDivElement>({
+    slides: {
+      perView: 2,
+      spacing: 15,
+    },
+    breakpoints: {
+      "(min-width: 768px)": {
+        slides: { perView: 3, spacing: 20 },
+      },
+      "(min-width: 1024px)": {
+        slides: { perView: 4, spacing: 24 },
+      },
+    },
+    loop: true,
+  });
 
   // Function to fetch categories from API
   const fetchCategories = async () => {
@@ -774,30 +794,198 @@ export default function HomePage() {
         </div>
       </section>
 
-
       {/* Housekeeping Products */}
-      {!productsLoading && !productsError && housekeepingProducts.length > 0 && (
-        <section className="py-16 sm:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Housekeeping Essentials
-            </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Trusted housekeeping solutions for hotels, restaurants, and businesses
-            </p>
-          </div>
-          <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6">
-            {housekeepingProducts.slice(0, 8).map((product) => (
-              <div key={product._id} className="h-full">
-                <ProductCard product={product} />
-              </div>
-            ))}
+{!productsLoading && !productsError && housekeepingProducts.length > 0 && (
+  <>
+    {/* Housekeeping Banner */}
+    <section className="relative w-full h-[300px] sm:h-[400px] lg:h-[450px] overflow-hidden">
+      <div className="absolute inset-0">
+        <img
+          src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1920"
+          alt="Housekeeping essentials banner"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 via-blue-900/60 to-indigo-900/80"></div>
+      </div>
+      
+      <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
+        <div className="max-w-3xl">
+          <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-md text-white rounded-full text-sm font-medium mb-4">
+            Professional Housekeeping
+          </span>
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+            Quality Housekeeping Solutions
+          </h1>
+          <p className="text-lg sm:text-xl text-blue-100 mb-6 leading-relaxed">
+            Premium products for hotels, restaurants, and commercial facilities
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <button 
+              onClick={() => (window.location.href = "/Products?category=housekeeping")}
+              className="bg-white text-blue-900 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+            >
+              Shop Now
+            </button>
+            <button className="bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30">
+              Learn More
+            </button>
           </div>
         </div>
-      </section>
-      
+      </div>
+
+      {/* Decorative Elements */}
+      {/* <div className="absolute top-10 right-10 w-32 h-32 bg-white/10 backdrop-blur-sm rounded-full animate-pulse hidden lg:block"></div> */}
+      {/* <div className="absolute bottom-10 left-20 w-24 h-24 bg-indigo-500/20 backdrop-blur-sm rounded-2xl rotate-45 hidden lg:block"></div> */}
+    </section>
+
+    <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div className="text-center mb-12">
+        <span className="px-4 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium inline-flex items-center gap-2">
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+          </svg>
+          Housekeeping Products
+        </span>
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mt-6 mb-4 font-serif">
+          Housekeeping Essentials
+        </h2>
+        <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+          Trusted housekeeping solutions for hotels, restaurants, and businesses
+        </p>
+      </div>
+
+      {/* Two Column Layout - Reversed (Image Left, Products Right) */}
+      <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        {/* Left Column - Image Container */}
+        <div className="relative order-2 lg:order-1">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl group">
+            {/* Main Image */}
+            <div className="aspect-[4/5] lg:aspect-square overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-200">
+              <img
+                src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800"
+                alt="Professional housekeeping services"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+
+            {/* Overlay Content */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-8">
+              <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                <span className="inline-block px-3 py-1 bg-blue-500 text-white text-sm font-semibold rounded-full mb-3">
+                  Industry Standard
+                </span>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+                  Professional Solutions
+                </h3>
+                <p className="text-gray-200 text-sm sm:text-base mb-4 opacity-90">
+                  High-quality housekeeping products designed for commercial and hospitality sectors
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <div className="flex items-center gap-2 text-white">
+                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="text-sm font-medium">Hotel Grade</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-white">
+                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="text-sm font-medium">Durable</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Decorative Elements */}
+            <div className="absolute top-6 left-6 w-20 h-20 bg-white/20 backdrop-blur-md rounded-2xl -rotate-12 group-hover:-rotate-45 transition-transform duration-500"></div>
+            <div className="absolute bottom-6 right-6 w-16 h-16 bg-blue-500/30 backdrop-blur-md rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+          </div>
+        </div>
+
+        {/* Right Column - Product Slider */}
+        <div className="relative order-1 lg:order-2">
+          {/* Slider Container */}
+          <div className="relative overflow-hidden rounded-2xl bg-white/50 backdrop-blur-sm p-6 shadow-xl">
+            <div className="grid grid-cols-2 gap-4">
+              {housekeepingProducts.slice(0, 4).map((product) => (
+                <div key={product._id} className="h-full">
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+
+            {/* Navigation Arrows - Only show if more than 4 products */}
+            {housekeepingProducts.length > 4 && (
+              <>
+                <button
+                  onClick={() => {
+                    // Implement your slider logic here
+                    console.log('Previous slide');
+                  }}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+                  aria-label="Previous products"
+                >
+                  <ChevronLeft className="w-6 h-6 text-gray-700" />
+                </button>
+                <button
+                  onClick={() => {
+                    // Implement your slider logic here
+                    console.log('Next slide');
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+                  aria-label="Next products"
+                >
+                  <ChevronRight className="w-6 h-6 text-gray-700" />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Slide Indicators - Only show if more than 4 products */}
+          {housekeepingProducts.length > 4 && (
+            <div className="flex justify-center gap-2 mt-6">
+              {Array.from({ length: Math.ceil(housekeepingProducts.length / 4) }).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    // Implement your slide navigation logic here
+                    console.log(`Go to slide ${index + 1}`);
+                  }}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === 0 ? 'w-8 bg-blue-600' : 'w-2 bg-gray-300'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* View All Button */}
+      {housekeepingProducts.length > 4 && (
+        <div className="text-center mt-12 lg:mt-16">
+          <button
+            onClick={() => (window.location.href = "/Products?category=Housekeeping")}
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
+          >
+            View All Housekeeping Products ({housekeepingProducts.length} total)
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
       )}
+    </div>
+  </section>
+  </>
+)}
+
 
       {/* Why Choose Vijay Agencies Section - NEW */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white scroll-reveal rounded-xl m-2 mr-5 ml-5 shadow-md shadow-gray-300">
@@ -976,37 +1164,205 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Cleaning Products Section */}
 {/* Cleaning Products */}
 {!productsLoading && !productsError && cleaningProducts.length > 0 && (
-  <section className="py-16 sm:py-20 bg-green-50 rounded-xl mr-5 ml-5">
-    <div className="text-center mb-10">
-<span className="px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
-      Cleaning Products
-    </span>
-    </div>
+  <>
+    {/* Cleaning Products Banner */}
+    <section className="relative w-full h-[400px] sm:h-[450px] lg:h-[450px] overflow-hidden">
+      <div className="absolute inset-0">
+        <img
+          src="https://images.unsplash.com/photo-1585421514738-01798e348b17?w=1920"
+          alt="Cleaning products banner"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-green-900/90 via-emerald-800/80 to-green-900/90"></div>
+      </div>
+      
+      <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
+        <div className="max-w-3xl">
+          <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-md text-white rounded-full text-sm font-medium mb-4 animate-fade-in">
+            Premium Cleaning Solutions
+          </span>
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight animate-slide-up">
+            Professional Cleaning Essentials
+          </h1>
+          <p className="text-lg sm:text-xl text-green-100 mb-6 leading-relaxed animate-slide-up-delay">
+            Industrial-grade cleaning products for hotels, restaurants, and commercial spaces
+          </p>
+          <div className="flex flex-wrap gap-4 animate-fade-in-delay">
+            <button 
+              onClick={() => (window.location.href = "/Products?category=Cleaning")}
+              className="bg-white text-green-900 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 inline-flex items-center gap-2 group"
+            >
+              Shop Cleaning Products
+              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </button>
+            
+          </div>
+        </div>
+      </div>
+
+      {/* Animated Floating Elements */}
+      {/* <div className="absolute top-20 right-20 w-16 h-16 bg-white/10 backdrop-blur-sm rounded-full animate-float hidden lg:block"></div> */}
+      {/* <div className="absolute top-40 right-40 w-12 h-12 bg-green-400/20 backdrop-blur-sm rounded-full animate-float-delay hidden lg:block"></div> */}
+      {/* <div className="absolute bottom-20 right-32 w-20 h-20 bg-emerald-300/10 backdrop-blur-sm rounded-2xl rotate-45 animate-pulse hidden lg:block"></div> */}
+      {/* <div className="absolute bottom-32 left-20 w-24 h-24 bg-white/5 backdrop-blur-sm rounded-2xl -rotate-12 animate-float hidden lg:block"></div> */}
+      
+      {/* Feature Badges */}
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 hidden lg:flex gap-4">
+        <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2 animate-fade-in">
+          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          <span className="text-white text-sm font-medium">Eco-Friendly</span>
+        </div>
+        <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2 animate-fade-in-delay">
+          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          <span className="text-white text-sm font-medium">Fast Acting</span>
+        </div>
+        <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2 animate-fade-in-delay-2">
+          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          <span className="text-white text-sm font-medium">Professional Grade</span>
+        </div>
+      </div>
+    </section>
+
+    <section className="py-16 sm:py-20 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl mx-5">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="text-center mb-12 lg:mb-16">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-serif">
+      {/* Header */}
+      <div className="text-center mb-12">
+        <span className="px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium inline-flex items-center gap-2">
+          <Sparkles className="w-4 h-4" />
+          Cleaning Products
+        </span>
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mt-6 mb-4 font-serif">
           Cleaning Essentials
         </h2>
-        <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-sans">
+        <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
           Powerful cleaning solutions for kitchens, bathrooms, and commercial use
         </p>
       </div>
 
-      <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6">
-        {cleaningProducts.slice(0, 8).map((product) => (
-          <div key={product._id} className="h-full">
-            <ProductCard product={product} />
+      {/* Two Column Layout */}
+      <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        {/* Left Column - Product Slider */}
+        <div className="relative">
+          {/* Slider Container */}
+          <div className="relative overflow-hidden rounded-2xl bg-white/50 backdrop-blur-sm p-6 shadow-xl">
+            <div className="grid grid-cols-2 gap-4">
+              {cleaningProducts.slice(0, 4).map((product) => (
+                <div key={product._id} className="h-full">
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+
+            {/* Navigation Arrows - Only show if more than 4 products */}
+            {cleaningProducts.length > 4 && (
+              <>
+                <button
+                  onClick={() => {
+                    // Implement your slider logic here
+                    console.log('Previous slide');
+                  }}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+                  aria-label="Previous products"
+                >
+                  <ChevronLeft className="w-6 h-6 text-gray-700" />
+                </button>
+                <button
+                  onClick={() => {
+                    // Implement your slider logic here
+                    console.log('Next slide');
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+                  aria-label="Next products"
+                >
+                  <ChevronRight className="w-6 h-6 text-gray-700" />
+                </button>
+              </>
+            )}
           </div>
-        ))}
+
+          {/* Slide Indicators - Only show if more than 4 products */}
+          {cleaningProducts.length > 4 && (
+            <div className="flex justify-center gap-2 mt-6">
+              {Array.from({ length: Math.ceil(cleaningProducts.length / 4) }).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    // Implement your slide navigation logic here
+                    console.log(`Go to slide ${index + 1}`);
+                  }}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === 0 ? 'w-8 bg-green-600' : 'w-2 bg-gray-300'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Right Column - Image Container */}
+        <div className="relative">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl group">
+            {/* Main Image */}
+            <div className="aspect-[4/5] lg:aspect-square overflow-hidden bg-gradient-to-br from-green-100 to-emerald-200">
+              <img
+                src="https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=800"
+                alt="Professional cleaning products"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+
+            {/* Overlay Content */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-8">
+              <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                <span className="inline-block px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full mb-3">
+                  Professional Grade
+                </span>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+                  Premium Quality Guaranteed
+                </h3>
+                <p className="text-gray-200 text-sm sm:text-base mb-4 opacity-90">
+                  Trusted by thousands of businesses nationwide for superior cleaning performance
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <div className="flex items-center gap-2 text-white">
+                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="text-sm font-medium">Eco-Friendly</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-white">
+                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="text-sm font-medium">Fast Acting</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Decorative Elements */}
+            {/* <div className="absolute top-6 right-6 w-20 h-20 bg-white/20 backdrop-blur-md rounded-2xl rotate-12 group-hover:rotate-45 transition-transform duration-500"></div> */}
+            {/* <div className="absolute bottom-6 left-6 w-16 h-16 bg-green-500/30 backdrop-blur-md rounded-full group-hover:scale-125 transition-transform duration-500"></div> */}
+          </div>
+        </div>
       </div>
 
-      {cleaningProducts.length > 8 && (
+      {/* View All Button */}
+      {cleaningProducts.length > 4 && (
         <div className="text-center mt-12 lg:mt-16">
           <button
             onClick={() => (window.location.href = "/Products?category=Cleaning")}
-            className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
+            className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-4 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
           >
             View All Cleaning Products ({cleaningProducts.length} total)
             <ArrowRight className="w-5 h-5" />
@@ -1015,8 +1371,8 @@ export default function HomePage() {
       )}
     </div>
   </section>
+  </>
 )}
-
 
       {/* Company Stats Section
       <section className="py-12 sm:py-16 bg-white scroll-reveal">
@@ -1288,97 +1644,225 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Contact Information Section */}
-      <section className="py-16 sm:py-20 bg-[#EF4F5F] text-white scroll-reveal rounded-xl mx-5 mb-2">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="animate-fade-in-left">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 lg:mb-8 font-serif">Ready to Partner With Us?</h2>
-              <p className="text-blue-100 text-base sm:text-lg lg:text-xl mb-8 lg:mb-10 leading-relaxed">
-                Contact Vijay Agencies today for all your commercial cleaning needs. 
-                We provide personalized solutions and competitive bulk pricing for hotels and businesses.
-              </p>
-              
-              <div className="space-y-6">
-                <div className="flex items-start gap-4 sm:gap-6 animate-fade-in-up stagger-1">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-red-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <MapPin className="w-6 h-6 sm:w-7 sm:h-7" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold mb-2 text-lg sm:text-xl">Visit Our Store</h4>
-                    <p className="text-blue-100 leading-relaxed">
-                      A 917 Siddarth Nagar, Near Jain Mandir<br />
-                      Jaipur, Rajasthan - 302025
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4 sm:gap-6 animate-fade-in-up stagger-2">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-red-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <Phone className="w-6 h-6 sm:w-7 sm:h-7" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold mb-2 text-lg sm:text-xl">Call Us</h4>
-                    <p className="text-blue-100 leading-relaxed">
-                      +91 9351630408<br />
-                      +91 9414073671
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4 sm:gap-6 animate-fade-in-up stagger-3">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#d81921] rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <Mail className="w-6 h-6 sm:w-7 sm:h-7" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold mb-2 text-lg sm:text-xl">Email Us</h4>
-                    <p className="text-blue-100">vijayagenciesjpr@yahoo.in</p>
-                  </div>
-                </div>
-              </div>
+      {/* Contact Us Banner */}
+<section className="relative w-full h-[400px] sm:h-[400px] lg:h-[450px] overflow-hidden">
+  <div className="absolute inset-0">
+    <img
+      src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920"
+      alt="Contact us banner"
+      className="w-full h-full object-cover"
+    />
+    <div className="absolute inset-0 bg-gradient-to-r from-red-900/90 via-red-800/80 to-rose-900/90"></div>
+  </div>
+  
+  <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
+    <div className="max-w-3xl">
+      <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-md text-white rounded-full text-sm font-medium mb-4">
+        Get In Touch
+      </span>
+      <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+        Let&apos;s Work Together
+      </h1>
+      <p className="text-lg sm:text-xl text-red-100 mb-6 leading-relaxed">
+        Partner with Vijay Agencies for premium B2B solutions. We&apos;re here to help your business succeed.
+      </p>
+      <div className="flex flex-wrap gap-4">
+        <a 
+          href="#contact-form"
+          className="bg-white text-red-900 px-6 py-3 rounded-lg font-semibold hover:bg-red-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 inline-flex items-center gap-2"
+        >
+          Contact Us Now
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </a>
+        <a 
+          href="tel:+919351630408"
+          className="bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30 inline-flex items-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+          </svg>
+          Call Now
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {/* Decorative Elements */}
+  <div className="absolute top-10 right-10 w-32 h-32 bg-white/10 backdrop-blur-sm rounded-full animate-pulse hidden lg:block"></div>
+  <div className="absolute bottom-10 left-20 w-24 h-24 bg-red-500/20 backdrop-blur-sm rounded-2xl rotate-45 hidden lg:block"></div>
+</section>
+
+{/* Contact Information Section */}
+<section id="contact-form" className="py-16 sm:py-20 bg-gradient-to-br from-slate-50 to-gray-100 scroll-reveal">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      
+      {/* Left Column - Content */}
+      <div className="animate-fade-in-left">
+        <span className="inline-block px-4 py-2 bg-red-100 text-red-600 rounded-full text-sm font-semibold mb-4">
+          Get In Touch
+        </span>
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-gray-900 font-serif">
+          Ready to Partner With Us?
+        </h2>
+        <p className="text-gray-600 text-base sm:text-lg lg:text-xl mb-8 leading-relaxed">
+          Contact Vijay Agencies today for all your commercial cleaning needs. 
+          We provide personalized solutions and competitive bulk pricing for hotels and businesses.
+        </p>
+        
+        {/* Feature List */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <span className="text-gray-700 font-medium">24/7 Customer Support</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <span className="text-gray-700 font-medium">Competitive Bulk Pricing</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <span className="text-gray-700 font-medium">Fast Response Time</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <span className="text-gray-700 font-medium">Trusted by 500+ Businesses</span>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-6 mt-10 pt-10 border-t border-gray-200">
+          <div>
+            <div className="text-3xl font-bold text-red-600 mb-1">500+</div>
+            <div className="text-sm text-gray-600">Happy Clients</div>
+          </div>
+          <div>
+            <div className="text-3xl font-bold text-red-600 mb-1">1000+</div>
+            <div className="text-sm text-gray-600">Products</div>
+          </div>
+          <div>
+            <div className="text-3xl font-bold text-red-600 mb-1">15+</div>
+            <div className="text-sm text-gray-600">Years Experience</div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Right Column - Contact Form with Background Image */}
+      <div className="relative animate-fade-in-right">
+        <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+          {/* Background Image with Overlay */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800"
+              alt="Contact background"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-white/90 to-red-50/95 backdrop-blur-sm"></div>
+          </div>
+
+          {/* Form Content */}
+          <div className="relative z-10 p-8 sm:p-10">
+            <div className="mb-8">
+              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Get a Quote</h3>
+              <p className="text-gray-600">Fill out the form and we&apos;ll get back to you within 24 hours</p>
             </div>
             
-            <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-2xl animate-fade-in-right">
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">Get a Quote</h3>
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <form className="space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="relative">
                   <input
                     type="text"
                     placeholder="Your Name"
-                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
+                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm"
                   />
+                </div>
+                <div className="relative">
                   <input
                     type="tel"
                     placeholder="Phone Number"
-                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
+                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm"
                   />
                 </div>
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
-                />
-                <input
-                  type="text"
-                  placeholder="Business Name"
-                  className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-blue-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500"
-                />
-                <textarea
-                  placeholder="Tell us about your requirements..."
-                  rows={4}
-                  className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none"
-                ></textarea>
-                <button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105"
-                >
-                  Request Quote
-                </button>
-              </form>
+              </div>
+              
+              <input
+                type="email"
+                placeholder="Email Address"
+                className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm"
+              />
+              
+              <input
+                type="text"
+                placeholder="Business Name"
+                className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm"
+              />
+              
+              <div className="relative">
+                <select title='select' className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 bg-white/90 backdrop-blur-sm appearance-none cursor-pointer">
+                  <option value="">Select Product Category</option>
+                  <option value="cleaning">Cleaning Products</option>
+                  <option value="housekeeping">Housekeeping Products</option>
+                  <option value="both">Both Categories</option>
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+              
+              <textarea
+                placeholder="Tell us about your requirements..."
+                rows={4}
+                className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none bg-white/90 backdrop-blur-sm"
+              ></textarea>
+              
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
+              >
+                Request Quote
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </button>
+            </form>
+
+            {/* Trust Badge */}
+            <div className="mt-6 pt-6 border-t border-gray-200 flex items-center justify-center gap-2 text-sm text-gray-600">
+              <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              Your information is secure and confidential
             </div>
           </div>
         </div>
-      </section>
+
+        {/* Decorative Elements */}
+        <div className="absolute -top-4 -right-4 w-24 h-24 bg-red-200 rounded-full opacity-50 blur-2xl -z-10"></div>
+        <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-red-300 rounded-full opacity-30 blur-3xl -z-10"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Footer */}
     </div>
