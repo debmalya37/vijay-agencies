@@ -383,14 +383,14 @@ export default function ProductsClient(): JSX.Element {
               <span className="text-white font-semibold text-sm">Out of Stock</span>
             </div>
           )}
-          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          {/* <div className="absolute top-2 sm:top-3 right-2 sm:right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <button className="p-1.5 sm:p-2 bg-white rounded-full shadow-lg hover:bg-gray-50">
               <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
             </button>
             <button className="p-1.5 sm:p-2 bg-white rounded-full shadow-lg hover:bg-gray-50">
               <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
             </button>
-          </div>
+          </div> */}
         </div>
 
         <div className="p-3 sm:p-5">
