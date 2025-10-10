@@ -115,37 +115,37 @@ const messCategories = [
   {
     title: "Grease and Grime",
     image: "/icons/grease.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?category=Cleaning",
   },
   {
     title: "Stain Removal",
     image: "/icons/stain.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?category=Cleaning&sort=name&max_price=50000",
   },
   {
     title: "Muddy Floors",
     image: "/icons/muddy.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?sort=name&max_price=50000&category=Cleaning",
   },
   {
     title: "Dirty Toilets",
     image: "/icons/toilet.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?sort=name&max_price=50000&category=housekeeping",
   },
   {
     title: "Sticky Kitchens",
     image: "/icons/kitchen.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?sort=name&max_price=50000&category=housekeeping",
   },
   {
     title: "Machine",
     image: "/icons/machine.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?sort=name&max_price=50000",
   },
   {
     title: "Dirty Hands",
     image: "/icons/dirty.png",
-    link: "#",
+    link: "https://www.vijayagenciesjpr.com/Products?sort=name&max_price=50000&category=Tissues",
   },
 ];
 
@@ -518,7 +518,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
       
       {/* <Navbar/> */}
@@ -800,20 +800,20 @@ export default function HomePage() {
       )}
 
       {/* Why Choose Vijay Agencies Section - NEW */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white scroll-reveal">
+      <section className="py-12 sm:py-16 lg:py-20 bg-white scroll-reveal rounded-xl m-2 mr-5 ml-5 shadow-md shadow-gray-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-12 lg:mb-16 animate-fade-in-up">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 font-serif">
               Why Vijay Agencies Over Others?
             </h2>
-            <p className="text-gray-600 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
+            <p className="text-gray-800 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
               What makes us the preferred choice for commercial cleaning solutions
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-4">
             {/* Vijay Agencies Side (Green) */}
-            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-left">
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-left ">
               <div className="flex items-center justify-between mb-6 sm:mb-8">
                 <div className="bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base shadow-md">
                   Vijay Agencies
@@ -828,31 +828,31 @@ export default function HomePage() {
                   <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Toxin-free</span>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Direct Manufacturer Partnerships</span>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
                   <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Biodegradable</span>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Always in stock </span>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
                   <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Recyclable</span>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Transparent pricing</span>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
                   <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Locally crafted</span>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Dedicated account manager </span>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
                   <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Plant-based</span>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Fast & reliable delivery </span>
                 </div>
               </div>
 
@@ -866,7 +866,7 @@ export default function HomePage() {
             </div>
 
             {/* Others Side (Red) */}
-            <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-right">
+            <div className="bg-gradient-to-br from-red-300 to-red-400 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-right">
               <div className="flex items-center justify-between mb-6 sm:mb-8">
                 <div className="bg-red-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base shadow-md">
                   Others
@@ -881,31 +881,31 @@ export default function HomePage() {
                   <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Harsh chemicals</span>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Multiple middlemen  </span>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
                   <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Limited trust</span>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Frequent shortages</span>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
                   <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Non recyclable</span>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Hidden costs</span>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
                   <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Hides ingredients</span>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">No personal support</span>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
                   <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Lacks local focus</span>
+                  <span className="text-sm sm:text-base lg:text-lg font-medium">Delayed dispatches</span>
                 </div>
               </div>
 
@@ -978,7 +978,7 @@ export default function HomePage() {
 
 {/* Cleaning Products */}
 {!productsLoading && !productsError && cleaningProducts.length > 0 && (
-  <section className="py-16 sm:py-20 bg-white">
+  <section className="py-16 sm:py-20 bg-green-50 rounded-xl mr-5 ml-5">
     <div className="text-center mb-10">
 <span className="px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
       Cleaning Products
@@ -986,10 +986,10 @@ export default function HomePage() {
     </div>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-12 lg:mb-16">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-serif">
           Cleaning Essentials
         </h2>
-        <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-sans">
           Powerful cleaning solutions for kitchens, bathrooms, and commercial use
         </p>
       </div>
@@ -1018,7 +1018,7 @@ export default function HomePage() {
 )}
 
 
-      {/* Company Stats Section */}
+      {/* Company Stats Section
       <section className="py-12 sm:py-16 bg-white scroll-reveal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
@@ -1036,14 +1036,14 @@ export default function HomePage() {
             })}
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="px-4 md:px-12 py-10 bg-white shadow-md border-spacing-2 rounded-xl">
   <div className="text-center mb-10">
-    <span className="px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
+    <span className="px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium font-sans">
       Shop by Concern
     </span>
-    <h2 className="text-3xl md:text-4xl font-bold mt-4">
+    <h2 className="text-3xl md:text-4xl font-bold mt-4 font-serif ">
       Which Mess Matters?
     </h2>
   </div>
@@ -1063,7 +1063,7 @@ export default function HomePage() {
           className="min-w-[250px] sm:min-w-0 bg-amber-50 rounded-xl p-6 shadow-sm flex flex-col items-start justify-between hover:shadow-md transition"
         >
           <div className="flex items-center justify-between w-full">
-            <h3 className="text-lg font-semibold text-gray-800 max-w-[60%]">
+            <h3 className="text-2xl font-semibold text-gray-800 max-w-[60%]">
               {item.title}
             </h3>
             <Image
@@ -1089,65 +1089,74 @@ export default function HomePage() {
   </div>
 </section>
 
-
-      {/* Features Section */}
-      <section className="py-16 sm:py-20 bg-gray-50">
+  {/* Why Choose Us + Stats Section */}
+  <section className="py-16 sm:py-20 bg-[#FFF2F2] relative overflow-hidden rounded-2xl mx-5 mt-5 lg:mx-20 lg:mt-10 shadow-lg">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     {/* Heading */}
-    <div className="text-center mb-12 lg:mb-16">
-      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-        Why Choose Vijay Agencies?
+    <div className="text-center mb-12 lg:mb-16 text-[#E23744]">
+      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 font-serif">
+        Why CHOOSE VIJAY AGENCIES
       </h2>
-      <p className="text-gray-600 max-w-3xl mx-auto text-base sm:text-lg lg:text-xl leading-relaxed">
-        We are committed to delivering top-quality commercial cleaning solutions
-        trusted by businesses across Jaipur.
-      </p>
+
+      {/* Small Features Row (icons row inside white card) */}
+      <div className="inline-flex flex-wrap justify-center gap-6 bg-white rounded-xl shadow-md px-6 py-4 mt-4">
+        {whyChooseUs.map((feature, index) => (
+          <div key={index} className="flex flex-col items-center text-center min-w-[120px]">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center bg-red-100 mb-2">
+              <feature.icon className="w-6 h-6 text-red-600" />
+            </div>
+            <div className="text-sm sm:text-base font-semibold text-gray-900 font-sans">
+              {feature.title}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
 
-    {/* Features Grid */}
+    {/* Company Stats Grid */}
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {whyChooseUs.map((feature, index) => (
-        <div
-          key={index}
-          className="rounded-xl bg-white p-6 shadow-sm hover:shadow-md transition flex flex-col items-start"
-        >
-          {/* Icon */}
-          <div className="w-14 h-14 rounded-full flex items-center justify-center bg-amber-100 mb-4">
-            <feature.icon className="w-7 h-7 text-amber-700" />
+      {companyStats.map((stat, index) => {
+        const Icon = stat.icon;
+        return (
+          <div
+            key={index}
+            className="rounded-xl p-6 flex flex-col items-center text-center bg-white shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105"
+          >
+            <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center mb-3">
+              <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-red-500" />
+            </div>
+            <div className="text-2xl sm:text-3xl font-bold text-gray-900">
+              {stat.number}
+            </div>
+            <div className="text-sm sm:text-base text-gray-700 font-medium mt-1">
+              {stat.label}
+            </div>
           </div>
-
-          {/* Title */}
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            {feature.title}
-          </h3>
-
-          {/* Description */}
-          <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-            {feature.description}
-          </p>
-        </div>
-      ))}
+        );
+      })}
     </div>
   </div>
 </section>
 
 
+
+
       {/* About Vijay Agencies Section */}
-      <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 scroll-reveal">
+      <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 scroll-reveal mt-5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="space-y-6 lg:space-y-8 animate-fade-in-left">
               <div>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 lg:mb-6">About Vijay Agencies</h2>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 lg:mb-6 font-serif">About Vijay Agencies</h2>
                 <div className="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-blue-800 rounded-full mb-6"></div>
               </div>
               
-              <p className="text-base sm:text-lg lg:text-xl text-gray-700 leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-gray-700 leading-relaxed font-sans">
                 Established as a trusted wholesale supplier in Jaipur, Rajasthan, Vijay Agencies has been 
                 serving the hospitality and commercial sector with high-quality cleaning solutions and equipment.
               </p>
               
-              <p className="text-gray-600 leading-relaxed text-sm sm:text-base lg:text-lg">
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-base lg:text-lg font-sans">
                 We specialize in providing comprehensive cleaning solutions to hotels, restaurants, and commercial 
                 establishments across Jaipur and surrounding areas. Our extensive range includes industrial cleaning 
                 equipment, chemicals, and consumables.
@@ -1159,8 +1168,8 @@ export default function HomePage() {
                     <Check className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1">Industrial Equipment</h4>
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">Vacuum cleaners, scrubber driers, floor sweepers</p>
+                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1 font-sans">Industrial Equipment</h4>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-sans">Vacuum cleaners, scrubber driers, floor sweepers</p>
                   </div>
                 </div>
                 
@@ -1169,8 +1178,8 @@ export default function HomePage() {
                     <Check className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1">Cleaning Chemicals</h4>
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">Kitchen & washroom cleaning solutions</p>
+                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1 font-sans">Cleaning Chemicals</h4>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-sans">Kitchen & washroom cleaning solutions</p>
                   </div>
                 </div>
                 
@@ -1179,8 +1188,8 @@ export default function HomePage() {
                     <Check className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1">Paper Products</h4>
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">Toilet rolls, kitchen towels, tissues</p>
+                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1 font-sans">Paper Products</h4>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-sans">Toilet rolls, kitchen towels, tissues</p>
                   </div>
                 </div>
                 
@@ -1189,8 +1198,8 @@ export default function HomePage() {
                     <Check className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1">Dispensers & Accessories</h4>
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">Soap dispensers, air fresheners</p>
+                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1 font-sans">Dispensers & Accessories</h4>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-sans">Soap dispensers, air fresheners</p>
                   </div>
                 </div>
               </div>
@@ -1198,7 +1207,7 @@ export default function HomePage() {
               <div className="pt-8">
                 <button 
                   onClick={() => window.location.href = '/about'}
-                  className="bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-4 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 inline-flex items-center gap-3 font-semibold shadow-lg hover:shadow-xl hover:scale-105 text-base sm:text-lg"
+                  className="bg-[#EF4F5F] text-white px-8 py-4 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 inline-flex items-center gap-3 font-semibold shadow-lg hover:shadow-xl hover:scale-105 text-base sm:text-lg"
                 >
                   Learn More About Us
                   <ArrowRight className="w-5 h-5" />
@@ -1215,8 +1224,8 @@ export default function HomePage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                 <div className="absolute bottom-6 sm:bottom-8 left-6 sm:left-8 right-6 sm:right-8 text-white">
-                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3">Professional Cleaning Solutions</h3>
-                  <p className="text-sm sm:text-base opacity-90 leading-relaxed">Serving Jaipur&apos;s hospitality industry since 2016</p>
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3 font-sans">Professional Cleaning Solutions</h3>
+                  <p className="text-sm sm:text-base opacity-90 leading-relaxed font-sans">Serving Jaipur&apos;s hospitality industry since 2016</p>
                 </div>
               </div>
               
@@ -1226,7 +1235,7 @@ export default function HomePage() {
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <Phone className="w-6 h-6 text-blue-600" />
                   </div>
-                  <h4 className="font-bold text-gray-900 mb-4 text-lg">Get In Touch</h4>
+                  <h4 className="font-bold text-gray-900 mb-4 text-lg font-sans">Get In Touch</h4>
                   <div className="space-y-3 text-sm text-gray-600">
                     <div className="flex items-center gap-3 justify-center">
                       <Phone className="w-4 h-4 text-blue-600" />
@@ -1234,7 +1243,7 @@ export default function HomePage() {
                     </div>
                     <div className="flex items-center gap-3 justify-center">
                       <Mail className="w-4 h-4 text-blue-600" />
-                      <span className="text-xs font-medium">vijayagenciesjpr@yahoo.in</span>
+                      <span className="text-xs font-medium">support@vijayagenciesjpr.com</span>
                     </div>
                   </div>
                 </div>
@@ -1248,7 +1257,7 @@ export default function HomePage() {
       <section className="py-16 sm:py-20 bg-white scroll-reveal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">What Our Clients Say</h2>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-serif">What Our Clients Say</h2>
             <p className="text-gray-600 max-w-3xl mx-auto text-base sm:text-lg lg:text-xl leading-relaxed">Trusted by hotels and businesses across Jaipur</p>
           </div>
 
@@ -1280,11 +1289,11 @@ export default function HomePage() {
       </section>
 
       {/* Contact Information Section */}
-      <section className="py-16 sm:py-20 bg-gradient-to-br from-red-600 via-red-700 to-red-900 text-white scroll-reveal">
+      <section className="py-16 sm:py-20 bg-[#EF4F5F] text-white scroll-reveal rounded-xl mx-5 mb-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="animate-fade-in-left">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 lg:mb-8">Ready to Partner With Us?</h2>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 lg:mb-8 font-serif">Ready to Partner With Us?</h2>
               <p className="text-blue-100 text-base sm:text-lg lg:text-xl mb-8 lg:mb-10 leading-relaxed">
                 Contact Vijay Agencies today for all your commercial cleaning needs. 
                 We provide personalized solutions and competitive bulk pricing for hotels and businesses.

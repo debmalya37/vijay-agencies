@@ -133,7 +133,7 @@ export default function Navbar(): JSX.Element {
                 key={l.href}
                 href={l.href}
                 onClick={onNavigate}
-                className="text-gray-700 hover:text-green-600 px-2 py-1 rounded-md text-sm transition"
+                className="text-gray-700 hover:text-green-600 px-2 py-1 rounded-md text-md transition"
               >
                 {l.label}
               </Link>

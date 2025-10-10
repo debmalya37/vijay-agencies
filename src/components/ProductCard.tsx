@@ -227,7 +227,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="flex items-end justify-between gap-2 mt-1">
           <div className="flex flex-col">
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black bg-gradient-to-r from-red-600 to-rose-600 
+              <span className="text-2xl font-black bg-black 
                 bg-clip-text text-transparent">
                 ₹{product.price.toLocaleString()}
               </span>
@@ -249,14 +249,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <button
           onClick={handleAddToCart}
           disabled={isInCart || adding}
-          className={`mt-2 w-full py-3 rounded-xl font-bold text-sm
+          className={`mt-2 w-full py-3 rounded-xl font-bold text-base
             transition-all duration-300 transform hover:scale-105 active:scale-95
             flex items-center justify-center gap-2 shadow-lg hover:shadow-xl
             ${isInCart
               ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white cursor-default"
               : adding
-              ? "bg-gradient-to-r from-gray-400 to-gray-500 text-white cursor-wait"
-              : "bg-gradient-to-r from-red-600 via-rose-600 to-pink-600 text-white hover:from-red-700 hover:via-rose-700 hover:to-pink-700"
+              ? "bg-red-900"
+              : "bg-[#f13548] text-white hover:text-lg"
             }`}
         >
           {isInCart ? (
