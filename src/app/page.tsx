@@ -1090,46 +1090,55 @@ export default function HomePage() {
 </section>
 
 
-      {/* Features Section */}
-      <section className="py-16 sm:py-20 bg-gray-50">
+     {/* Why Choose Us + Stats Section */}
+<section className="py-16 sm:py-20 bg-red-500 relative overflow-hidden">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     {/* Heading */}
-    <div className="text-center mb-12 lg:mb-16">
-      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-        Why Choose Vijay Agencies?
+    <div className="text-center mb-12 lg:mb-16 text-white">
+      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
+        Why CHOOSE VIJAY AGENCIES
       </h2>
-      <p className="text-gray-600 max-w-3xl mx-auto text-base sm:text-lg lg:text-xl leading-relaxed">
-        We are committed to delivering top-quality commercial cleaning solutions
-        trusted by businesses across Jaipur.
-      </p>
+
+      {/* Small Features Row (icons row inside white card) */}
+      <div className="inline-flex flex-wrap justify-center gap-6 bg-white rounded-xl shadow-md px-6 py-4 mt-4">
+        {whyChooseUs.map((feature, index) => (
+          <div key={index} className="flex flex-col items-center text-center min-w-[120px]">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center bg-red-100 mb-2">
+              <feature.icon className="w-6 h-6 text-red-600" />
+            </div>
+            <div className="text-sm sm:text-base font-semibold text-gray-900">
+              {feature.title}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
 
-    {/* Features Grid */}
+    {/* Company Stats Grid */}
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {whyChooseUs.map((feature, index) => (
-        <div
-          key={index}
-          className="rounded-xl bg-white p-6 shadow-sm hover:shadow-md transition flex flex-col items-start"
-        >
-          {/* Icon */}
-          <div className="w-14 h-14 rounded-full flex items-center justify-center bg-amber-100 mb-4">
-            <feature.icon className="w-7 h-7 text-amber-700" />
+      {companyStats.map((stat, index) => {
+        const Icon = stat.icon;
+        return (
+          <div
+            key={index}
+            className="rounded-xl p-6 flex flex-col items-center text-center bg-white shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105"
+          >
+            <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center mb-3">
+              <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-red-500" />
+            </div>
+            <div className="text-2xl sm:text-3xl font-bold text-gray-900">
+              {stat.number}
+            </div>
+            <div className="text-sm sm:text-base text-gray-700 font-medium mt-1">
+              {stat.label}
+            </div>
           </div>
-
-          {/* Title */}
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            {feature.title}
-          </h3>
-
-          {/* Description */}
-          <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-            {feature.description}
-          </p>
-        </div>
-      ))}
+        );
+      })}
     </div>
   </div>
 </section>
+
 
 
       {/* About Vijay Agencies Section */}
