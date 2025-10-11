@@ -935,7 +935,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
             {/* Right Column - Product Slider */}
             <div className="relative order-1 lg:order-2">
               {/* Slider Container */}
-              <div className="relative overflow-hidden rounded-2xl bg-red-700 backdrop-blur-sm p-2 shadow-xl">
+              <div className="relative overflow-hidden rounded-2xl bg-[#EF4F5F] backdrop-blur-sm p-2 shadow-xl">
                 <div className="grid grid-cols-2 gap-4">
                   {housekeepingProducts.slice(
                     currentHousekeepingSlide * 2, 
@@ -1223,8 +1223,8 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
       </div>
     </section>
 
-    <section className="py-16 sm:py-20 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl mx-5">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-10 md:py-20 bg-gradient-to-br from-green-100 to-emerald-50 rounded-xl mx-2 md:mx-5 mt-2">
+    <div className="max-w-7xl mx-auto px-2 md:px-6 lg:px-8">
       {/* Header */}
       <div className="text-center mb-12">
         <span className="px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium inline-flex items-center gap-2">
@@ -1244,7 +1244,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
         {/* Left Column - Product Slider */}
         <div className="relative">
           {/* Slider Container */}
-          <div className="relative overflow-hidden rounded-2xl bg-white/50 backdrop-blur-sm p-6 shadow-xl">
+          <div className="relative overflow-hidden rounded-2xl bg-[#EF4F5F] backdrop-blur-sm p-2 shadow-xl">
             <div className="grid grid-cols-2 gap-4">
               {cleaningProducts.slice(0, 4).map((product) => (
                 <div key={product._id} className="h-full">
