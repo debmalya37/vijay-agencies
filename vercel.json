@@ -1,9 +1,21 @@
 {
+    "version": 2,
+    "buildCommand": "npm run build",
+    "installCommand": "npm install --include=dev",
     "functions": {
       "app/api/invoice/[id]/route.ts": {
         "memory": 1024,
         "maxDuration": 40
+      },
+      "app/api/**": {
+        "memory": 1024,
+        "maxDuration": 40
       }
-    }
+    },
+    "env": {
+      "NODE_ENV": "production"
+    },
+    "framework": "nextjs",
+    "regions": ["bom1"]
   }
   
