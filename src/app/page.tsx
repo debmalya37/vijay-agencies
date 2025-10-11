@@ -795,6 +795,7 @@ export default function HomePage() {
       </section>
 
       {/* Housekeeping Products */}
+{/* Housekeeping Products */}
 {!productsLoading && !productsError && housekeepingProducts.length > 0 && (
   <>
     {/* Housekeeping Banner */}
@@ -857,12 +858,12 @@ export default function HomePage() {
       </div>
 
       {/* Two Column Layout - Reversed (Image Left, Products Right) */}
-      <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
         {/* Left Column - Image Container */}
-        <div className="relative order-2 lg:order-1">
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl group">
+        <div className="relative order-2 lg:order-1 flex">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl group w-full">
             {/* Main Image */}
-            <div className="aspect-[4/5] lg:aspect-square overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-200">
+            <div className="h-full overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-200">
               <img
                 src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800"
                 alt="Professional housekeeping services"
@@ -904,8 +905,8 @@ export default function HomePage() {
             </div>
 
             {/* Decorative Elements */}
-            <div className="absolute top-6 left-6 w-20 h-20 bg-white/20 backdrop-blur-md rounded-2xl -rotate-12 group-hover:-rotate-45 transition-transform duration-500"></div>
-            <div className="absolute bottom-6 right-6 w-16 h-16 bg-blue-500/30 backdrop-blur-md rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+            {/* <div className="absolute top-6 left-6 w-20 h-20 bg-white/20 backdrop-blur-md rounded-2xl -rotate-12 group-hover:-rotate-45 transition-transform duration-500"></div> */}
+            {/* <div className="absolute bottom-6 right-6 w-16 h-16 bg-blue-500/30 backdrop-blur-md rounded-full group-hover:scale-125 transition-transform duration-500"></div> */}
           </div>
         </div>
 
@@ -1645,46 +1646,167 @@ export default function HomePage() {
       </section>
 
       {/* Contact Us Banner */}
-<section className="relative w-full h-[400px] sm:h-[400px] lg:h-[450px] overflow-hidden">
+{/* Contact Us Banner */}
+<section className="relative w-full overflow-hidden">
   <div className="absolute inset-0">
     <img
       src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920"
       alt="Contact us banner"
       className="w-full h-full object-cover"
     />
-    <div className="absolute inset-0 bg-gradient-to-r from-red-900/90 via-red-800/80 to-rose-900/90"></div>
+    <div className="absolute inset-0 bg-gradient-to-r from-red-900/95 via-red-800/90 to-rose-900/95"></div>
   </div>
   
-  <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
-    <div className="max-w-3xl">
-      <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-md text-white rounded-full text-sm font-medium mb-4">
-        Get In Touch
-      </span>
-      <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-        Let&apos;s Work Together
-      </h1>
-      <p className="text-lg sm:text-xl text-red-100 mb-6 leading-relaxed">
-        Partner with Vijay Agencies for premium B2B solutions. We&apos;re here to help your business succeed.
-      </p>
-      <div className="flex flex-wrap gap-4">
-        <a 
-          href="#contact-form"
-          className="bg-white text-red-900 px-6 py-3 rounded-lg font-semibold hover:bg-red-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 inline-flex items-center gap-2"
-        >
-          Contact Us Now
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </a>
-        <a 
-          href="tel:+919351630408"
-          className="bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30 inline-flex items-center gap-2"
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-          </svg>
-          Call Now
-        </a>
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+    <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      {/* Left Column - Banner Content */}
+      <div className="text-white">
+        <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-sm font-medium mb-4 animate-fade-in">
+          Get In Touch
+        </span>
+        <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold mb-4 leading-tight animate-slide-up">
+          Let&apos;s Work Together
+        </h1>
+        <p className="text-lg sm:text-xl text-red-100 mb-6 leading-relaxed animate-slide-up-delay">
+          Partner with Vijay Agencies for premium B2B solutions. We&apos;re here to help your business succeed.
+        </p>
+        
+        {/* Quick Contact Info */}
+        <div className="space-y-4 mb-8">
+          <a 
+            href="tel:+919351630408"
+            className="flex items-center gap-3 text-white hover:text-red-200 transition-colors group"
+          >
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center group-hover:bg-white/30 transition-all">
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm text-red-200">Call us directly</div>
+              <div className="font-semibold">+91 9351630408</div>
+            </div>
+          </a>
+          
+          <a 
+            href="mailto:vijayagenciesjpr@yahoo.in"
+            className="flex items-center gap-3 text-white hover:text-red-200 transition-colors group"
+          >
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center group-hover:bg-white/30 transition-all">
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm text-red-200">Email us</div>
+              <div className="font-semibold">support@vijayagenciesjpr.com</div>
+            </div>
+          </a>
+        </div>
+
+        {/* Feature Badges */}
+        <div className="flex flex-wrap gap-3">
+          <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium">24/7 Support</span>
+          </div>
+          <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium">Fast Response</span>
+          </div>
+          <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium">500+ Clients</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Column - Contact Form */}
+      <div className="relative animate-fade-in-right">
+        <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+          {/* Background with Overlay */}
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/98 via-white/95 to-red-50/98 backdrop-blur-md"></div>
+          </div>
+
+          {/* Form Content */}
+          <div className="relative z-10 p-6 sm:p-8 bg-white">
+            <div className="mb-6">
+              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Get a Quote</h3>
+              <p className="text-gray-600 text-sm">Fill out the form and we&apos;ll get back to you within 24 hours</p>
+            </div>
+            
+            <form className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  placeholder="Your Name"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm text-sm"
+                />
+                <input
+                  type="tel"
+                  placeholder="Phone Number"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm text-sm"
+                />
+              </div>
+              
+              <input
+                type="email"
+                placeholder="Email Address"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm text-sm"
+              />
+              
+              <input
+                type="text"
+                placeholder="Business Name"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm text-sm"
+              />
+              
+              <div className="relative">
+                <input
+                  title='category'
+                  placeholder='category / product' 
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 bg-white/90 backdrop-blur-sm appearance-none cursor-pointer text-sm"
+                />
+                  {/* <option value="">Select Product Category</option>
+                  <option value="cleaning">Cleaning Products</option>
+                  <option value="housekeeping">Housekeeping Products</option>
+                  <option value="both">Both Categories</option> */}
+                
+                {/* <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div> */}
+              </div>
+              
+              <textarea
+                placeholder="Tell us about your requirements..."
+                rows={3}
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none bg-white/90 backdrop-blur-sm text-sm"
+              ></textarea>
+              
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-3 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 font-bold shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
+              >
+                Request Quote
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </button>
+            </form>
+
+            {/* Trust Badge */}
+            <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-center gap-2 text-xs text-gray-600">
+              <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              Your information is secure and confidential
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1695,174 +1817,10 @@ export default function HomePage() {
 </section>
 
 {/* Contact Information Section */}
-<section id="contact-form" className="py-16 sm:py-20 bg-gradient-to-br from-slate-50 to-gray-100 scroll-reveal">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-      
-      {/* Left Column - Content */}
-      <div className="animate-fade-in-left">
-        <span className="inline-block px-4 py-2 bg-red-100 text-red-600 rounded-full text-sm font-semibold mb-4">
-          Get In Touch
-        </span>
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-gray-900 font-serif">
-          Ready to Partner With Us?
-        </h2>
-        <p className="text-gray-600 text-base sm:text-lg lg:text-xl mb-8 leading-relaxed">
-          Contact Vijay Agencies today for all your commercial cleaning needs. 
-          We provide personalized solutions and competitive bulk pricing for hotels and businesses.
-        </p>
-        
-        {/* Feature List */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <span className="text-gray-700 font-medium">24/7 Customer Support</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <span className="text-gray-700 font-medium">Competitive Bulk Pricing</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <span className="text-gray-700 font-medium">Fast Response Time</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <span className="text-gray-700 font-medium">Trusted by 500+ Businesses</span>
-          </div>
-        </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-6 mt-10 pt-10 border-t border-gray-200">
-          <div>
-            <div className="text-3xl font-bold text-red-600 mb-1">500+</div>
-            <div className="text-sm text-gray-600">Happy Clients</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-red-600 mb-1">1000+</div>
-            <div className="text-sm text-gray-600">Products</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-red-600 mb-1">15+</div>
-            <div className="text-sm text-gray-600">Years Experience</div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Right Column - Contact Form with Background Image */}
-      <div className="relative animate-fade-in-right">
-        <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-          {/* Background Image with Overlay */}
-          <div className="absolute inset-0 z-0">
-            <img
-              src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800"
-              alt="Contact background"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-white/90 to-red-50/95 backdrop-blur-sm"></div>
-          </div>
 
-          {/* Form Content */}
-          <div className="relative z-10 p-8 sm:p-10">
-            <div className="mb-8">
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Get a Quote</h3>
-              <p className="text-gray-600">Fill out the form and we&apos;ll get back to you within 24 hours</p>
-            </div>
-            
-            <form className="space-y-5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Your Name"
-                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm"
-                  />
-                </div>
-                <div className="relative">
-                  <input
-                    type="tel"
-                    placeholder="Phone Number"
-                    className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm"
-                  />
-                </div>
-              </div>
-              
-              <input
-                type="email"
-                placeholder="Email Address"
-                className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm"
-              />
-              
-              <input
-                type="text"
-                placeholder="Business Name"
-                className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm"
-              />
-              
-              <div className="relative">
-                <select title='select' className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 bg-white/90 backdrop-blur-sm appearance-none cursor-pointer">
-                  <option value="">Select Product Category</option>
-                  <option value="cleaning">Cleaning Products</option>
-                  <option value="housekeeping">Housekeeping Products</option>
-                  <option value="both">Both Categories</option>
-                </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
-              
-              <textarea
-                placeholder="Tell us about your requirements..."
-                rows={4}
-                className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none bg-white/90 backdrop-blur-sm"
-              ></textarea>
-              
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
-              >
-                Request Quote
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </button>
-            </form>
+{/* Contact Information Section */}
 
-            {/* Trust Badge */}
-            <div className="mt-6 pt-6 border-t border-gray-200 flex items-center justify-center gap-2 text-sm text-gray-600">
-              <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              Your information is secure and confidential
-            </div>
-          </div>
-        </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute -top-4 -right-4 w-24 h-24 bg-red-200 rounded-full opacity-50 blur-2xl -z-10"></div>
-        <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-red-300 rounded-full opacity-30 blur-3xl -z-10"></div>
-      </div>
-    </div>
-  </div>
-</section>
 
       {/* Footer */}
     </div>
