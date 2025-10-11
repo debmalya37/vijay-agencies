@@ -1,6 +1,6 @@
 {
     "functions": {
-      "api/invoice/[id].ts": {
+      "app/api/invoice/[id]/route.ts": {
         "memory": 1024,
         "maxDuration": 40
       }
