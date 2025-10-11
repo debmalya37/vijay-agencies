@@ -857,8 +857,8 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
         </div>
 
         {/* Decorative Elements */}
-        <div className="absolute top-10 right-10 w-32 h-32 bg-white/10 backdrop-blur-sm rounded-full animate-pulse hidden lg:block"></div>
-        <div className="absolute bottom-10 left-20 w-24 h-24 bg-indigo-500/20 backdrop-blur-sm rounded-2xl rotate-45 hidden lg:block"></div>
+        {/* <div className="absolute top-10 right-10 w-32 h-32 bg-white/10 backdrop-blur-sm rounded-full animate-pulse hidden lg:block"></div> */}
+        {/* <div className="absolute bottom-10 left-20 w-24 h-24 bg-indigo-500/20 backdrop-blur-sm rounded-2xl rotate-45 hidden lg:block"></div> */}
       </section>
 
       <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
@@ -935,7 +935,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
             {/* Right Column - Product Slider */}
             <div className="relative order-1 lg:order-2">
               {/* Slider Container */}
-              <div className="relative overflow-hidden rounded-2xl bg-white/50 backdrop-blur-sm p-6 shadow-xl">
+              <div className="relative overflow-hidden rounded-2xl bg-red-700 backdrop-blur-sm p-2 shadow-xl">
                 <div className="grid grid-cols-2 gap-4">
                   {housekeepingProducts.slice(
                     currentHousekeepingSlide * 2, 
@@ -1005,181 +1005,159 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 })()}
 
       {/* Why Choose Vijay Agencies Section - NEW */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white scroll-reveal rounded-xl m-2 mr-5 ml-5 shadow-md shadow-gray-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-12 lg:mb-16 animate-fade-in-up">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 font-serif">
-              Why Vijay Agencies Over Others?
-            </h2>
-            <p className="text-gray-800 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
-              What makes us the preferred choice for commercial cleaning solutions
-            </p>
+      <section className="py-12 sm:py-16 lg:py-20 bg-white scroll-reveal rounded-2xl m-2 sm:m-4 lg:m-10 shadow-md shadow-gray-300 overflow-hidden">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {/* Heading */}
+    <div className="text-center mb-10 sm:mb-12 lg:mb-16 animate-fade-in-up">
+      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 font-serif">
+        Why Vijay Agencies Over Others?
+      </h2>
+      <p className="text-gray-800 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
+        What makes us the preferred choice for commercial cleaning solutions
+      </p>
+    </div>
+
+    {/* Why Choose Vijay Agencies – Highlights Section */}
+    <div className="bg-[#FFF2F2] relative overflow-hidden rounded-2xl shadow-lg mb-12 sm:mb-16 animate-fade-in-up">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        {/* Inner Heading */}
+        <div className="text-center mb-10 sm:mb-12 text-[#E23744]">
+          {/* <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 font-serif">
+            Why CHOOSE VIJAY AGENCIES
+          </h3> */}
+
+          {/* Icon Highlights Row */}
+          <div className="inline-flex flex-wrap justify-center gap-6 bg-white rounded-xl shadow-md px-6 py-5">
+            {whyChooseUs.map((feature, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center text-center min-w-[110px]"
+              >
+                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-red-100 mb-2">
+                  <feature.icon className="w-6 h-6 text-red-600" />
+                </div>
+                <div className="text-sm sm:text-base font-semibold text-gray-900 font-sans">
+                  {feature.title}
+                </div>
+              </div>
+            ))}
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-4">
-            {/* Vijay Agencies Side (Green) */}
-            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-left ">
-              <div className="flex items-center justify-between mb-6 sm:mb-8">
-                <div className="bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base shadow-md">
-                  Vijay Agencies
-                </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-600 rounded-full flex items-center justify-center shadow-md">
-                  <ThumbsUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-              </div>
-
-              <div className="space-y-4 sm:space-y-5 mb-6 sm:mb-8">
-                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Direct Manufacturer Partnerships</span>
-                </div>
-                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Always in stock </span>
-                </div>
-                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Transparent pricing</span>
-                </div>
-                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Dedicated account manager </span>
-                </div>
-                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Fast & reliable delivery </span>
-                </div>
-              </div>
-
-              <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-green-200">
-                <img
-                  src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600"
-                  alt="Eco-friendly cleaning products"
-                  className="w-full h-40 sm:h-48 lg:h-56 object-cover rounded-2xl shadow-md"
-                />
-              </div>
-            </div>
-
-            {/* Others Side (Red) */}
-            <div className="bg-gradient-to-br from-red-300 to-red-400 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-right">
-              <div className="flex items-center justify-between mb-6 sm:mb-8">
-                <div className="bg-red-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base shadow-md">
-                  Others
-                </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-600 rounded-full flex items-center justify-center shadow-md">
-                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-              </div>
-
-              <div className="space-y-4 sm:space-y-5 mb-6 sm:mb-8">
-                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Multiple middlemen  </span>
-                </div>
-                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Frequent shortages</span>
-                </div>
-                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Hidden costs</span>
-                </div>
-                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">No personal support</span>
-                </div>
-                <div className="flex items-center gap-3 sm:gap-4 text-gray-800">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium">Delayed dispatches</span>
-                </div>
-              </div>
-
-              <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-red-200">
-                <img
-                  src="https://images.unsplash.com/photo-1585421514738-01798e348b17?w=600"
-                  alt="Chemical cleaning products"
-                  className="w-full h-40 sm:h-48 lg:h-56 object-cover rounded-2xl shadow-md"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Info Cards */}
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mt-10 sm:mt-12 lg:mt-16">
-            {/* The Power of Coconut 
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up stagger-1">
-              <div className="flex flex-col md:flex-row gap-6">
-                <div className="flex-1">
-                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
-                    The Power of Coconut
-                  </h3>
-                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed mb-4">
-                    At the core of Vijay Agencies&apos;s cleaning products is coconut. Derived from a coconut oil base, all surfactants that goes into each of every ingredient naturally sourced, plant-based, toxin-free, safe, efficient and completely free from harmful toxins, gentle on your family&apos;s health and safety, it&apos;s gentle effective, and completely free from harmful toxins, making it a powerful yet gentle choice for maintaining them into safe, healthier homes.
-                  </p>
-                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
-                    By harnessing the natural strength of coconuts, Vijay Agencies combines eco-friendliness with high performance, transforming surfactants into effective cleaning agents that truly care for your home and the environment.
-                  </p>
-                </div>
-                <div className="flex-shrink-0">
-                  <img
-                    src="https://images.unsplash.com/photo-1598511757337-fe2cafc31ba0?w=200"
-                    alt="Coconut"
-                    className="w-full md:w-32 lg:w-40 h-32 lg:h-40 object-cover rounded-2xl shadow-md"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* About Vijay Agencies 
-            <div className="bg-gradient-to-br from-red-50 to-emerald-50 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up stagger-2">
-              <div className="flex flex-col md:flex-row gap-6">
-                <div className="flex-1">
-                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
-                    About Vijay Agencies
-                  </h3>
-                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed mb-4">
-                    Simran Khara founded Vijay Agencies in 2021, driven by her passion for creating a safer everyday for families. During the pandemic, she became acutely aware of the harmful chemicals in common cleaning products and their impact on health and environment. This realization led her to create Vijay Agencies, a brand that offers plant-based cleaning solutions, free from harmful chemicals.
-                  </p>
-                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
-                    Simran Khara founded Vijay Agencies in 2021, driven by her passion for creating a safer everyday for families. During the pandemic, she became acutely aware of the harmful chemicals used in cleaning products. Vijay Agencies now offers plant-based solutions that are safer for families, without compromising on performance.
-                  </p>
-                </div>
-                <div className="flex-shrink-0">
-                  <img
-                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200"
-                    alt="Simran Khara"
-                    className="w-full md:w-32 lg:w-40 h-40 lg:h-48 object-contain rounded-2xl shadow-md"
-                  />
-                  <div className="mt-3 bg-green-600 text-white px-3 py-2 rounded-lg text-center">
-                    <p className="font-bold text-xs sm:text-sm">Simran Khara</p>
-                    <p className="text-xs">Founder of Vijay Agencies</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> */}
         </div>
-      </section>
+
+        {/* Company Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {companyStats.map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <div
+                key={index}
+                className="rounded-xl p-6 flex flex-col items-center text-center bg-white shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105"
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center mb-3">
+                  <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-red-500" />
+                </div>
+                <div className="text-2xl sm:text-3xl font-bold text-gray-900">
+                  {stat.number}
+                </div>
+                <div className="text-sm sm:text-base text-gray-700 font-medium mt-1">
+                  {stat.label}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+
+    {/* Comparison Section */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+      {/* Vijay Agencies Side */}
+      <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-left">
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
+          <div className="bg-green-600 text-white px-5 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base shadow-md">
+            Vijay Agencies
+          </div>
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-600 rounded-full flex items-center justify-center shadow-md">
+            <ThumbsUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+          </div>
+        </div>
+
+        <div className="space-y-4 sm:space-y-5 mb-6 sm:mb-8 text-gray-800">
+          {[
+            "Direct Manufacturer Partnerships",
+            "Always in stock",
+            "Transparent pricing",
+            "Dedicated account manager",
+            "Fast & reliable delivery",
+          ].map((point, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-3 sm:gap-4 text-gray-800"
+            >
+              <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              </div>
+              <span className="text-sm sm:text-base lg:text-lg font-medium">
+                {point}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-green-200">
+          <img
+            src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600"
+            alt="Eco-friendly cleaning products"
+            className="w-full h-40 sm:h-48 lg:h-56 object-cover rounded-2xl shadow-md"
+          />
+        </div>
+      </div>
+
+      {/* Others Side */}
+      <div className="bg-gradient-to-br from-red-300 to-red-400 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-right">
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
+          <div className="bg-red-600 text-white px-5 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base shadow-md">
+            Others
+          </div>
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-600 rounded-full flex items-center justify-center shadow-md">
+            <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+          </div>
+        </div>
+
+        <div className="space-y-4 sm:space-y-5 mb-6 sm:mb-8 text-gray-800">
+          {[
+            "Multiple middlemen",
+            "Frequent shortages",
+            "Hidden costs",
+            "No personal support",
+            "Delayed dispatches",
+          ].map((point, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-3 sm:gap-4 text-gray-800"
+            >
+              <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              </div>
+              <span className="text-sm sm:text-base lg:text-lg font-medium">
+                {point}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-red-200">
+          <img
+            src="https://images.unsplash.com/photo-1585421514738-01798e348b17?w=600"
+            alt="Chemical cleaning products"
+            className="w-full h-40 sm:h-48 lg:h-56 object-cover rounded-2xl shadow-md"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       {/* Cleaning Products Section */}
 {/* Cleaning Products */}
@@ -1463,53 +1441,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 </section>
 
   {/* Why Choose Us + Stats Section */}
-  <section className="py-16 sm:py-20 bg-[#FFF2F2] relative overflow-hidden rounded-2xl mx-5 mt-5 lg:mx-20 lg:mt-10 shadow-lg">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    {/* Heading */}
-    <div className="text-center mb-12 lg:mb-16 text-[#E23744]">
-      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 font-serif">
-        Why CHOOSE VIJAY AGENCIES
-      </h2>
-
-      {/* Small Features Row (icons row inside white card) */}
-      <div className="inline-flex flex-wrap justify-center gap-6 bg-white rounded-xl shadow-md px-6 py-4 mt-4">
-        {whyChooseUs.map((feature, index) => (
-          <div key={index} className="flex flex-col items-center text-center min-w-[120px]">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center bg-red-100 mb-2">
-              <feature.icon className="w-6 h-6 text-red-600" />
-            </div>
-            <div className="text-sm sm:text-base font-semibold text-gray-900 font-sans">
-              {feature.title}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-
-    {/* Company Stats Grid */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {companyStats.map((stat, index) => {
-        const Icon = stat.icon;
-        return (
-          <div
-            key={index}
-            className="rounded-xl p-6 flex flex-col items-center text-center bg-white shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105"
-          >
-            <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center mb-3">
-              <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-red-500" />
-            </div>
-            <div className="text-2xl sm:text-3xl font-bold text-gray-900">
-              {stat.number}
-            </div>
-            <div className="text-sm sm:text-base text-gray-700 font-medium mt-1">
-              {stat.label}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  </div>
-</section>
+  
 
 
 
