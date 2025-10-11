@@ -1,111 +1,134 @@
 // src/app/api/admin/orders/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import mongoose from 'mongoose';
-import dbConnect from '@/lib/dbConnect';
-import { Order } from '@/models/Order';
-import nodemailer from 'nodemailer';
+import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
+import dbConnect from "@/lib/dbConnect";
+import { Order } from "@/models/Order";
+import nodemailer from "nodemailer";
 
-const ALLOWED_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled', 'failed'];
+const ALLOWED_STATUSES = [
+  "pending",
+  "confirmed",
+  "shipped",
+  "delivered",
+  "cancelled",
+  "failed",
+];
 
-// Create nodemailer transporter using Gmail SMTP
+// ✅ Create nodemailer transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 });
 
-// Utility function to send email
+// ✅ Enhanced Utility function to send email with debug logs
 async function sendEmail(to: string, subject: string, html: string) {
+  console.log("📧 Attempting to send email...");
+  console.log("To:", to);
+  console.log("Subject:", subject);
+  console.log("EMAIL_USER present:", !!process.env.EMAIL_USER);
+  console.log("EMAIL_PASS present:", !!process.env.EMAIL_PASS);
+  console.log("Running in:", process.env.NODE_ENV || "unknown");
+
   try {
-    await transporter.sendMail({
+    const result = await transporter.sendMail({
       from: `"Vijay Agencies" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       html,
     });
-    console.log(`Email sent to ${to}`);
-  } catch (err) {
-    console.error('Error sending email:', err);
+
+    console.log("✅ Email sent successfully!");
+    console.log("SMTP Response:", result.response || result);
+    return true;
+  } catch (err: any) {
+    console.error("❌ Error sending email:", err?.message || err);
+    return false;
   }
 }
 
-// GET /api/admin/orders
+// ✅ GET /api/admin/orders
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
 
     const orders = await Order.find()
-      .populate('userId', 'username email')
-      .populate('items.productId', 'title')
+      .populate("userId", "username email")
+      .populate("items.productId", "title")
       .sort({ createdAt: -1 })
       .lean();
 
     return NextResponse.json(orders, { status: 200 });
   } catch (err) {
-    console.error('Admin GET orders error:', err);
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    console.error("Admin GET orders error:", err);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
-// PATCH /api/admin/orders
+// ✅ PATCH /api/admin/orders
 // body: { id: string, status: string }
 export async function PATCH(req: NextRequest) {
   try {
     await dbConnect();
 
     const body = await req.json();
-    console.log('Admin PATCH /api/admin/orders body:', body);
+    console.log("📦 Admin PATCH /api/admin/orders body:", body);
 
     const { id, status } = body || {};
 
-    if (!id || typeof id !== 'string') {
-      return NextResponse.json({ message: 'Missing order id' }, { status: 400 });
+    if (!id || typeof id !== "string") {
+      return NextResponse.json({ message: "Missing order id" }, { status: 400 });
     }
 
-    if (!status || typeof status !== 'string') {
-      return NextResponse.json({ message: 'Missing status' }, { status: 400 });
+    if (!status || typeof status !== "string") {
+      return NextResponse.json({ message: "Missing status" }, { status: 400 });
     }
 
     if (!ALLOWED_STATUSES.includes(status)) {
-      return NextResponse.json({ message: 'Invalid status value', allowed: ALLOWED_STATUSES }, { status: 400 });
+      return NextResponse.json(
+        { message: "Invalid status value", allowed: ALLOWED_STATUSES },
+        { status: 400 }
+      );
     }
 
     let updated: any = null;
 
-    // Try update by Mongo ObjectId
+    // ✅ Try update by Mongo ObjectId
     if (mongoose.Types.ObjectId.isValid(id)) {
-      updated = await Order.findByIdAndUpdate(
-        id,
-        { status },
-        { new: true }
-      )
-        .populate('userId', 'username email')
-        .populate('items.productId', 'title')
+      updated = await Order.findByIdAndUpdate(id, { status }, { new: true })
+        .populate("userId", "username email")
+        .populate("items.productId", "title")
         .lean();
     }
 
-    // If not found by _id, try using razorpayOrderId
+    // ✅ If not found by _id, try using razorpayOrderId
     if (!updated) {
       updated = await Order.findOneAndUpdate(
         { razorpayOrderId: id },
         { status },
         { new: true }
       )
-        .populate('userId', 'username email')
-        .populate('items.productId', 'title')
+        .populate("userId", "username email")
+        .populate("items.productId", "title")
         .lean();
     }
 
-    // If still not found, return 404
+    // ✅ If still not found
     if (!updated) {
-      return NextResponse.json({ message: 'Order not found (by _id or razorpayOrderId)' }, { status: 404 });
+      return NextResponse.json(
+        { message: "Order not found (by _id or razorpayOrderId)" },
+        { status: 404 }
+      );
     }
 
     // ✅ Send email notification to user
     const userEmail = updated.userId?.email;
-    const username = updated.userId?.username || 'User';
+    const username = updated.userId?.username || "User";
 
     if (userEmail) {
       const subject = `Your Order #${updated.razorpayOrderId} status updated`;
@@ -114,13 +137,33 @@ export async function PATCH(req: NextRequest) {
         <p>Your order with ID <b>${updated.razorpayOrderId}</b> has been updated to status: <b>${updated.status}</b>.</p>
         <p>Thank you for shopping with us!</p>
       `;
-      // send email asynchronously
-      sendEmail(userEmail, subject, html);
+
+      console.log(`📨 Trying to send email to ${userEmail}...`);
+
+      const emailSent = await sendEmail(userEmail, subject, html);
+
+      if (!emailSent) {
+        console.warn("⚠️ Email sending failed (check Vercel logs).");
+        return NextResponse.json(
+          {
+            message: "Order updated but email failed (check server logs)",
+            order: updated,
+          },
+          { status: 200 }
+        );
+      }
     }
 
-    return NextResponse.json({ message: 'Order updated', order: updated }, { status: 200 });
-  } catch (err) {
-    console.error('Admin PATCH orders error:', err);
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    console.log("✅ Order updated successfully:", updated._id);
+    return NextResponse.json(
+      { message: "Order updated", order: updated },
+      { status: 200 }
+    );
+  } catch (err: any) {
+    console.error("❌ Admin PATCH orders error:", err.message || err);
+    return NextResponse.json(
+      { message: "Internal server error", error: err.message },
+      { status: 500 }
+    );
   }
 }
