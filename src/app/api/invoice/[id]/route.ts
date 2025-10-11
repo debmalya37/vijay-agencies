@@ -6,6 +6,9 @@ import mongoose from "mongoose";
 import puppeteer from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
@@ -77,20 +80,20 @@ export async function GET(
     // ✅ Handle local vs serverless
     let browser;
     if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
-      // Serverless environment → use @sparticuz/chromium
+      const executablePath = await chromium.executablePath();
+    
       browser = await puppeteer.launch({
         args: chromium.args,
-        // Removed defaultViewport as it does not exist on chromium
-        executablePath: await chromium.executablePath(),
-        headless: true,
+        executablePath: executablePath || "/usr/bin/chromium-browser", // fallback path for some hosts
+        headless: true, // explicitly set to true (don’t rely on chromium.headless)
       });
     } else {
-      // Local dev → use full puppeteer (not puppeteer-core)
       const localPuppeteer = (await import("puppeteer")).default;
       browser = await localPuppeteer.launch({
         headless: true,
       });
     }
+    
 
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0" });
