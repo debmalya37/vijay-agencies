@@ -849,9 +849,9 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
               >
                 Shop Now
               </button>
-              <button className="bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30">
+              {/* <button className="bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30">
                 Learn More
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -990,7 +990,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
           {housekeepingProducts.length > 2 && (
             <div className="text-center mt-12 lg:mt-16">
               <button
-                onClick={() => (window.location.href = "/Products?category=Housekeeping")}
+                onClick={() => (window.location.href = "/Products?category=housekeeping")}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
               >
                 View All Housekeeping Products ({housekeepingProducts.length} total)
