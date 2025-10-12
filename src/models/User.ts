@@ -1,10 +1,6 @@
-// File: models/User.ts
 import bcrypt from "bcryptjs";
 import mongoose, { Schema, Document, Model } from "mongoose";
 
-// -----------------------------
-// Address Interface & Schema
-// -----------------------------
 export interface IAddress extends Document {
   address_line1: string;
   address_line2?: string;
@@ -16,23 +12,20 @@ export interface IAddress extends Document {
   label?: string;
 }
 
-const AddressSchema: Schema<IAddress> = new Schema(
+const AddressSchema = new Schema<IAddress>(
   {
-    address_line1: { type: String, required: true },
-    address_line2: { type: String },
-    city: { type: String, required: true },
-    state: { type: String, required: true },
-    country: { type: String, required: true },
-    pincode: { type: String, required: true },
+    address_line1: { type: String, required: true, trim: true },
+    address_line2: { type: String, trim: true },
+    city: { type: String, required: true, trim: true },
+    state: { type: String, required: true, trim: true },
+    country: { type: String, required: true, trim: true, index: true },
+    pincode: { type: String, required: true, trim: true },
     is_default: { type: Boolean, default: false },
-    label: { type: String },
+    label: { type: String, trim: true },
   },
-  { _id: true } // let MongoDB handle _id for addresses
+  { _id: true, timestamps: false }
 );
 
-// -----------------------------
-// User Interface & Schema
-// -----------------------------
 export interface IUser extends Document {
   email: string;
   username: string;
@@ -48,48 +41,70 @@ export interface IUser extends Document {
   addresses: IAddress[];
   cart_id?: mongoose.Types.ObjectId;
   wishlist_id?: mongoose.Types.ObjectId;
-  purchase_history: mongoose.Types.ObjectId[]; // refs Order
+  purchase_history: mongoose.Types.ObjectId[];
   company_name?: string;
   gst_number?: string;
   business_type?: string;
+  last_login?: Date;
+  login_count?: number;
+  device_info?: { device: string; os: string; browser: string }[];
   createdAt?: Date;
   updatedAt?: Date;
 
-  // methods
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-const UserSchema: Schema<IUser> = new Schema(
+const UserSchema = new Schema<IUser>(
   {
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    username: { type: String, required: true, unique: true, trim: true },
-    password: { type: String },
-    role: { type: String, enum: ["user", "admin"], default: "user" },
-    phone_number: { type: String },
-    full_name: { type: String },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true, 
+    },
+    username: { type: String, required: true, unique: true, trim: true, index: true },
+    password: { type: String, select: false },
+    role: { type: String, enum: ["user", "admin"], default: "user", index: true },
+    phone_number: { type: String, sparse: true, trim: true },
+    full_name: { type: String, trim: true },
     isverified: { type: Boolean, default: false },
-    verification_method: { type: String },
+    verification_method: { type: String, trim: true },
     verification_timestamps: [{ type: Date }],
     verification_status_history: [{ type: String }],
     admin_approval: { type: Boolean, default: false },
     addresses: [AddressSchema],
-    cart_id: { type: Schema.Types.ObjectId, ref: "Cart" },
+    cart_id: { type: Schema.Types.ObjectId, ref: "Cart", index: true },
     wishlist_id: { type: Schema.Types.ObjectId, ref: "Wishlist" },
     purchase_history: [{ type: Schema.Types.ObjectId, ref: "Order" }],
-    company_name: { type: String },
-    gst_number: { type: String },
-    business_type: { type: String },
+    company_name: { type: String, trim: true },
+    gst_number: { type: String, trim: true },
+    business_type: { type: String, trim: true },
+    last_login: { type: Date },
+    login_count: { type: Number, default: 0 },
+    device_info: [
+      {
+        device: String,
+        os: String,
+        browser: String,
+      },
+    ],
   },
-  { timestamps: true }
+  { timestamps: true, minimize: true, versionKey: false }
 );
 
-// -----------------------------
-// Password Hashing Middleware
-// -----------------------------
+
+UserSchema.index({ email: 1 });
+UserSchema.index({ username: 1 });
+UserSchema.index({ role: 1 });
+UserSchema.index({ "addresses.country": 1 });
+UserSchema.index({ isverified: 1, admin_approval: 1 });
+
 UserSchema.pre("save", async function (next) {
   if (this.isModified("password") && this.password) {
     if (typeof this.password === "string") {
-      this.password = await bcrypt.hash(this.password, 10);
+      this.password = await bcrypt.hash(this.password, 12);
     } else {
       throw new Error("Password must be a string");
     }
@@ -97,16 +112,11 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-// -----------------------------
-// Instance Method for Password Check
-// -----------------------------
+
 UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
   if (!this.password) return false;
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// -----------------------------
-// Export
-// -----------------------------
 export const User: Model<IUser> =
   mongoose.models.User || mongoose.model<IUser>("User", UserSchema);

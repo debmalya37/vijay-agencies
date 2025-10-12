@@ -5,6 +5,9 @@ import dbConnect from "@/lib/dbConnect";
 import { Order } from "@/models/Order";
 import nodemailer from "nodemailer";
 
+// ----------------------------
+// ✅ Allowed Order Statuses
+// ----------------------------
 const ALLOWED_STATUSES = [
   "pending",
   "confirmed",
@@ -14,62 +17,76 @@ const ALLOWED_STATUSES = [
   "failed",
 ];
 
-// ✅ Create nodemailer transporter using Gmail SMTP
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// ----------------------------
+// ✅ Initialize Transporter Once (for better perf)
+// ----------------------------
+let transporter: nodemailer.Transporter | null = null;
 
-// ✅ Enhanced Utility function to send email with debug logs
+function getTransporter() {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+  }
+  return transporter;
+}
+
+// ----------------------------
+// ✅ Email Utility with Fail-safe Logging
+// ----------------------------
 async function sendEmail(to: string, subject: string, html: string) {
-  console.log("📧 Attempting to send email...");
-  console.log("To:", to);
-  console.log("Subject:", subject);
-  console.log("EMAIL_USER present:", !!process.env.EMAIL_USER);
-  console.log("EMAIL_PASS present:", !!process.env.EMAIL_PASS);
-  console.log("Running in:", process.env.NODE_ENV || "unknown");
-
   try {
+    const transporter = getTransporter();
     const result = await transporter.sendMail({
       from: `"Vijay Agencies" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       html,
     });
-
-    console.log("✅ Email sent successfully!");
-    console.log("SMTP Response:", result.response || result);
+    console.log("📧 Email sent:", result.response);
     return true;
-  } catch (err: any) {
-    console.error("❌ Error sending email:", err?.message || err);
+  } catch (error: any) {
+    console.error("❌ Email sending failed:", error?.message);
     return false;
   }
 }
 
+// ----------------------------
 // ✅ GET /api/admin/orders
-export async function GET(req: NextRequest) {
+// ----------------------------
+export async function GET() {
   try {
+    // Connect to DB — cached connection ensures no re-init issues
     await dbConnect();
 
-    const orders = await Order.find()
-      .populate("userId", "username email")
-      .populate("items.productId", "title")
+    // ⚡ Optimized query
+    const orders = await Order.find({})
+      .populate("userId", "username email -_id")
+      .populate("items.productId", "title -_id")
       .sort({ createdAt: -1 })
-      .lean();
+      .lean() // skip doc hydration for speed
+      .exec(); // ensures consistent Promise behavior
+
+    // ✅ Handle empty list explicitly
+    if (!orders || orders.length === 0) {
+      return NextResponse.json({ message: "No orders found", orders: [] }, { status: 200 });
+    }
 
     return NextResponse.json(orders, { status: 200 });
-  } catch (err) {
-    console.error("Admin GET orders error:", err);
+  } catch (err: any) {
+    console.error("❌ Admin GET orders error:", err.message || err);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { message: "Failed to fetch orders", error: err.message },
       { status: 500 }
     );
   }
 }
 
+// ----------------------------
 // ✅ PATCH /api/admin/orders
 // body: { id: string, status: string }
 export async function PATCH(req: NextRequest) {
@@ -115,7 +132,8 @@ export async function PATCH(req: NextRequest) {
       )
         .populate("userId", "username email")
         .populate("items.productId", "title")
-        .lean();
+        .lean()
+        .exec();
     }
 
     // ✅ If still not found
