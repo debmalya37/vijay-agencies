@@ -28,10 +28,11 @@ export const authOptions: NextAuthOptions = {
           
           let user;
           if (isEmail) {
-            user = await User.findOne({ email: credentials.identifier });
+            user = await User.findOne({ email: credentials.identifier }).select("+password").lean();
           } else {
-            user = await User.findOne({ username: credentials.identifier });
+            user = await User.findOne({ username: credentials.identifier }).select("+password").lean();
           }
+          
           
           if (!user) {
             throw new Error('No user found with this email/username');
