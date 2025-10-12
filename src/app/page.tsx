@@ -1657,11 +1657,11 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
         <div className="flex flex-wrap gap-3">
           <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium">24/7 Support</span>
+            <span className="text-sm font-medium">24/7 Quick Support</span>
           </div>
           <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium">Fast Response</span>
+            <span className="text-sm font-medium">Fast Delivery</span>
           </div>
           <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
