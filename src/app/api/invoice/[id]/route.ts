@@ -8,7 +8,7 @@ import chromium from "@sparticuz/chromium";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
+export const maxDuration = 40; 
 interface Params {
   id: string;
 }
@@ -80,16 +80,23 @@ export async function GET(req: Request, { params }: { params: Params }) {
     const html = generateInvoiceHTML(invoiceData);
 
     // ✅ Safe Chromium path resolution for all environments
-    const executablePath =
-  process.env.NODE_ENV === "production"
-    ? "/usr/bin/chromium-browser" // use system Chromium
-    : await chromium.executablePath();
+
+
+// ⚠️ Only available on paid Vercel plans
+
+// Inside your GET function:
+const executablePath = await chromium.executablePath();
 
 const browser = await puppeteer.launch({
-  args: chromium.args,
+  args: [
+    ...chromium.args,
+    '--disable-gpu',
+    '--disable-dev-shm-usage',
+    '--disable-setuid-sandbox',
+    '--no-sandbox',
+  ],
   executablePath,
   headless: true,
-  ignoreDefaultArgs: ["--disable-extensions"],
 });
  // <-- casting fixes the typing mismatch cleanly
 
