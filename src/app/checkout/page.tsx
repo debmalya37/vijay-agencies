@@ -215,13 +215,18 @@ export default function CheckoutPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newAddress),
+          
         });
 
         if (response.ok) {
-          const savedAddress = await response.json();
-          setAddresses([...addresses, savedAddress]);
-          setSelectedAddressId(savedAddress._id);
+          const data = await response.json();
+          setAddresses(data.addresses || []);
+          
+          // Set the new address as selected (usually the last one)
+          const newAddress = data.addresses[data.addresses.length - 1];
+          setSelectedAddressId(newAddress?._id || "");
         }
+        
       }
 
       // Reset form
