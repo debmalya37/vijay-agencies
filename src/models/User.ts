@@ -62,11 +62,22 @@ const UserSchema = new Schema<IUser>(
       unique: true,
       lowercase: true,
       trim: true,
-      index: true, 
+      index: true,
     },
-    username: { type: String, required: true, unique: true, trim: true, index: true },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      index: true,
+    },
     password: { type: String, select: false },
-    role: { type: String, enum: ["user", "admin"], default: "user", index: true },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+      index: true,
+    },
     phone_number: { type: String, sparse: true, trim: true },
     full_name: { type: String, trim: true },
     isverified: { type: Boolean, default: false },
@@ -94,12 +105,8 @@ const UserSchema = new Schema<IUser>(
   { timestamps: true, minimize: true, versionKey: false }
 );
 
-
-UserSchema.index({ email: 1 });
-UserSchema.index({ username: 1 });
-UserSchema.index({ role: 1 });
-UserSchema.index({ "addresses.country": 1 });
-UserSchema.index({ isverified: 1, admin_approval: 1 });
+// Keep only composite or custom indexes:
+UserSchema.index({ isverified: 1, admin_approval: 1 }); // ✅ keep this
 
 UserSchema.pre("save", async function (next) {
   if (this.isModified("password") && this.password) {
@@ -112,8 +119,9 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-
-UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+UserSchema.methods.comparePassword = async function (
+  candidatePassword: string
+): Promise<boolean> {
   if (!this.password) return false;
   return bcrypt.compare(candidatePassword, this.password);
 };

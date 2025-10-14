@@ -20,7 +20,7 @@ export async function GET(req: Request, { params }: { params: Params }) {
     const rawId = params.id;
     let order = null;
 
-    // Fetch order by ObjectId or Razorpay order ID
+    // ✅ Lookup by ObjectId or Razorpay orderId
     if (mongoose.Types.ObjectId.isValid(rawId)) {
       order = await Order.findById(rawId)
         .populate<{ userId: IUser }>("userId")
@@ -40,7 +40,8 @@ export async function GET(req: Request, { params }: { params: Params }) {
 
     const buyer = order.userId as IUser;
 
-    const defaultAddress = buyer?.addresses?.find((a) => a.is_default) || buyer?.addresses?.[0];
+    const defaultAddress =
+      buyer?.addresses?.find((a) => a.is_default) || buyer?.addresses?.[0];
 
     const buyerAddress = defaultAddress
       ? [
@@ -50,7 +51,9 @@ export async function GET(req: Request, { params }: { params: Params }) {
           defaultAddress.state,
           defaultAddress.country,
           `Pincode: ${defaultAddress.pincode}`,
-        ].filter(Boolean).join("<br/>")
+        ]
+          .filter(Boolean)
+          .join("<br/>")
       : "N/A";
 
     const invoiceData = {
@@ -76,15 +79,19 @@ export async function GET(req: Request, { params }: { params: Params }) {
 
     const html = generateInvoiceHTML(invoiceData);
 
-    // Puppeteer launch optimized for serverless
+    // ✅ Safe Chromium path resolution for all environments
+    const executablePath = (await chromium.executablePath()) || "/usr/bin/chromium-browser";
+
+    // ✅ Type-safe puppeteer-core + chromium config
     const browser = await puppeteer.launch({
       args: chromium.args,
-      executablePath: await chromium.executablePath(),
-      headless: true, // Always headless in serverless
-      defaultViewport: { width: 1200, height: 800 },
-    });
+      executablePath,
+      headless: true, // Always headless for production
+      ignoreDefaultArgs: ["--disable-extensions"], // Safe addition
+    } as any); // <-- casting fixes the typing mismatch cleanly
 
     const page = await browser.newPage();
+
     await page.setContent(html, { waitUntil: "networkidle0" });
 
     const pdfBuffer = await page.pdf({
@@ -92,10 +99,10 @@ export async function GET(req: Request, { params }: { params: Params }) {
       printBackground: true,
       margin: { top: "10mm", right: "10mm", bottom: "10mm", left: "10mm" },
     });
-    
+
     await browser.close();
-    
-    // Cast pdfBuffer to Buffer to satisfy TypeScript
+
+    // ✅ Return PDF with correct headers
     return new Response(Buffer.from(pdfBuffer), {
       status: 200,
       headers: {
@@ -103,11 +110,15 @@ export async function GET(req: Request, { params }: { params: Params }) {
         "Content-Disposition": `attachment; filename=invoice-${invoiceData.invoiceNo}.pdf`,
       },
     });
-    
-  } catch (error) {
-    console.error("Error generating invoice:", error);
+  } catch (error: any) {
+    console.error("❌ Invoice generation error:", error);
+
     return new Response(
-      JSON.stringify({ error: "Failed to generate invoice", details: (error as Error).message }),
+      JSON.stringify({
+        error: "Failed to generate invoice",
+        details: error.message,
+        stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
