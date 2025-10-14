@@ -96,7 +96,7 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({ order }) => {
             <Text>A 917 Siddarth Nagar, Near Jain Mandir, Jaipur</Text>
             <Text>Phone: +91-9315630408, 9414073671</Text>
             <Text>GSTIN/UIN: 08AAJPV2631B1Z6</Text>
-            <Text>Email: vijayagenciesjpr@yahoo.in</Text>
+            <Text>Email: support@vijayagenciesjpr.com</Text>
           </View>
           <View>
             <Text>Invoice No: {invoiceNo}</Text>

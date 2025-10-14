@@ -172,7 +172,7 @@ const PrivacyPolicyPage: React.FC = () => {
                 </Link>
                 <span>{" / "}</span>
                 <Link className="text-blue-600 underline" href="mailto:vijayagenciesjpr@yahoo.in">
-                vijayagenciesjpr@yahoo.in
+                support@vijayagenciesjpr.com
                 </Link>
               </li>
               <li>

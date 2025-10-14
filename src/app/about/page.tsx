@@ -75,7 +75,7 @@ export default function AboutPage() {
   ];
 
   const stats = [
-    { number: "25+", label: "Years of Excellence" },
+    { number: "50+", label: "Years of Excellence" },
     { number: "10,000+", label: "Happy Customers" },
     { number: "500+", label: "Products Available" },
     { number: "24/7", label: "Customer Support" }
@@ -395,7 +395,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Email & GST</h3>
                 <div className="text-blue-100 space-y-1">
-                  <p>vijayagenciesjpr@yahoo.in</p>
+                  <p>support@vijayagenciesjpr.com</p>
                   <p className="text-sm">GSTIN: 08AAJPJ2631B1Z6</p>
                   <p className="text-sm">CIN: 041</p>
                 </div>

@@ -42,9 +42,9 @@ export default function ContactPage(): JSX.Element {
   );
   const [sending, setSending] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
-  const supportEmail = "vijayagenciesjpr@yahoo.in";
-  const companyPhone = "+919351630408";
-  const companyAddress = "Vijay Agencies, Jodhpur (Rajasthan), India";
+  const supportEmail = "support@vijayagenciesjpr.com";
+  const companyPhone = "9414073671, 9314628730";
+  const companyAddress = "Vijay Agencies, Jaipur (Rajasthan), India";
 
   const validate = (): boolean => {
     const e: Partial<Record<keyof FormState, string>> = {};

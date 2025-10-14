@@ -60,7 +60,7 @@ export default function Footer(): JSX.Element {
             <div className="mt-6 flex items-start gap-3 text-sm">
               <MapPin className="w-5 h-5 text-green-400 mt-0.5" aria-hidden />
               <address className="not-italic text-gray-300">
-                123 Industrial Estate,<br /> Jodhpur, Rajasthan 342001, India
+                123 Industrial Estate,<br /> Jaipur, Rajasthan 342001, India
               </address>
             </div>
 
