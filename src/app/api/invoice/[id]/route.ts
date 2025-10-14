@@ -80,15 +80,18 @@ export async function GET(req: Request, { params }: { params: Params }) {
     const html = generateInvoiceHTML(invoiceData);
 
     // ✅ Safe Chromium path resolution for all environments
-    const executablePath = (await chromium.executablePath()) || "/usr/bin/chromium-browser";
+    const executablePath =
+  process.env.NODE_ENV === "production"
+    ? "/usr/bin/chromium-browser" // use system Chromium
+    : await chromium.executablePath();
 
-    // ✅ Type-safe puppeteer-core + chromium config
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      executablePath,
-      headless: true, // Always headless for production
-      ignoreDefaultArgs: ["--disable-extensions"], // Safe addition
-    } as any); // <-- casting fixes the typing mismatch cleanly
+const browser = await puppeteer.launch({
+  args: chromium.args,
+  executablePath,
+  headless: true,
+  ignoreDefaultArgs: ["--disable-extensions"],
+});
+ // <-- casting fixes the typing mismatch cleanly
 
     const page = await browser.newPage();
 
