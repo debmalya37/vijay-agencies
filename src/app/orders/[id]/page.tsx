@@ -17,6 +17,7 @@ import {
   Copy,
   ExternalLink
 } from "lucide-react";
+import InvoicePDF from "@/components/InvoicePDF";
 
 interface OrderItem {
   productId: string;
@@ -120,28 +121,57 @@ export default function OrderPage({ params }: { params: { id: string } }) {
     // You could add a toast notification here
   };
 
-  const handleDownloadInvoice = async () => {
-    try {
-      const res = await fetch(`/api/invoice/${params.id}`, {
-        method: "GET",
-      });
+ 
+
+// async function handleDownload(order: any) {
+//   const { pdf} = await import('@react-pdf/renderer');
   
-      if (!res.ok) throw new Error("Failed to download invoice");
-  
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-  
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `invoice-${params.id}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Invoice download error:", err);
-    }
-  };
+//   const blob = await pdf(<InvoicePDF order={order} />).toBlob();
+//   const url = URL.createObjectURL(blob);
+//   const a = document.createElement("a");
+//   a.href = url;
+//   a.download = `Invoice_${order.invoiceNo}.pdf`;
+//   a.click();
+//   URL.revokeObjectURL(url);
+// }
+
+const handleDownloadInvoice = async () => {
+  try {
+    const res = await fetch(`/api/invoice/${params.id}`, {
+      method: "GET",
+    });
+
+    if (!res.ok) throw new Error("Failed to download invoice");
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `invoice-${params.id}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("Invoice download error:", err);
+  }
+};
+// const handleDownloadInvoice = async () => {
+//   if (!order) return;
+//   const { pdf} = await import('@react-pdf/renderer');
+//   const blob = await pdf(<InvoicePDF order={order} />).toBlob();
+
+//   const url = window.URL.createObjectURL(blob);
+//   const a = document.createElement("a");
+//   a.href = url;
+//   a.download = `invoice-${order._id}.pdf`;
+//   document.body.appendChild(a);
+//   a.click();
+//   a.remove();
+//   window.URL.revokeObjectURL(url);
+// };
+
   
 
   if (loading) {
