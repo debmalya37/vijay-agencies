@@ -155,7 +155,7 @@ const messCategories = [
 
 const companyStats = [
   { number: '500+', label: 'Happy Clients', icon: Users },
-  { number: '25+', label: 'Years Experience', icon: Award },
+  { number: '50+', label: 'Years Experience', icon: Award },
   { number: '1000+', label: 'Products', icon: Package },
   { number: '24/7', label: 'Customer Support', icon: Headphones }
 ];
@@ -1530,7 +1530,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                 <div className="absolute bottom-6 sm:bottom-8 left-6 sm:left-8 right-6 sm:right-8 text-white">
                   <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3 font-sans">Professional Cleaning Solutions</h3>
-                  <p className="text-sm sm:text-base opacity-90 leading-relaxed font-sans">Serving Jaipur&apos;s hospitality industry since 2016</p>
+                  <p className="text-sm sm:text-base opacity-90 leading-relaxed font-sans">Serving Jaipur&apos;s hospitality industry since 1972</p>
                 </div>
               </div>
               

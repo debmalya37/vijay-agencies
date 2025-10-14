@@ -229,7 +229,7 @@ export function generateInvoiceHTML(order: any) {
                 GSTIN/UIN : 08AAJPV2631B1Z6<br/>
                 State Name : Rajasthan, Code : 08<br/>
                 CIN : 041<br/>
-                E-Mail : vijayagenciesjpr@yahoo.in
+                E-Mail : support@vijayagenciesjpr.com
               </div>
             </td>
             <td style="width: 200px; vertical-align: top;">
