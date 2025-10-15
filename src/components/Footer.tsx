@@ -113,10 +113,10 @@ export default function Footer(): JSX.Element {
                   <Link href="/privacy" className="text-gray-300 hover:text-white">Privacy Policy</Link>
                 </li>
                 <li>
-                  <Link href="/cancellation-refunds" className="text-gray-300 hover:text-white">Cancellation-refunds</Link>
+                  <Link href="/cancellation-refunds" className="text-gray-300 hover:text-white">Refund Policy</Link>
                 </li>
                 <li>
-                  <Link href="/shipping" className="text-gray-300 hover:text-white">shipping</Link>
+                  <Link href="/shipping" className="text-gray-300 hover:text-white">Shipping Policy</Link>
                 </li>
                 {/* <li>
                   <Link href="/returns" className="text-gray-300 hover:text-white">Return Policy</Link>
@@ -231,9 +231,9 @@ export default function Footer(): JSX.Element {
               <span className="hidden sm:inline">•</span>
 
               <nav aria-label="footer legal" className="flex gap-3">
-                <Link href="/terms-and-conditions" className="text-gray-300 hover:text-white">Terms</Link>
-                <Link href="/privacy" className="text-gray-300 hover:text-white">Privacy</Link>
-                <Link href="/contact-us" className="text-gray-300 hover:text-white">Contact</Link>
+                <Link href="/terms-and-conditions" className="text-gray-300 hover:text-white">Terms & Conditions</Link>
+                <Link href="/privacy" className="text-gray-300 hover:text-white">Privacy POlicy</Link>
+                <Link href="/contact-us" className="text-gray-300 hover:text-white">Customer Support</Link>
               </nav>
             </div>
           </div>

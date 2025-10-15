@@ -78,7 +78,7 @@ export default function AboutPage() {
     { number: "50+", label: "Years of Excellence" },
     { number: "10,000+", label: "Happy Customers" },
     { number: "500+", label: "Products Available" },
-    { number: "24/7", label: "Customer Support" }
+    { number: "Quick Support", label: "Customer Support" }
   ];
 
   const productCategories = [
@@ -178,7 +178,7 @@ export default function AboutPage() {
               
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  Established in 2016, Vijay Agencies has emerged as a trusted name in the wholesale and retail 
+                  Established in 1972, Vijay Agencies has emerged as a trusted name in the wholesale and retail 
                   supply of cleaning chemicals, industrial equipment, and hospitality products across Rajasthan 
                   and neighboring regions.
                 </p>
@@ -405,7 +405,7 @@ export default function AboutPage() {
             <div className="text-center mt-12">
               <div className="inline-flex items-center gap-2 bg-white/10 px-6 py-3 rounded-full">
                 <Clock className="w-5 h-5" />
-                <span>Open 24/7 for Online Orders | Customer Support: 9 AM - 8 PM</span>
+                <span>Open Quick Support for Online Orders | Customer Support: 9 AM - 8 PM</span>
               </div>
             </div>
           </div>
