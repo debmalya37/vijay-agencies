@@ -127,7 +127,7 @@ export default function AboutPage() {
               Vijay Agencies
             </h1>
             <p className="text-xl sm:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
-              Your Trusted Partner for Quality Cleaning Solutions & Industrial Supplies Since 2016
+              Your Trusted Partner for Quality Cleaning Solutions & Industrial Supplies Since 1972
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
