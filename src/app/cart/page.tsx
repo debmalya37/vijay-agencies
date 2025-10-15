@@ -179,6 +179,11 @@ export default function CartPage() {
     const end = start + productsPerSlide;
     return featuredProducts.slice(start, end);
   };
+  const isInCart = (product: any) => {
+    const key = `${product._id}::${product.variants?.[0]?.size ?? ""}`;
+    return cartItems.some((item) => item.id === key);
+  };
+  
 
   return (
     <div className="min-h-screen bg-gray-50 text-black">
@@ -507,11 +512,17 @@ export default function CartPage() {
                       ₹{(product.discounted_price ?? product.base_price).toLocaleString()}
                     </span>
                     <button
-                      onClick={() => handleAddToCart(product, product.variants?.[0])}
-                      className="bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 text-sm transition-colors"
-                    >
-                      Add
-                    </button>
+  onClick={() => handleAddToCart(product, product.variants?.[0])}
+  disabled={isInCart(product)}
+  className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+    isInCart(product)
+      ? "bg-gray-300 text-gray-700 cursor-not-allowed"
+      : "bg-blue-600 text-white hover:bg-blue-700"
+  }`}
+>
+  {isInCart(product) ? "Added" : "Add"}
+</button>
+
                   </div>
                 </div>
               </div>
