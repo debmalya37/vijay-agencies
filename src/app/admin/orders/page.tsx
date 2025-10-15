@@ -4,7 +4,19 @@
 import { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import { Dialog } from '@headlessui/react';
+import { pdf } from "@react-pdf/renderer";
+import { Button } from '@/components/ui/button';
+import React from "react";
+import dynamic from "next/dynamic";
 
+
+// ✅ Dynamically import @react-pdf/renderer only on client side
+
+
+// ✅ Dynamically import your InvoicePDFDocument
+const InvoicePDFDocument = dynamic(() => import("@/components/InvoicePDFDocument"), {
+  ssr: false,
+});
 type OrderItem = {
   // server may return either productId populated or just an id
   productId?: { _id?: string; title?: string } | string;
@@ -44,6 +56,7 @@ export default function OrdersPage() {
   const [selected, setSelected] = useState<ApiOrder | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const perPage = 10;
 
@@ -127,7 +140,61 @@ export default function OrdersPage() {
       setUpdatingId(null);
     }
   };
+ // 🔹 Function to handle invoice download for each order
+ const handleDownloadInvoice = async (order:any) => {
+  try {
+    setDownloadingId(order._id);
+    const { pdf, Font } = await import('@react-pdf/renderer');
 
+    const buyer = order.userId;
+    const defaultAddress =
+      buyer?.addresses?.find((a:any) => a.is_default) || buyer?.addresses?.[0];
+
+    const addressParts = [];
+    if (defaultAddress?.address_line1) addressParts.push(defaultAddress.address_line1);
+    if (defaultAddress?.address_line2) addressParts.push(defaultAddress.address_line2);
+    if (defaultAddress?.city) addressParts.push(defaultAddress.city);
+    if (defaultAddress?.state) addressParts.push(defaultAddress.state);
+    if (defaultAddress?.country) addressParts.push(defaultAddress.country);
+    if (defaultAddress?.pincode) addressParts.push(`Pincode: ${defaultAddress.pincode}`);
+
+    const invoiceData = {
+      invoiceNo: `VA/25-26/${order._id.toString().slice(-6).toUpperCase()}`,
+      date: new Date(order.createdAt),
+      buyer: {
+        name: buyer?.full_name || buyer?.username || "Customer",
+        address: addressParts.length > 0 ? addressParts.join(", ") : "Address not provided",
+        gstin: buyer?.gst_number || "",
+        state: defaultAddress?.state || "Rajasthan",
+      },
+      items: order.items.map((item:any) => ({
+        description: item.productId?.title || "Product",
+        hsn: item.productId?.hsn || "00000000",
+        quantity: item.quantity,
+        rate: item.price,
+        gst: item.productId?.gst || 18,
+      })),
+    };
+
+    // ✅ Dynamically get the pdf() function
+    // const pdf = (await PDFRenderer) as any;
+
+    const blob = await pdf(<InvoicePDFDocument invoiceData={invoiceData} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Invoice_${invoiceData.invoiceNo}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("❌ Error generating invoice:", error);
+    alert("Failed to generate invoice. Please try again.");
+  } finally {
+    setDownloadingId(null);
+  }
+};
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
       <h1 className="text-3xl font-bold mb-6">Order Management</h1>
@@ -201,6 +268,8 @@ export default function OrdersPage() {
               <th className="px-4 py-3 text-left text-sm font-medium">Payment</th>
               <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
               <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
+              <th className="px-4 py-3 text-left text-sm font-medium">Invoice</th>
+
             </tr>
           </thead>
           <tbody>
@@ -252,6 +321,17 @@ export default function OrdersPage() {
                       </button>
                     </div>
                   </td>
+                  <td className="border px-3 py-2 text-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={downloadingId === o._id}
+                  onClick={() => handleDownloadInvoice(o)}
+                  className='text-black'
+                >
+                  {downloadingId === o._id ? "Generating..." : "Download"}
+                </Button>
+              </td>
                 </tr>
               );
             })}

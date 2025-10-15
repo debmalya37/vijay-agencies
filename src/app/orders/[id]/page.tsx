@@ -7,9 +7,6 @@ import {
   CheckCircle,
   Package,
   Truck,
-  MapPin,
-  CreditCard,
-  Calendar,
   ArrowLeft,
   Download,
   Phone,
@@ -17,7 +14,6 @@ import {
   Copy,
   ExternalLink
 } from "lucide-react";
-import InvoicePDF from "@/components/InvoicePDF";
 
 interface OrderItem {
   productId: string;
@@ -40,21 +36,58 @@ interface OrderDetails {
   updatedAt: string;
 }
 
+interface PopulatedOrderItem {
+  productId: {
+    _id: string;
+    title: string;
+    image?: string;
+    images?: string[];
+    hsn?: string;
+    gst?: number;
+  };
+  variantId: string;
+  quantity: number;
+  price: number;
+}
+
+interface PopulatedOrder extends Omit<OrderDetails, 'items' | 'userId'> {
+  items: PopulatedOrderItem[];
+  userId: {
+    _id: string;
+    full_name?: string;
+    username?: string;
+    gst_number?: string;
+    addresses?: Array<{
+      address_line1?: string;
+      address_line2?: string;
+      city?: string;
+      state?: string;
+      country?: string;
+      pincode?: string;
+      is_default?: boolean;
+    }>;
+  };
+}
+
 export default function OrderPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isSuccess = searchParams.get('success') === 'true';
   
   const [order, setOrder] = useState<OrderDetails | null>(null);
+  const [populatedOrder, setPopulatedOrder] = useState<PopulatedOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
+  const [downloadingInvoice, setDownloadingInvoice] = useState(false);
 
   useEffect(() => {
     fetchOrderDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   const fetchOrderDetails = async () => {
     try {
+      // Fetch basic order details
       const response = await fetch(`/api/orders/${params.id}`, {
         credentials: 'include',
       });
@@ -62,6 +95,16 @@ export default function OrderPage({ params }: { params: { id: string } }) {
       if (response.ok) {
         const orderData = await response.json();
         setOrder(orderData);
+        
+        // Fetch populated order for PDF generation
+        const populatedResponse = await fetch(`/api/orders/${params.id}/populated`, {
+          credentials: 'include',
+        });
+        
+        if (populatedResponse.ok) {
+          const populatedData = await populatedResponse.json();
+          setPopulatedOrder(populatedData);
+        }
       } else if (response.status === 404) {
         setError("Order not found");
       } else if (response.status === 401) {
@@ -75,6 +118,69 @@ export default function OrderPage({ params }: { params: { id: string } }) {
       setError("Failed to load order details");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDownloadInvoice = async () => {
+    if (!populatedOrder) {
+      alert('Order data not available. Please refresh the page.');
+      return;
+    }
+
+    setDownloadingInvoice(true);
+    
+    try {
+      // Dynamically import PDF components
+      const { pdf } = await import('@react-pdf/renderer');
+      const { default: InvoicePDFDocument } = await import('@/components/InvoicePDFDocument');
+
+      // Prepare invoice data
+      const buyer = populatedOrder.userId;
+      const defaultAddress = buyer?.addresses?.find((a) => a.is_default) || buyer?.addresses?.[0];
+
+      const addressParts = [];
+      if (defaultAddress?.address_line1) addressParts.push(defaultAddress.address_line1);
+      if (defaultAddress?.address_line2) addressParts.push(defaultAddress.address_line2);
+      if (defaultAddress?.city) addressParts.push(defaultAddress.city);
+      if (defaultAddress?.state) addressParts.push(defaultAddress.state);
+      if (defaultAddress?.country) addressParts.push(defaultAddress.country);
+      if (defaultAddress?.pincode) addressParts.push(`Pincode: ${defaultAddress.pincode}`);
+
+      const invoiceData = {
+        invoiceNo: `VA/25-26/${populatedOrder._id.toString().slice(-6).toUpperCase()}`,
+        date: new Date(populatedOrder.createdAt),
+        buyer: {
+          name: buyer?.full_name || buyer?.username || "Customer",
+          address: addressParts.length > 0 ? addressParts.join(', ') : "Address not provided",
+          gstin: buyer?.gst_number || "",
+          state: defaultAddress?.state || "Rajasthan",
+        },
+        items: populatedOrder.items.map((item) => ({
+          description: item.productId?.title || "Product",
+          hsn: item.productId?.hsn || "00000000",
+          quantity: item.quantity,
+          rate: item.price,
+          gst: item.productId?.gst || 18,
+        })),
+      };
+
+      // Generate PDF blob
+      const blob = await pdf(<InvoicePDFDocument invoiceData={invoiceData} />).toBlob();
+
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Invoice_${invoiceData.invoiceNo}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading invoice:', error);
+      alert('Failed to download invoice. Please try again.');
+    } finally {
+      setDownloadingInvoice(false);
     }
   };
 
@@ -118,61 +224,7 @@ export default function OrderPage({ params }: { params: { id: string } }) {
 
   const copyOrderId = () => {
     navigator.clipboard.writeText(params.id);
-    // You could add a toast notification here
   };
-
- 
-
-// async function handleDownload(order: any) {
-//   const { pdf} = await import('@react-pdf/renderer');
-  
-//   const blob = await pdf(<InvoicePDF order={order} />).toBlob();
-//   const url = URL.createObjectURL(blob);
-//   const a = document.createElement("a");
-//   a.href = url;
-//   a.download = `Invoice_${order.invoiceNo}.pdf`;
-//   a.click();
-//   URL.revokeObjectURL(url);
-// }
-
-const handleDownloadInvoice = async () => {
-  try {
-    const res = await fetch(`/api/invoice/${params.id}`, {
-      method: "GET",
-    });
-
-    if (!res.ok) throw new Error("Failed to download invoice");
-
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `invoice-${params.id}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url);
-  } catch (err) {
-    console.error("Invoice download error:", err);
-  }
-};
-// const handleDownloadInvoice = async () => {
-//   if (!order) return;
-//   const { pdf} = await import('@react-pdf/renderer');
-//   const blob = await pdf(<InvoicePDF order={order} />).toBlob();
-
-//   const url = window.URL.createObjectURL(blob);
-//   const a = document.createElement("a");
-//   a.href = url;
-//   a.download = `invoice-${order._id}.pdf`;
-//   document.body.appendChild(a);
-//   a.click();
-//   a.remove();
-//   window.URL.revokeObjectURL(url);
-// };
-
-  
 
   if (loading) {
     return (
@@ -267,18 +319,10 @@ const handleDownloadInvoice = async () => {
               >
                 <Copy className="w-4 h-4" />
               </button>
-              <button
-  onClick={handleDownloadInvoice}
-  className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors"
->
-  <Download className="w-4 h-4" />
-  Download Invoice
-</button>
-
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm mb-4">
             <div>
               <p className="text-gray-600">Payment Method</p>
               <p className="font-medium">
@@ -294,6 +338,41 @@ const handleDownloadInvoice = async () => {
               <p className="font-medium text-xs">{order?.razorpayOrderId || 'N/A'}</p>
             </div>
           </div>
+
+          {/* Download Invoice Button */}
+          <div className="pt-4 border-t border-gray-200">
+  <div className="relative group">
+    <button
+      onClick={handleDownloadInvoice}
+      disabled={
+        downloadingInvoice ||
+        !populatedOrder ||
+        !order ||
+        ["pending", "failed", "cancelled"].includes(order.status)
+      }
+      className={`inline-flex items-center justify-center gap-2 px-6 py-3 border border-gray-300 rounded-lg transition-colors w-full sm:w-auto 
+        ${
+          ["confirmed", "shipped", "delivered"].includes(order?.status || "")
+            ? "bg-blue-600 text-white hover:bg-blue-700"
+            : "bg-gray-100 text-gray-400 cursor-not-allowed"
+        }`}
+    >
+      <Download className="w-4 h-4" />
+      {downloadingInvoice
+        ? "Generating PDF..."
+        : ["pending", "failed", "cancelled"].includes(order?.status || "")
+        ? "Invoice Unavailable"
+        : "Download Invoice"}
+    </button>
+
+    {["pending", "failed", "cancelled"].includes(order?.status || "") && (
+      <span className="absolute left-0 top-full mt-2 w-max bg-gray-800 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        Invoice available once the order is confirmed.
+      </span>
+    )}
+  </div>
+</div>
+
         </div>
 
         {/* Order Items */}
@@ -305,9 +384,12 @@ const handleDownloadInvoice = async () => {
               {order.items.map((item, index) => (
                 <div key={index} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
                   <img
-                    src={item.image || "https://via.placeholder.com/60"}
+                    src={item.image || "https://www.vijayagenciesjpr.com/X.JPEG.jpg"}
                     alt={item.title || "Product"}
-                    className="w-15 h-15 object-cover rounded-lg"
+                    className="w-6 h-6 object-contain rounded-lg"
+                    onError={(e) => {
+                      e.currentTarget.src = "https://www.vijayagenciesjpr.com/X.JPEG.jpg";
+                    }}
                   />
                   <div className="flex-1">
                     <h4 className="font-medium text-gray-900">
@@ -399,11 +481,11 @@ const handleDownloadInvoice = async () => {
           <div className="flex flex-col sm:flex-row gap-4 text-sm">
             <div className="flex items-center gap-2 text-blue-800">
               <Phone className="w-4 h-4" />
-              <span>+91 1234567890</span>
+              <span>+919414073671</span>
             </div>
             <div className="flex items-center gap-2 text-blue-800">
               <Mail className="w-4 h-4" />
-              <span>support@company.com</span>
+              <span>support@vijayagenciesjpr.com</span>
             </div>
           </div>
         </div>

@@ -4,6 +4,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import CSVImportModal from '@/components/admin/CSVImportModal';
+import { FileSpreadsheet } from 'lucide-react';
 
 interface Variant {
   label: string; // e.g. "2kg", "5kg", "10L"
@@ -55,6 +57,8 @@ export default function NewProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [variantImageFiles, setVariantImageFiles] = useState<Record<number, File[]>>({});
+  // Add this state to your component (inside NewProductPage function)
+const [showCSVImport, setShowCSVImport] = useState(false);
 
   const router = useRouter();
 
@@ -297,6 +301,28 @@ export default function NewProductPage() {
             Create a new product for your B2B marketplace
           </p>
         </div>
+
+        {/* Add this section right after the page title/description and before the "Basic Information" card */}
+<div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-6">
+  <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+    <div>
+      <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">
+        Quick Import
+      </h3>
+      <p className="text-sm text-slate-600 dark:text-slate-400">
+        Import multiple products at once using a CSV file
+      </p>
+    </div>
+    <button
+      onClick={() => setShowCSVImport(true)}
+      className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+    >
+      <FileSpreadsheet className="w-5 h-5" />
+      <span>Import from CSV</span>
+    </button>
+  </div>
+</div>
+
 
         <div className="space-y-8">
           
@@ -932,6 +958,15 @@ export default function NewProductPage() {
           </div>
         </div>
       </div>
+      {/* Add the modal component at the end of your return statement, before the closing div */}
+<CSVImportModal
+  isOpen={showCSVImport}
+  onClose={() => setShowCSVImport(false)}
+  onSuccess={() => {
+    setShowCSVImport(false);
+    router.push('/admin/products');
+  }}
+/>
     </div>
   );
 }

@@ -4,7 +4,10 @@ import mongoose from "mongoose";
 import dbConnect from "@/lib/dbConnect";
 import { Order } from "@/models/Order";
 import nodemailer from "nodemailer";
-
+import { User } from "@/models/User";
+import { Product } from "@/models/Product";
+import { IUser } from "@/models/User";
+import { IProduct } from "@/models/Product";
 // ----------------------------
 // ✅ Allowed Order Statuses
 // ----------------------------
@@ -62,6 +65,10 @@ export async function GET() {
   try {
     // Connect to DB — cached connection ensures no re-init issues
     await dbConnect();
+
+    await User.init(); // ensure indexes
+    await Product.init(); // ensure indexes
+    await Order.init(); // ensure indexes
 
     // ⚡ Optimized query
     const orders = await Order.find({})

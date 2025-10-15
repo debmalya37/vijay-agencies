@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
     fontSize: 8,
     fontWeight: 'bold',
   },
+  logo: { width: 50, height: 50, borderRadius: 25, marginBottom: 4 },
 });
 
 interface InvoiceItem {
@@ -244,8 +245,19 @@ interface InvoicePDFDocumentProps {
 }
 
 const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceData }) => {
+  // Validate invoice data
+  if (!invoiceData || !invoiceData.items || invoiceData.items.length === 0) {
+    throw new Error('Invalid invoice data: missing items');
+  }
+
   // Calculate subtotal
-  const subtotal = invoiceData.items.reduce((sum, item) => sum + (item.rate * item.quantity), 0);
+  const subtotal = invoiceData.items.reduce((sum, item) => {
+    if (typeof item.rate !== 'number' || typeof item.quantity !== 'number') {
+      console.error('Invalid item data:', item);
+      return sum;
+    }
+    return sum + (item.rate * item.quantity);
+  }, 0);
   
   // Delivery charge logic
   const deliveryCharge = subtotal < 50000 ? 150 : 0;
@@ -319,10 +331,7 @@ const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceData }) 
         {/* Company Header */}
         <View style={styles.companyHeader}>
           <View style={styles.logoCell}>
-            <Image
-              src="https://www.vijayagenciesjpr.com/X.JPEG.jpg"
-              style={{ width: 60, height: 60, borderRadius: 30 }}
-            />
+          <Image style={styles.logo} src="https://www.vijayagenciesjpr.com/X.JPEG.jpg" />
           </View>
           
           <View style={styles.companyDetails}>
