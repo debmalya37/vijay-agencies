@@ -157,7 +157,7 @@ const companyStats = [
   { number: '500+', label: 'Happy Clients', icon: Users },
   { number: '50+', label: 'Years Experience', icon: Award },
   { number: '1000+', label: 'Products', icon: Package },
-  { number: '24/7', label: 'Customer Support', icon: Headphones }
+  { number: 'Quick Support', label: 'Customer Support', icon: Headphones }
 ];
 
 const whyChooseUs = [
@@ -646,7 +646,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
           Your Trusted Partner for Commercial Cleaning Solutions
         </p>
         <p className="text-base sm:text-lg lg:text-xl mb-8 opacity-90">
-          Serving Hotels & Businesses in Jaipur Since 2016
+          Serving Hotels & Businesses in Jaipur Since 1972
         </p>
         <button 
           onClick={() => window.location.href = '/Products'}
