@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 // import { ArrowRight } from "lucide-react";
@@ -289,7 +289,7 @@ export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState(true);
   const [productsError, setProductsError] = useState<string | null>(null);
-
+  const [itemsPerSlide, setItemsPerSlide] = useState(2); 
   // Add this at the top of your component (after your other state declarations)
 const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
   // Categories state
@@ -301,7 +301,10 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
   const [banners, setBanners] = useState<Banner[]>([]);
   const [bannersLoading, setBannersLoading] = useState(true);
   const [bannersError, setBannersError] = useState<string | null>(null);
+  const sliderRef2 = useRef<HTMLDivElement>(null);
+  const [currentSlide2, setCurrentSlide2] = useState(0);
 
+  
   // Scroll animations
   useEffect(() => {
     const observerOptions = {
@@ -412,7 +415,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
         const variantImages = Array.isArray(p.variants)
           ? p.variants.flatMap((v: any) => (Array.isArray(v.images) ? v.images.filter(Boolean) : []))
           : [];
-        const image = topImages[0] || variantImages[0] || 'https://via.placeholder.com/400x300?text=No+Image';
+        const image = topImages[0] || variantImages[0] || '';
 
         const sizesRaw = Array.isArray(p.variants) ? p.variants.map((v: any) => v.size).filter(Boolean) : [];
         const sizes = Array.from(new Set(sizesRaw)) as string[];
@@ -538,6 +541,46 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
       window.open(banner.link_url, '_blank');
     }
   };
+
+  // const itemsPerSlide = 2; // showing 2x2 grid
+  const totalSlides = Math.ceil(cleaningProducts.length / itemsPerSlide);
+
+  // default for desktop
+
+  // Responsive detection
+  useEffect(() => {
+    const updateItemsPerSlide = () => {
+      if (window.innerWidth < 640) {
+        setItemsPerSlide(1); // mobile
+      } else {
+        setItemsPerSlide(2); // desktop (2x2)
+      }
+    };
+    updateItemsPerSlide();
+    window.addEventListener("resize", updateItemsPerSlide);
+    return () => window.removeEventListener("resize", updateItemsPerSlide);
+  }, []);
+
+  const scrollToSlide = (index: number) => {
+    if (!sliderRef2.current) return;
+    const slideWidth = sliderRef2.current.clientWidth;
+    sliderRef2.current.scrollTo({
+      left: index * slideWidth,
+      behavior: "smooth",
+    });
+    setCurrentSlide(index);
+  };
+
+  const handleNext = () => {
+    const nextIndex = (currentSlide + 1) % totalSlides;
+    scrollToSlide(nextIndex);
+  };
+
+  const handlePrev = () => {
+    const prevIndex = (currentSlide - 1 + totalSlides) % totalSlides;
+    scrollToSlide(prevIndex);
+  };
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -1241,67 +1284,92 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
       {/* Two Column Layout */}
       <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-        {/* Left Column - Product Slider */}
-        <div className="relative">
-          {/* Slider Container */}
-          <div className="relative overflow-hidden rounded-2xl bg-[#EF4F5F] backdrop-blur-sm p-2 shadow-xl">
-            <div className="grid grid-cols-2 gap-4">
-              {cleaningProducts.slice(0, 4).map((product) => (
-                <div key={product._id} className="h-full">
+      {/* Left Column - Product Slider */}
+      <div className="relative">
+  {/* Slider Container */}
+  <div className="relative rounded-2xl bg-[#EF4F5F] backdrop-blur-sm p-4 shadow-xl overflow-hidden">
+    {/* Inner scroll container */}
+    <div
+      ref={sliderRef2}
+      className="flex overflow-x-hidden scroll-smooth transition-transform duration-500"
+    >
+      {Array.from({ length: totalSlides }).map((_, slideIndex) => {
+        const start = slideIndex * itemsPerSlide;
+        const slideItems = cleaningProducts.slice(start, start + itemsPerSlide);
+
+        return (
+          <div
+            key={slideIndex}
+            className={`
+              flex-shrink-0
+              w-full
+              px-2 sm:px-4
+            `}
+            style={{ boxSizing: "border-box" }}
+          >
+            <div
+              className={`
+                grid 
+                ${itemsPerSlide === 1 ? "grid-cols-1" : "grid-cols-2"} 
+                gap-4 sm:gap-5 md:gap-6
+              `}
+            >
+              {slideItems.map((product) => (
+                <div
+                  key={product._id}
+                  className="w-full flex justify-center items-stretch"
+                >
                   <ProductCard product={product} />
                 </div>
               ))}
             </div>
-
-            {/* Navigation Arrows - Only show if more than 4 products */}
-            {cleaningProducts.length > 4 && (
-              <>
-                <button
-                  onClick={() => {
-                    // Implement your slider logic here
-                    console.log('Previous slide');
-                  }}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
-                  aria-label="Previous products"
-                >
-                  <ChevronLeft className="w-6 h-6 text-gray-700" />
-                </button>
-                <button
-                  onClick={() => {
-                    // Implement your slider logic here
-                    console.log('Next slide');
-                  }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
-                  aria-label="Next products"
-                >
-                  <ChevronRight className="w-6 h-6 text-gray-700" />
-                </button>
-              </>
-            )}
           </div>
+        );
+      })}
+    </div>
 
-          {/* Slide Indicators - Only show if more than 4 products */}
-          {cleaningProducts.length > 4 && (
-            <div className="flex justify-center gap-2 mt-6">
-              {Array.from({ length: Math.ceil(cleaningProducts.length / 4) }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    // Implement your slide navigation logic here
-                    console.log(`Go to slide ${index + 1}`);
-                  }}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    index === 0 ? 'w-8 bg-green-600' : 'w-2 bg-gray-300'
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+    {/* Navigation Arrows */}
+    {cleaningProducts.length > 1 && (
+      <>
+        <button
+          onClick={handlePrev}
+          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+          aria-label="Previous products"
+        >
+          <ChevronLeft className="w-6 h-6 text-gray-700" />
+        </button>
+        <button
+          onClick={handleNext}
+          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+          aria-label="Next products"
+        >
+          <ChevronRight className="w-6 h-6 text-gray-700" />
+        </button>
+      </>
+    )}
+  </div>
 
-        {/* Right Column - Image Container */}
-        <div className="relative">
+  {/* Slide Indicators */}
+  {cleaningProducts.length > 1 && (
+    <div className="flex justify-center gap-2 mt-6">
+      {Array.from({ length: totalSlides }).map((_, index) => (
+        <button
+          key={index}
+          onClick={() => scrollToSlide(index)}
+          className={`h-2 rounded-full transition-all duration-300 ${
+            index === currentSlide ? "w-8 bg-green-600" : "w-2 bg-gray-300"
+          }`}
+          aria-label={`Go to slide ${index + 1}`}
+        />
+      ))}
+    </div>
+  )}
+</div>
+
+
+
+       {/* Right Column - Image Container */}
+       <div className="relative">
           <div className="relative rounded-3xl overflow-hidden shadow-2xl group">
             {/* Main Image */}
             <div className="aspect-[4/5] lg:aspect-square overflow-hidden bg-gradient-to-br from-green-100 to-emerald-200">
@@ -1344,16 +1412,12 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
                 </div>
               </div>
             </div>
-
-            {/* Decorative Elements */}
-            {/* <div className="absolute top-6 right-6 w-20 h-20 bg-white/20 backdrop-blur-md rounded-2xl rotate-12 group-hover:rotate-45 transition-transform duration-500"></div> */}
-            {/* <div className="absolute bottom-6 left-6 w-16 h-16 bg-green-500/30 backdrop-blur-md rounded-full group-hover:scale-125 transition-transform duration-500"></div> */}
           </div>
         </div>
-      </div>
+    </div>
 
       {/* View All Button */}
-      {cleaningProducts.length > 4 && (
+      {cleaningProducts.length > 2 && (
         <div className="text-center mt-12 lg:mt-16">
           <button
             onClick={() => (window.location.href = "/Products?category=Cleaning")}
