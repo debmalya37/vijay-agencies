@@ -4,26 +4,14 @@
 import { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import { Dialog } from '@headlessui/react';
-import { pdf } from "@react-pdf/renderer";
 import { Button } from '@/components/ui/button';
 import React from "react";
-import dynamic from "next/dynamic";
 
-
-// ✅ Dynamically import @react-pdf/renderer only on client side
-
-
-// ✅ Dynamically import your InvoicePDFDocument
-const InvoicePDFDocument = dynamic(() => import("@/components/InvoicePDFDocument"), {
-  ssr: false,
-});
 type OrderItem = {
-  // server may return either productId populated or just an id
   productId?: { _id?: string; title?: string } | string;
   product?: { _id?: string; title?: string };
   quantity: number;
   price: number;
-  // variant id optionally
   variantId?: string;
 };
 
@@ -31,14 +19,13 @@ type ApiOrder = {
   _id: string;
   userId?: { username?: string; email?: string } | string;
   user?: { username?: string; email?: string };
-  amount?: number; // often stored in paise on your server; we'll detect/display accordingly
+  amount?: number;
   razorpayOrderId?: string;
   razorpayPaymentId?: string;
   status?: string;
   createdAt?: string;
   updatedAt?: string;
   items?: OrderItem[];
-  // optional address fields if your server stored them
   address?: {
     address_line1?: string;
     city?: string;
@@ -66,14 +53,12 @@ export default function OrdersPage() {
     axios.get('/api/admin/orders')
       .then(res => {
         if (!cancelled) {
-          // Expecting array of orders
           const data = Array.isArray(res.data) ? res.data : (res.data.orders || []);
           setOrders(data);
         }
       })
       .catch(err => {
         console.error('Failed to fetch admin orders', err);
-        // Keep empty list on error
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -109,11 +94,8 @@ export default function OrdersPage() {
     return filtered.slice(start, start + perPage);
   }, [filtered, page]);
 
-  // Utility: display amount in rupees. If server stores paise (common), convert to rupees.
   const formatAmount = (amount?: number) => {
     if (amount == null) return '—';
-    // Heuristic: treat as paise if amount >= 1000
-    // (this is conservative; adjust if you always return paise)
     const rupees = amount > 1000 ? amount / 100 : amount;
     return `₹${Number(rupees).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
   };
@@ -121,17 +103,13 @@ export default function OrdersPage() {
   const getPaymentMethod = (o: ApiOrder) => {
     if (o.razorpayPaymentId) return 'Online (Razorpay)';
     if (o.razorpayOrderId) return 'Online (Razorpay - unpaid)';
-    // fallback: if amount present and no razorpay fields, assume COD
     return 'Cash on Delivery';
   };
 
   const updateStatus = async (id: string, status: string) => {
     try {
       setUpdatingId(id);
-      // Try PATCH to a RESTful endpoint; adjust if your backend expects different path/body
       await axios.patch('/api/admin/orders', { id, status });
-
-      // optimistic UI update
       setOrders(prev => prev.map(o => (o._id === id ? { ...o, status } : o)));
     } catch (err) {
       console.error('Failed to update order status', err);
@@ -140,61 +118,105 @@ export default function OrdersPage() {
       setUpdatingId(null);
     }
   };
- // 🔹 Function to handle invoice download for each order
- const handleDownloadInvoice = async (order:any) => {
-  try {
-    setDownloadingId(order._id);
-    const { pdf, Font } = await import('@react-pdf/renderer');
 
-    const buyer = order.userId;
-    const defaultAddress =
-      buyer?.addresses?.find((a:any) => a.is_default) || buyer?.addresses?.[0];
+  // 🔹 Fixed function to handle invoice download
+  const handleDownloadInvoice = async (order: ApiOrder) => {
+    try {
+      setDownloadingId(order._id);
 
-    const addressParts = [];
-    if (defaultAddress?.address_line1) addressParts.push(defaultAddress.address_line1);
-    if (defaultAddress?.address_line2) addressParts.push(defaultAddress.address_line2);
-    if (defaultAddress?.city) addressParts.push(defaultAddress.city);
-    if (defaultAddress?.state) addressParts.push(defaultAddress.state);
-    if (defaultAddress?.country) addressParts.push(defaultAddress.country);
-    if (defaultAddress?.pincode) addressParts.push(`Pincode: ${defaultAddress.pincode}`);
+      // 1. Fetch populated order data
+      console.log('Fetching populated order data for:', order._id);
+      const response = await axios.get(`/api/orders/${order._id}/populated`, {
+        withCredentials: true,
+      });
 
-    const invoiceData = {
-      invoiceNo: `VA/25-26/${order._id.toString().slice(-6).toUpperCase()}`,
-      date: new Date(order.createdAt),
-      buyer: {
-        name: buyer?.full_name || buyer?.username || "Customer",
-        address: addressParts.length > 0 ? addressParts.join(", ") : "Address not provided",
-        gstin: buyer?.gst_number || "",
-        state: defaultAddress?.state || "Rajasthan",
-      },
-      items: order.items.map((item:any) => ({
-        description: item.productId?.title || "Product",
-        hsn: item.productId?.hsn || "00000000",
-        quantity: item.quantity,
-        rate: item.price,
-        gst: item.productId?.gst || 18,
-      })),
-    };
+      if (!response.data) {
+        throw new Error('No order data received');
+      }
 
-    // ✅ Dynamically get the pdf() function
-    // const pdf = (await PDFRenderer) as any;
+      const populatedOrder = response.data;
+      console.log('Populated order:', populatedOrder);
 
-    const blob = await pdf(<InvoicePDFDocument invoiceData={invoiceData} />).toBlob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Invoice_${invoiceData.invoiceNo}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("❌ Error generating invoice:", error);
-    alert("Failed to generate invoice. Please try again.");
-  } finally {
-    setDownloadingId(null);
-  }
-};
+      // 2. Validate populated order has required data
+      if (!populatedOrder.items || populatedOrder.items.length === 0) {
+        throw new Error('Order has no items');
+      }
+
+      if (!populatedOrder.userId) {
+        throw new Error('Order has no user data');
+      }
+
+      // 3. Prepare invoice data
+      const buyer = populatedOrder.userId;
+      const defaultAddress = buyer?.addresses?.find((a: any) => a.is_default) || buyer?.addresses?.[0];
+
+      const addressParts = [];
+      if (defaultAddress?.address_line1) addressParts.push(defaultAddress.address_line1);
+      if (defaultAddress?.address_line2) addressParts.push(defaultAddress.address_line2);
+      if (defaultAddress?.city) addressParts.push(defaultAddress.city);
+      if (defaultAddress?.state) addressParts.push(defaultAddress.state);
+      if (defaultAddress?.country) addressParts.push(defaultAddress.country);
+      if (defaultAddress?.pincode) addressParts.push(`Pincode: ${defaultAddress.pincode}`);
+
+      const invoiceData = {
+        invoiceNo: `VA/25-26/${populatedOrder._id.toString().slice(-6).toUpperCase()}`,
+        date: new Date(populatedOrder.createdAt),
+        buyer: {
+          name: buyer?.full_name || buyer?.username || "Customer",
+          address: addressParts.length > 0 ? addressParts.join(", ") : "Address not provided",
+          gstin: buyer?.gst_number || "",
+          state: defaultAddress?.state || "Rajasthan",
+        },
+        items: populatedOrder.items
+          .filter((item: any) => item && item.productId)
+          .map((item: any) => ({
+            description: item.productId?.title || "Product",
+            hsn: item.productId?.hsn || "00000000",
+            quantity: item.quantity || 1,
+            rate: item.price || 0,
+            gst: item.productId?.gst || 18,
+          })),
+      };
+
+      console.log('Invoice data prepared:', invoiceData);
+
+      // 4. Validate invoice data
+      if (invoiceData.items.length === 0) {
+        throw new Error('No valid items for invoice');
+      }
+
+      // 5. Dynamically import PDF components
+      const { pdf } = await import('@react-pdf/renderer');
+      const { default: InvoicePDFDocument } = await import('@/components/InvoicePDFDocument');
+
+      // 6. Generate PDF
+      console.log('Generating PDF...');
+      const blob = await pdf(<InvoicePDFDocument invoiceData={invoiceData} />).toBlob();
+      
+      // 7. Download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Invoice_${invoiceData.invoiceNo}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      console.log('✅ Invoice downloaded successfully');
+    } catch (error: any) {
+      console.error("❌ Error generating invoice:", error);
+      console.error("Error details:", {
+        message: error.message,
+        response: error.response?.data,
+        stack: error.stack
+      });
+      alert(`Failed to generate invoice: ${error.message || 'Unknown error'}`);
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
       <h1 className="text-3xl font-bold mb-6">Order Management</h1>
@@ -269,19 +291,18 @@ export default function OrdersPage() {
               <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
               <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
               <th className="px-4 py-3 text-left text-sm font-medium">Invoice</th>
-
             </tr>
           </thead>
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={7} className="p-6 text-center">Loading orders...</td>
+                <td colSpan={8} className="p-6 text-center">Loading orders...</td>
               </tr>
             )}
 
             {!loading && paginated.length === 0 && (
               <tr>
-                <td colSpan={7} className="p-6 text-center">No orders found</td>
+                <td colSpan={8} className="p-6 text-center">No orders found</td>
               </tr>
             )}
 
@@ -321,17 +342,17 @@ export default function OrdersPage() {
                       </button>
                     </div>
                   </td>
-                  <td className="border px-3 py-2 text-center">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={downloadingId === o._id}
-                  onClick={() => handleDownloadInvoice(o)}
-                  className='text-black'
-                >
-                  {downloadingId === o._id ? "Generating..." : "Download"}
-                </Button>
-              </td>
+                  <td className="px-4 py-2 text-center">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={downloadingId === o._id}
+                      onClick={() => handleDownloadInvoice(o)}
+                      className='text-black'
+                    >
+                      {downloadingId === o._id ? "Generating..." : "Download"}
+                    </Button>
+                  </td>
                 </tr>
               );
             })}
