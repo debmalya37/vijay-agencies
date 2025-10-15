@@ -78,7 +78,7 @@ export default function Footer(): JSX.Element {
                 className="inline-flex items-center gap-2 text-gray-200 hover:text-white"
                 aria-label="Call Vijay Agencies"
               >
-                <Phone className="w-4 h-4 text-green-400" /> +91 12345 67890
+                <Phone className="w-4 h-4 text-green-400" /> +919414073671
               </Link>
             </div>
           </div>
