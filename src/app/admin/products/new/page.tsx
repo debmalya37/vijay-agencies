@@ -500,71 +500,77 @@ const [showCSVImport, setShowCSVImport] = useState(false);
               </div>
             </div>
             <div className="p-6">
-              {form.categories.map((c, i) => (
-                <div key={i} className="relative mb-4">
-                  <div className="flex space-x-3">
-                    <div className="flex-1 relative">
-                      <input
-                        value={c}
-                        onChange={e => {
-                          handleArrayChange('categories', i, e.target.value);
-                          if (e.target.value && !categoriesLoading) {
-                            setShowCategoryDropdown(i);
-                          } else {
-                            setShowCategoryDropdown(null);
-                          }
-                        }}
-                        onFocus={() => !categoriesLoading && setShowCategoryDropdown(i)}
-                        onBlur={() => setTimeout(() => setShowCategoryDropdown(null), 150)}
-                        className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                        placeholder="Select or type category name"
-                        disabled={categoriesLoading}
-                      />
-                      
-                      {/* Category Dropdown */}
-                      {showCategoryDropdown === i && !categoriesLoading && (
-                        <div className="absolute top-full left-0 right-0 z-10 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-b-lg shadow-lg max-h-48 overflow-y-auto">
-                          {getFilteredCategories(c, i).map(cat => (
-                            <button
-                              key={cat._id}
-                              type="button"
-                              onClick={() => selectCategory(i, cat.name, cat._id)}
-                              className="w-full text-left px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 last:border-b-0 transition-colors"
-                            >
-                              <div className="text-slate-800 dark:text-slate-200 font-medium">{cat.name}</div>
-                              {cat.parent_category && (
-                                <div className="text-slate-500 dark:text-slate-400 text-sm">
-                                  Parent: {cat.parent_category.name}
-                                </div>
-                              )}
-                            </button>
-                          ))}
-                          {getFilteredCategories(c, i).length === 0 && c.trim() && (
-                            <div className="px-4 py-3 text-slate-500 dark:text-slate-400 italic">
-                              No matching categories found
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    
-                    {form.categories.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          removeArrayField('categories', i);
-                          const newSelected = [...selectedCategories];
-                          newSelected.splice(i, 1);
-                          setSelectedCategories(newSelected);
-                        }}
-                        className="px-4 py-3 bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-300 rounded-lg transition-all duration-200"
-                      >
-                        Remove
-                      </button>
-                    )}
+            {form.categories.map((c, i) => (
+  <div key={i} className="relative mb-4">
+    <div className="flex space-x-3">
+      <div className="flex-1 relative">
+        <input
+          value={c}
+          onChange={e => {
+            handleArrayChange('categories', i, e.target.value);
+            if (e.target.value && !categoriesLoading) {
+              setShowCategoryDropdown(i);
+            } else {
+              setShowCategoryDropdown(null);
+            }
+          }}
+          onFocus={() => !categoriesLoading && setShowCategoryDropdown(i)}
+          onBlur={() => setTimeout(() => setShowCategoryDropdown(null), 200)} // Increased timeout
+          className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          placeholder="Select or type category name"
+          disabled={categoriesLoading}
+        />
+        
+        {/* Category Dropdown */}
+        {showCategoryDropdown === i && !categoriesLoading && (
+          <div 
+            className="absolute top-full left-0 right-0 z-10 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-b-lg shadow-lg max-h-48 overflow-y-auto mt-1"
+            onMouseDown={(e) => e.preventDefault()} // Prevents input blur when clicking dropdown
+          >
+            {getFilteredCategories(c, i).length > 0 ? (
+              getFilteredCategories(c, i).map(cat => (
+                <button
+                  key={cat._id}
+                  type="button"
+                  onClick={() => selectCategory(i, cat.name, cat._id)}
+                  className="w-full text-left px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-600 border-b border-slate-200 dark:border-slate-600 last:border-b-0 transition-colors"
+                >
+                  <div className="text-slate-800 dark:text-slate-200 font-medium">
+                    {cat.name}
                   </div>
-                </div>
-              ))}
+                  {cat.parent_category && (
+                    <div className="text-slate-500 dark:text-slate-400 text-sm">
+                      Parent: {cat.parent_category.name}
+                    </div>
+                  )}
+                </button>
+              ))
+            ) : (
+              <div className="px-4 py-3 text-slate-500 dark:text-slate-400 italic">
+                {c.trim() ? 'No matching categories found' : 'Start typing to search categories'}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      
+      {form.categories.length > 1 && (
+        <button
+          type="button"
+          onClick={() => {
+            removeArrayField('categories', i);
+            const newSelected = [...selectedCategories];
+            newSelected.splice(i, 1);
+            setSelectedCategories(newSelected);
+          }}
+          className="px-4 py-3 bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-300 rounded-lg transition-all duration-200"
+        >
+          Remove
+        </button>
+      )}
+    </div>
+  </div>
+))}
               
               <button
                 type="button"
