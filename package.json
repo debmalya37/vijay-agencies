@@ -18,7 +18,9 @@
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
+    "file-saver": "^2.0.5",
     "jsonwebtoken": "^9.0.2",
+    "jszip": "^3.10.1",
     "keen-slider": "^6.8.6",
     "lucide-react": "^0.536.0",
     "mongoose": "^8.16.5",
@@ -36,6 +38,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.7",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/nodemailer": "^7.0.1",
