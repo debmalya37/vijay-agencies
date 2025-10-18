@@ -12,6 +12,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Wholesale Hotel & Restaurant Supplies in Jaipur | Vijay Agencies",
   description: "Your #1 source in Jaipur for wholesale hotel, restaurant, and housekeeping supplies. Vijay Agencies offers bulk pricing on cleaning chemicals, disposables, and more for B2B & B2C.",
+  icons: {
+    icon: '/icon.jpg', // Path to your favicon
+    apple: '/icon.jpg', // Path to your Apple Touch Icon
+  },
 };
 
 export default function RootLayout({
