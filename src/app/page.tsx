@@ -606,7 +606,9 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     {/* Categories Container */}
     <div className="flex items-center justify-start md:justify-evenly gap-6 pb-4 overflow-x-auto md:overflow-visible scrollbar-hide px-4 snap-x snap-mandatory">
       {!categoriesLoading &&
-        categories.slice(0, 6).map((category, index) => (
+        categories.slice(0, 7)
+        .filter((_, index) => index !== 4)
+        .map((category, index) => (
           <div
             key={category._id}
             className="flex flex-col items-center min-w-[100px] flex-shrink-0 cursor-pointer group snap-start"
