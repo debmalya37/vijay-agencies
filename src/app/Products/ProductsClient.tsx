@@ -87,24 +87,38 @@ export default function ProductsClient(): JSX.Element {
   // UI state
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showFilters, setShowFilters] = useState(false);
+  const [brandFilter, setBrandFilter] = useState<string>(searchParams?.get("brand") || "");
+
 
   // Fetch products from API
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/products");
-      const data = await response.json();
-
-      // API shape: if your API returns { success: true, products: [...] } adjust accordingly
-      // Here we assume /api/products returns an array directly
-      if (Array.isArray(data)) {
-        setProducts(data);
-      } else if (data?.products && Array.isArray(data.products)) {
-        setProducts(data.products);
-      } else {
-        console.error("Invalid products data:", data);
-        setProducts([]);
+  
+      // Read query params from URL
+      const brand = searchParams?.get("brand");
+  
+      let url = "/api/products";
+  
+      // ✅ If brand filter exists → fetch filtered from server
+      if (brand) {
+        const params = new URLSearchParams();
+        params.set("brand", brand);
+  
+        // optional initial search pass to API if needed
+        if (searchParams?.get("search")) params.set("search", searchParams.get("search")!);
+  
+        url = `/api/products?${params.toString()}`;
       }
+  
+      const response = await fetch(url);
+      const data = await response.json();
+  
+      // ✅ After getting products (maybe brand filtered)
+      if (Array.isArray(data)) setProducts(data);
+      else if (data?.products && Array.isArray(data.products)) setProducts(data.products);
+      else setProducts([]);
+  
     } catch (error) {
       console.error("Error fetching products:", error);
       setProducts([]);
@@ -112,6 +126,7 @@ export default function ProductsClient(): JSX.Element {
       setLoading(false);
     }
   };
+  
 
   // Fetch categories from API
   const fetchCategories = async () => {
@@ -139,6 +154,7 @@ export default function ProductsClient(): JSX.Element {
   // Load data on component mount
   useEffect(() => {
     fetchProducts();
+    // fetchBrandProducts();
     fetchCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -179,6 +195,14 @@ export default function ProductsClient(): JSX.Element {
       );
     }
 
+    // brand filter
+  if (brandFilter) {
+    filtered = filtered.filter(p => {
+      const urlBrand = searchParams?.get("brand");
+      return urlBrand ? true : false;
+    });
+  }
+
     // Category filter
     if (selectedCategory !== "All") {
       filtered = filtered.filter((product) => product.categories.includes(selectedCategory));
@@ -212,7 +236,7 @@ export default function ProductsClient(): JSX.Element {
     });
 
     setFilteredProducts(filtered);
-  }, [searchTerm, selectedCategory, sortBy, minPrice, maxPrice, products]);
+  }, [searchTerm, selectedCategory, sortBy, minPrice, maxPrice, products, brandFilter]);
 
   // Handle filter changes and update URL
   const handleSearchChange = (value: string) => {
@@ -236,6 +260,20 @@ export default function ProductsClient(): JSX.Element {
     setMaxPrice(max);
     updateURL({ search: searchTerm, category: selectedCategory, sort: sortBy, min_price: min, max_price: max });
   };
+
+  const handleBrandFilter = (brandSlug: string) => {
+    setBrandFilter(brandSlug);
+  
+    const url = new URL(window.location.href);
+    if (brandSlug) url.searchParams.set("brand", brandSlug);
+    else url.searchParams.delete("brand");
+  
+    router.replace(url.pathname + url.search, { scroll: false });
+  
+     fetchProducts();
+
+  };
+  
 
   // ProductCard component inside client file for brevity
   const ProductCard = ({ product, isListView = false }: { product: Product; isListView?: boolean }) => {

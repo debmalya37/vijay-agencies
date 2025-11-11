@@ -27,6 +27,8 @@ export interface IProduct extends Document {
   discounted_price?: number; // global discounted price (if not per variant)
   variants: IVariant[];
   is_in_stock: boolean;
+  brand_id?: mongoose.Types.ObjectId;
+  brand_slug?: string;
   images?: string[];
   reviews?: IReview[];
   categories: string[];
@@ -66,6 +68,9 @@ const ProductSchema: Schema = new Schema({
   discounted_price: { type: Number, min: 0 }, // NEW
   variants: { type: [VariantSchema], required: true },
   is_in_stock: { type: Boolean, default: true },
+  brand_id: { type: Schema.Types.ObjectId, ref: "Brand" },
+brand_slug: { type: String, lowercase: true, trim: true },
+
   images: [String],
   reviews: [ReviewSchema],
   categories: [{ type: String, required: true }],
@@ -100,6 +105,8 @@ ProductSchema.index({ categories: 1 });
 ProductSchema.index({ category_ids: 1 });
 ProductSchema.index({ is_in_stock: 1 });
 ProductSchema.index({ is_featured: 1 });
+ProductSchema.index({ brand_id: 1 });
+ProductSchema.index({ brand_slug: 1 });
 ProductSchema.index({ created_at: -1 });
 ProductSchema.index({ title: "text", description: "text" });
 

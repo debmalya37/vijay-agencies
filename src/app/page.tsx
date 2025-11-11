@@ -42,6 +42,7 @@ import Navbar from '@/components/Navbar';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
 import Image from 'next/image';
+import BrandShowcase from '@/components/BrandShowcase';
 
 // Type definitions
 interface Product {
@@ -606,7 +607,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     {/* Categories Container */}
     <div className="flex items-center justify-start md:justify-evenly gap-6 pb-4 overflow-x-auto md:overflow-visible scrollbar-hide px-4 snap-x snap-mandatory">
       {!categoriesLoading &&
-        categories.slice(0, 7)
+        categories.slice(0, 8)
         .filter((_, index) => index !== 4)
         .map((category, index) => (
           <div
@@ -1506,10 +1507,10 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
   </div>
 </section>
 
-  {/* Why Choose Us + Stats Section */}
+  {/* shop by brand */}
   
 
-
+<BrandShowcase/>
 
 
       {/* About Vijay Agencies Section */}
