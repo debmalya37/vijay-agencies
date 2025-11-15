@@ -312,13 +312,23 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
   const sliderRef2 = useRef<HTMLDivElement>(null);
   const [currentSlide2, setCurrentSlide2] = useState(0);
   const [brands, setBrands] = useState<Brand[]>([]);
+  const [notFound, setNotFound] = useState(false);
   
-    useEffect(() => {
-      fetch("/api/admin/brands")
-        .then(res => res.json())
-        .then(data => setBrands(data))
-        .catch(console.error);
-    }, []);
+  useEffect(() => {
+    fetch("/api/admin/brands", { cache: "no-store" })
+      .then(res => res.json())
+      .then(data => {
+        if (data?.success) {
+          setBrands(data.brands);
+          setNotFound(false);
+        } else {
+          console.error("Brands load failed:", data);
+          setNotFound(true);
+        }
+      })
+      .catch(console.error);
+  }, []);
+  
   
 
   
@@ -1544,7 +1554,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
             scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-transparent
           "
         >
-          {brands.map((brand) => (
+          { brands?( brands.map((brand ) => (
             <Link
               href={`/Products?brand=${brand.slug}`}
               key={brand._id}
@@ -1564,7 +1574,8 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
                 {brand.name}
               </h3>
             </Link>
-          ))}
+          ))): (<h1>no data found</h1>)}
+          
         </div>
       </div>
     </section>

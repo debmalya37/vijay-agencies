@@ -22,10 +22,30 @@ async function uploadToCloudinary(buffer: Buffer, folder = "brands"): Promise<st
 }
 
 export async function GET() {
-  await dbConnect();
-  const brands = await Brand.find().populate("product_ids", "title images");
-  return NextResponse.json(brands);
+  try {
+    await dbConnect();
+
+    const brands = await Brand.find().lean();
+
+    return NextResponse.json(
+      { success: true, brands },
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
+    );
+  } catch (error) {
+    console.error("BRANDS API ERROR:", error);
+
+    return NextResponse.json(
+      { success: false, error: "Failed to load brands." },
+      { status: 500 }
+    );
+  }
 }
+
 
 export async function POST(req: Request) {
   await dbConnect();
