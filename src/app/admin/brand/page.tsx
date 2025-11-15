@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Plus, Edit, Trash, Image as ImgIcon, Package } from "lucide-react";
+import Image from "next/image";
 
 interface Product {
   _id: string;
@@ -42,10 +43,16 @@ export default function BrandManagement() {
   }, []);
 
   const fetchBrands = async () => {
-    const res = await fetch("/api/admin/brands");
+    const res = await fetch("/api/admin/brands", { cache: "no-store" });
     const data = await res.json();
-    setBrands(data);
+  
+    if (data?.success) {
+      setBrands(data.brands);
+    } else {
+      setBrands([]);
+    }
   };
+
 
   const fetchProducts = async () => {
     const res = await fetch("/api/admin/products");
@@ -166,11 +173,11 @@ export default function BrandManagement() {
             </tr>
           </thead>
           <tbody>
-            {brands.map(b => (
+            {brands &&  brands.map((b:any) => (
               <tr key={b._id} className="border-b">
                 <td className="p-3 flex items-center gap-3">
                   {b.logo ? (
-                    <img src={b.logo} className="w-10 h-10 rounded object-cover" />
+                    <Image width={b.logo.width} height={b.logo.height} alt="image" src={b.logo} className="w-10 h-10 rounded object-cover" />
                   ) : (
                     <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
                       <ImgIcon size={16} />
