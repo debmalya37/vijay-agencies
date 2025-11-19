@@ -25,6 +25,7 @@ export default function BrandManagement() {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
+  const [productSearch, setProductSearch] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -114,7 +115,10 @@ export default function BrandManagement() {
       slug: brand.slug,
       description: brand.description ?? "",
       is_active: brand.is_active,
-      product_ids: brand.product_ids?.map(p => p._id) || [],
+      product_ids: Array.isArray(brand.product_ids)
+  ? brand.product_ids.map((p: any) => (typeof p === "string" ? p : p._id))
+  : [],
+
     });
     setPreviewLogo(brand.logo ?? "");
     setShowModal(true);
@@ -177,7 +181,14 @@ export default function BrandManagement() {
               <tr key={b._id} className="border-b">
                 <td className="p-3 flex items-center gap-3">
                   {b.logo ? (
-                    <Image width={b.logo.width} height={b.logo.height} alt="image" src={b.logo} className="w-10 h-10 rounded object-cover" />
+                    <Image
+                    src={b.logo}
+                    alt="logo"
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 rounded object-cover"
+                  />
+                  
                   ) : (
                     <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
                       <ImgIcon size={16} />
@@ -252,8 +263,22 @@ export default function BrandManagement() {
               {/* Products multi-select */}
               <div>
                 <p className="font-medium mb-2 text-sm">Select Products</p>
+
+                {/* Search Input */}
+  <input
+    type="text"
+    placeholder="Search products..."
+    className="w-full border p-2 rounded mb-2"
+    value={productSearch}
+    onChange={(e) => setProductSearch(e.target.value)}
+  />
                 <div className="border rounded p-2 h-40 overflow-y-auto grid grid-cols-2 gap-2">
-                  {products.map(p => {
+                {products
+  .filter(p =>
+    p.title.toLowerCase().includes(productSearch.toLowerCase())
+  )
+  .map(p => {
+
                     const checked = formData.product_ids.includes(p._id);
                     return (
                       <label key={p._id} className="text-sm flex items-center gap-2 cursor-pointer">
