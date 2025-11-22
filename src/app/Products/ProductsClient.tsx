@@ -92,40 +92,33 @@ export default function ProductsClient(): JSX.Element {
 
   // Fetch products from API
   const fetchProducts = async () => {
-    try {
-      setLoading(true);
-  
-      // Read query params from URL
-      const brand = searchParams?.get("brand");
-  
-      let url = "/api/products";
-  
-      // ✅ If brand filter exists → fetch filtered from server
-      if (brand) {
-        const params = new URLSearchParams();
-        params.set("brand", brand);
-  
-        // optional initial search pass to API if needed
-        if (searchParams?.get("search")) params.set("search", searchParams.get("search")!);
-  
-        url = `/api/products?${params.toString()}`;
-      }
-  
-      const response = await fetch(url);
-      const data = await response.json();
-  
-      // ✅ After getting products (maybe brand filtered)
-      if (Array.isArray(data)) setProducts(data);
-      else if (data?.products && Array.isArray(data.products)) setProducts(data.products);
-      else setProducts([]);
-  
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      setProducts([]);
-    } finally {
-      setLoading(false);
+  try {
+    setLoading(true);
+
+    const brand = searchParams?.get("brand");
+
+    let url = "/api/products";
+
+    // Only fetch by brand
+    if (brand) {
+      url = `/api/products?brand=${brand}`;
     }
-  };
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (Array.isArray(data)) setProducts(data);
+    else if (Array.isArray(data?.products)) setProducts(data.products);
+    else setProducts([]);
+
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    setProducts([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
   
 
   // Fetch categories from API
@@ -152,12 +145,16 @@ export default function ProductsClient(): JSX.Element {
   };
 
   // Load data on component mount
-  useEffect(() => {
-    fetchProducts();
-    // fetchBrandProducts();
-    fetchCategories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+ useEffect(() => {
+  const brand = searchParams?.get("brand");
+  fetchProducts();  // fetch with brand if exists
+}, [searchParams?.get("brand")]); // only re-fetch when brand changes
+// reload products whenever query params change
+
+useEffect(() => {
+  fetchCategories();
+}, []); // categories load once
+
 
   // Update URL when filters change
   const updateURL = (params: Record<string, string | number | boolean>) => {
@@ -245,10 +242,30 @@ export default function ProductsClient(): JSX.Element {
   };
 
   const handleCategoryChange = (value: string) => {
-    setSelectedCategory(value);
-    setShowFilters(false); // Close filters on mobile after selection
-    updateURL({ search: searchTerm, category: value, sort: sortBy, min_price: minPrice, max_price: maxPrice });
-  };
+  setSelectedCategory(value);
+  setBrandFilter(""); // reset brand filter
+  setShowFilters(false);
+
+  const url = new URL(window.location.href);
+
+  // Update search params for category
+  if (value === "All") url.searchParams.delete("category");
+  else url.searchParams.set("category", value);
+
+  // ❌ Remove brand filter when user clicks category
+  url.searchParams.delete("brand");
+
+  // Preserve current search + sort + price range
+  if (searchTerm) url.searchParams.set("search", searchTerm);
+  if (sortBy) url.searchParams.set("sort", sortBy);
+  if (minPrice) url.searchParams.set("min_price", String(minPrice));
+  if (maxPrice) url.searchParams.set("max_price", String(maxPrice));
+
+  router.replace(url.pathname + url.search, { scroll: false });
+
+  // fetchProducts();
+};
+
 
   const handleSortChange = (value: string) => {
     setSortBy(value);
@@ -536,6 +553,14 @@ export default function ProductsClient(): JSX.Element {
                   <X className="w-5 h-5" />
                 </button>
               </div>
+              <button
+  onClick={() => {
+    window.location.href = "/Products"; // hard reload + all params cleared
+  }}
+  className="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg"
+>
+  Reset Filters
+</button>
 
               <div className="flex-1 overflow-y-auto p-4 space-y-6">
                 {/* Search */}
@@ -684,6 +709,14 @@ export default function ProductsClient(): JSX.Element {
           <div className="hidden lg:block w-80 flex-shrink-0">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
               <h3 className="text-lg font-semibold mb-4">Filters</h3>
+              <button
+  onClick={() => {
+    window.location.href = "/Products"; // hard reload + all params cleared
+  }}
+  className="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg"
+>
+  Reset Filters
+</button>
 
               {/* Search */}
               <div className="mb-6">
