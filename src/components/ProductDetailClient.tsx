@@ -198,12 +198,13 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
           {/* Image Gallery */}
           <div className="space-y-4">
-            <div className="relative bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100">
-              <img
-                src={currentImages[selectedImage] || "/placeholder.png"}
-                alt={product.title}
-                className="w-full h-96 object-cover"
-              />
+            <div className="relative bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center justify-center">
+  <img
+    src={currentImages[selectedImage] || "/placeholder.png"}
+    alt={product.title}
+    className="max-w-full h-auto max-h-[70vh] object-contain"
+  />
+
               {discount > 0 && (
                 <span className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                   -{discount}% OFF
@@ -240,7 +241,14 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
                       selectedImage === i ? "border-blue-500" : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
-                    <img src={img || "/placeholder.png"} alt={`View ${i + 1}`} className="w-full h-full object-cover" />
+                    <div className="w-20 h-20 flex items-center justify-center bg-white rounded-lg">
+  <img
+    src={img || "/placeholder.png"}
+    alt={`View ${i + 1}`}
+    className="max-w-full max-h-full object-contain"
+  />
+</div>
+
                   </button>
                 ))}
               </div>
