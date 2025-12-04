@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Search } from "lucide-react";
+import { createPortal } from "react-dom";
 
 interface Suggestion {
   _id: string;
@@ -16,8 +16,11 @@ export default function ProductSearch() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
+  const [rect, setRect] = useState<DOMRect | null>(null);
+
   const boxRef = useRef<HTMLDivElement>(null);
 
+  /* ------------------ Fetch Suggestions ------------------ */
   useEffect(() => {
     const timer = setTimeout(async () => {
       if (query.length < 2) {
@@ -33,12 +36,31 @@ export default function ProductSearch() {
       } finally {
         setLoading(false);
       }
-    }, 300); // debounce
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Close on outside click
+  /* ------------------ Track Position ------------------ */
+  useEffect(() => {
+    const updatePosition = () => {
+      if (boxRef.current) {
+        setRect(boxRef.current.getBoundingClientRect());
+      }
+    };
+
+    updatePosition();
+
+    window.addEventListener("scroll", updatePosition, { passive: true });
+    window.addEventListener("resize", updatePosition);
+
+    return () => {
+      window.removeEventListener("scroll", updatePosition);
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, []);
+
+  /* ------------------ Outside Click Close ------------------ */
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (!boxRef.current?.contains(e.target as Node)) {
@@ -50,48 +72,77 @@ export default function ProductSearch() {
   }, []);
 
   return (
-    <div ref={boxRef} className="relative w-full max-w-xl mx-auto">
-      {/* Search Input */}
-      <div className="flex items-center gap-2 bg-white border rounded-xl px-4 py-3 shadow-sm">
-        <Search className="w-5 h-5 text-gray-500" />
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search products..."
-          className="w-full outline-none text-gray-800"
-        />
+    <>
+      {/* Search Box */}
+      <div ref={boxRef} className="relative w-full max-w-xl mx-auto">
+        <div className="flex items-center gap-2 bg-white border rounded-xl px-4 py-3 shadow-sm">
+          <Search className="w-5 h-5 text-gray-500" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => boxRef.current && setRect(boxRef.current.getBoundingClientRect())}
+            placeholder="Search products..."
+            className="w-full outline-none text-gray-800 bg-transparent"
+          />
+        </div>
       </div>
 
       {/* Suggestions */}
-      {results.length > 0 && (
-        <div className="absolute left-0 right-0 mt-2 bg-white rounded-xl border shadow-lg z-50 overflow-hidden">
-          {results.map((item) => (
-            <Link
-              href={`/Products/${item._id}`}
-              key={item._id}
-              className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition"
-              onClick={() => setResults([])}
-            >
-              <img
-                src={item.images?.[0] || "/placeholder.png"}
-                alt={item.title}
-                width={40}
-                height={40}
-                className="rounded-lg object-cover"
-              />
-              <span className="text-sm font-medium text-gray-800">
-                {item.title}
-              </span>
-            </Link>
-          ))}
-        </div>
-      )}
+      {rect &&
+        results.length > 0 &&
+        typeof window !== "undefined" &&
+        createPortal(
+          <div
+            style={{
+              position: "fixed",
+              top: rect.bottom + 8,
+              left: rect.left,
+              width: rect.width,
+              zIndex: 999999,
+            }}
+            className="bg-white rounded-xl border shadow-2xl overflow-hidden"
+          >
+            {results.map((item) => (
+              <Link
+                href={`/Products/${item._id}`}
+                key={item._id}
+                className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition"
+                onClick={() => setResults([])}
+              >
+                <img
+                  src={item.images?.[0] || "/placeholder.png"}
+                  alt={item.title}
+                  width={40}
+                  height={40}
+                  className="rounded-lg object-cover"
+                />
+                <span className="text-sm font-medium text-gray-800">
+                  {item.title}
+                </span>
+              </Link>
+            ))}
+          </div>,
+          document.body
+        )}
 
-      {loading && (
-        <div className="absolute mt-2 w-full bg-white text-center py-3 text-sm text-gray-500 rounded-xl shadow">
-          Searching...
-        </div>
-      )}
-    </div>
+      {/* Loading */}
+      {rect &&
+        loading &&
+        createPortal(
+          <div
+            style={{
+              position: "fixed",
+              top: rect.bottom + 8,
+              left: rect.left,
+              width: rect.width,
+              zIndex: 999998,
+            }}
+            className="bg-white text-center py-3 text-sm text-gray-500 rounded-xl shadow"
+          >
+            Searching…
+          </div>,
+          document.body
+        )}
+    </>
   );
 }

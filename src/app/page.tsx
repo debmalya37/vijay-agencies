@@ -611,7 +611,8 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
+
       <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
       
       {/* <Navbar/> */}
@@ -694,8 +695,10 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
   </div>
 </section>
 
-<section className="bg-white py-6 px-3 overflow-x-hidden">
-  <div className="max-w-full">
+<section className="bg-white py-6 px-3 overflow-x-hidden z-[100000]
+">
+  <div className="max-w-full z-[100000]
+">
     <ProductSearch />
   </div>
 </section>
@@ -703,7 +706,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
 
       {/* Hero Banner Section - Fixed for mobile */}
-      <section className="relative h-[30vh] sm:h-[60vh] lg:h-[80vh] overflow-hidden scroll-reveal">
+      <section className="relative h-[30vh] sm:h-[60vh] lg:h-[80vh] scroll-reveal">
   {bannersLoading && (
     <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
       <div className="text-center">
