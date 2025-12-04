@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/components/cart/CartProvider";
+import placeholder from "../../../public/placeholder.jpg"
 import {
   Search,
   Filter,
@@ -315,11 +316,11 @@ useEffect(() => {
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
             <div className="relative w-full sm:w-48 h-48 sm:h-32 flex-shrink-0">
               <img onClick={navigateToDetail}
-                src={product.images?.[0] || "/placeholder.png"}
+                src={product.images?.[0] || placeholder.src}
                 alt={product.title}
                 className="w-full h-full object-cover rounded-lg cursor-pointer"
                 onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src = "/placeholder.png";
+                  (e.currentTarget as HTMLImageElement).src = placeholder.src;
                 }}
               />
               {discount > 0 && (
@@ -433,11 +434,11 @@ useEffect(() => {
 
         <div className="relative aspect-[4/3] bg-white flex items-center justify-center overflow-hidden">
           <img onClick={navigateToDetail}
-            src={product.images?.[0] || "/placeholder.png"}
+            src={product.images?.[0] || placeholder.src}
     alt={product.title}
     className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105 cursor-pointer"
     onError={(e) => {
-      (e.currentTarget as HTMLImageElement).src = "/placeholder.png";
+      (e.currentTarget as HTMLImageElement).src = placeholder.src;
     }}
   />
           {discount > 0 && (
