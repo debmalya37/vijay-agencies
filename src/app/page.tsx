@@ -43,6 +43,7 @@ import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
 import Image from 'next/image';
 import BrandShowcase from '@/components/BrandShowcase';
+import ProductSearch from '@/components/ProductSearch';
 
 // Type definitions
 interface Product {
@@ -618,7 +619,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
       {/* Shop by Category Section */}
       {/* Shop by Category Section */}
       <section className="bg-white py-10 text-black">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
     {/* Section Title */}
     <div className="text-center mb-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-2">Shop by Category</h2>
@@ -631,7 +632,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     </div>
 
     {/* Categories Container */}
-    <div className="flex items-center justify-start md:justify-evenly gap-6 pb-4 overflow-x-auto md:overflow-visible scrollbar-hide px-4 snap-x snap-mandatory">
+    <div className="flex items-center justify-start md:justify-evenly gap-6 pb-4 overflow-x-auto md:overflow-visible scrollbar-hide px-3 snap-x snap-mandatory">
       {!categoriesLoading &&
         categories.slice(0, 8)
         .filter((_, index) => index !== 4)
@@ -693,6 +694,11 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
   </div>
 </section>
 
+<section className="bg-white py-6 px-3 overflow-x-hidden">
+  <div className="max-w-full">
+    <ProductSearch />
+  </div>
+</section>
 
 
 
@@ -710,7 +716,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
   {bannersError && !bannersLoading && (
     <div className="w-full h-full bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 flex items-center justify-center text-white relative overflow-hidden">
       <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-      <div className="text-center px-4 relative z-10 animate-slide-in-bottom">
+      <div className="text-center px-3 relative z-10 animate-slide-in-bottom">
         <h1 className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-bold mb-4 leading-tight">
           Vijay Agencies
         </h1>
@@ -811,7 +817,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
        {/* Featured Products */}
        <section className="py-16 sm:py-20 bg-white scroll-reveal">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Featured Products
@@ -903,9 +909,9 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
           <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 via-blue-900/60 to-indigo-900/80"></div>
         </div>
         
-        <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
+        <div className="relative h-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center">
           <div className="max-w-3xl">
-            <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-md text-white rounded-full text-sm font-medium mb-4">
+            <span className="inline-block px-3 py-2 bg-white/20 backdrop-blur-md text-white rounded-full text-sm font-medium mb-4">
               Professional Housekeeping
             </span>
             <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight">
@@ -934,10 +940,10 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
       </section>
 
       <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-12">
-            <span className="px-4 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium inline-flex items-center gap-2">
+            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium inline-flex items-center gap-2">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
               </svg>
@@ -1080,9 +1086,9 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 {/* shop by brand */}
   
 
-<section className="px-4 md:px-12 py-10 bg-white shadow-md border-spacing-2 rounded-xl mt-10">
+<section className="px-3 md:px-12 py-10 bg-white shadow-md border-spacing-2 rounded-xl mt-10">
       <div className="text-center mb-10">
-        <span className="px-4 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium font-sans">
+        <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium font-sans">
           Popular Brands
         </span>
         <h2 className="text-3xl md:text-4xl font-bold mt-4 font-serif ">
@@ -1127,7 +1133,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     
       {/* Why Choose Vijay Agencies Section - NEW */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white scroll-reveal rounded-2xl m-2 sm:m-4 lg:m-10 shadow-md shadow-gray-300 overflow-hidden">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
     {/* Heading */}
     <div className="text-center mb-10 sm:mb-12 lg:mb-16 animate-fade-in-up">
       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 font-serif">
@@ -1140,7 +1146,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
     {/* Why Choose Vijay Agencies – Highlights Section */}
     <div className="bg-[#FFF2F2] relative overflow-hidden rounded-2xl shadow-lg mb-12 sm:mb-16 animate-fade-in-up">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-12 sm:py-16">
         {/* Inner Heading */}
         <div className="text-center mb-10 sm:mb-12 text-[#E23744]">
           {/* <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 font-serif">
@@ -1295,9 +1301,9 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
         <div className="absolute inset-0 bg-gradient-to-r from-green-900/90 via-emerald-800/80 to-green-900/90"></div>
       </div>
       
-      <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
+      <div className="relative h-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center">
         <div className="max-w-3xl">
-          <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-md text-white rounded-full text-sm font-medium mb-4 animate-fade-in">
+          <span className="inline-block px-3 py-2 bg-white/20 backdrop-blur-md text-white rounded-full text-sm font-medium mb-4 animate-fade-in">
             Premium Cleaning Solutions
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight animate-slide-up">
@@ -1329,191 +1335,164 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
       
       {/* Feature Badges */}
       <div className="absolute bottom-5 left-1/2 -translate-x-1/2 hidden lg:flex gap-4">
-        <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2 animate-fade-in">
+        <div className="bg-white/10 backdrop-blur-md px-3 py-2 rounded-full border border-white/20 flex items-center gap-2 animate-fade-in">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
           <span className="text-white text-sm font-medium">Eco-Friendly</span>
         </div>
-        <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2 animate-fade-in-delay">
+        <div className="bg-white/10 backdrop-blur-md px-3 py-2 rounded-full border border-white/20 flex items-center gap-2 animate-fade-in-delay">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
           <span className="text-white text-sm font-medium">Fast Acting</span>
         </div>
-        <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2 animate-fade-in-delay-2">
+        <div className="bg-white/10 backdrop-blur-md px-3 py-2 rounded-full border border-white/20 flex items-center gap-2 animate-fade-in-delay-2">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
           <span className="text-white text-sm font-medium">Professional Grade</span>
         </div>
       </div>
     </section>
 
-    <section className="py-10 md:py-20 bg-gradient-to-br from-green-100 to-emerald-50 rounded-xl mx-2 md:mx-5 mt-2">
-    <div className="max-w-7xl mx-auto px-2 md:px-6 lg:px-8">
-      {/* Header */}
-      <div className="text-center mb-12">
-        <span className="px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium inline-flex items-center gap-2">
-          <Sparkles className="w-4 h-4" />
-          Cleaning Products
-        </span>
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mt-6 mb-4 font-serif">
-          Cleaning Essentials
-        </h2>
-        <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
-          Powerful cleaning solutions for kitchens, bathrooms, and commercial use
-        </p>
+    <section className="py-8 sm:py-10 lg:py-20 bg-gradient-to-br from-green-100 to-emerald-50 rounded-xl mx-2 md:mx-5 mt-2 overflow-x-hidden">
+  <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+
+    {/* Header */}
+    <div className="text-center mb-8 sm:mb-10">
+      <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs sm:text-sm font-medium inline-flex items-center gap-2">
+        <Sparkles className="w-4 h-4" />
+        Cleaning Products
+      </span>
+
+      <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gray-900 mt-4 mb-3 font-serif">
+        Cleaning Essentials
+      </h2>
+
+      <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto">
+        Powerful cleaning solutions for kitchens, bathrooms, and commercial use
+      </p>
+    </div>
+
+    {/* Layout */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center">
+
+      {/* Slider Column */}
+      <div className="relative order-1">
+
+        <div className="relative rounded-2xl bg-[#EF4F5F] p-3 sm:p-4 shadow-lg overflow-hidden">
+
+          {/* Slides */}
+          <div
+            ref={sliderRef2}
+            className="flex w-full overflow-hidden scroll-smooth"
+          >
+            {Array.from({ length: totalSlides }).map((_, slideIndex) => {
+              const start = slideIndex * itemsPerSlide;
+              const slideItems = cleaningProducts.slice(start, start + itemsPerSlide);
+
+              return (
+                <div
+                  key={slideIndex}
+                  className="w-full flex-shrink-0 px-1"
+                >
+                  <div
+                    className={`grid gap-4 ${
+                      itemsPerSlide === 1 ? "grid-cols-1" : "grid-cols-2"
+                    }`}
+                  >
+                    {slideItems.map((product) => (
+                      <div key={product._id} className="w-full">
+                        <ProductCard product={product} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Arrows */}
+          {cleaningProducts.length > 1 && (
+            <>
+              <button
+                onClick={handlePrev}
+                className="absolute left-1 top-1/2 -translate-y-1/2 bg-white/95 p-2 rounded-full shadow-md active:scale-95 transition"
+              >
+                <ChevronLeft className="w-5 h-5 text-gray-700" />
+              </button>
+
+              <button
+                onClick={handleNext}
+                className="absolute right-1 top-1/2 -translate-y-1/2 bg-white/95 p-2 rounded-full shadow-md active:scale-95 transition"
+              >
+                <ChevronRight className="w-5 h-5 text-gray-700" />
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Dots */}
+        {cleaningProducts.length > 1 && (
+          <div className="flex justify-center gap-2 mt-4">
+            {Array.from({ length: totalSlides }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => scrollToSlide(i)}
+                className={`h-2 rounded-full transition-all ${
+                  i === currentSlide ? "w-7 bg-green-600" : "w-2 bg-gray-300"
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Two Column Layout */}
-      <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-      {/* Left Column - Product Slider */}
-      <div className="relative">
-  {/* Slider Container */}
-  <div className="relative rounded-2xl bg-[#EF4F5F] backdrop-blur-sm p-4 shadow-xl overflow-hidden">
-    {/* Inner scroll container */}
-    <div
-      ref={sliderRef2}
-      className="flex overflow-x-hidden scroll-smooth transition-transform duration-500"
-    >
-      {Array.from({ length: totalSlides }).map((_, slideIndex) => {
-        const start = slideIndex * itemsPerSlide;
-        const slideItems = cleaningProducts.slice(start, start + itemsPerSlide);
+      {/* Image Column */}
+      <div className="relative order-2">
 
-        return (
-          <div
-            key={slideIndex}
-            className={`
-              flex-shrink-0
-              w-full
-              px-2 sm:px-4
-            `}
-            style={{ boxSizing: "border-box" }}
-          >
-            <div
-              className={`
-                grid 
-                ${itemsPerSlide === 1 ? "grid-cols-1" : "grid-cols-2"} 
-                gap-4 sm:gap-5 md:gap-6
-              `}
-            >
-              {slideItems.map((product) => (
-                <div
-                  key={product._id}
-                  className="w-full flex justify-center items-stretch"
-                >
-                  <ProductCard product={product} />
-                </div>
-              ))}
-            </div>
+        <div className="rounded-2xl overflow-hidden shadow-xl">
+          <div className="aspect-[4/3] sm:aspect-[4/5] lg:aspect-square">
+            <img
+              src="https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=800"
+              alt="Professional cleaning products"
+              className="w-full h-full object-cover"
+            />
           </div>
-        );
-      })}
+
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-4 sm:p-6 flex flex-col justify-end">
+            <span className="inline-block px-3 py-1 bg-green-500 text-white text-xs font-semibold rounded-full mb-2">
+              Professional Grade
+            </span>
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-2">
+              Premium Quality Guaranteed
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-200">
+              Trusted by thousands of businesses nationwide
+            </p>
+          </div>
+        </div>
+
+      </div>
     </div>
 
-    {/* Navigation Arrows */}
-    {cleaningProducts.length > 1 && (
-      <>
+    {/* CTA */}
+    {cleaningProducts.length > 2 && (
+      <div className="text-center mt-8 sm:mt-12">
         <button
-          onClick={handlePrev}
-          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
-          aria-label="Previous products"
+          onClick={() => (window.location.href = "/Products?category=Cleaning")}
+          className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-base font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition"
         >
-          <ChevronLeft className="w-6 h-6 text-gray-700" />
+          View All Cleaning Products ({cleaningProducts.length})
         </button>
-        <button
-          onClick={handleNext}
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
-          aria-label="Next products"
-        >
-          <ChevronRight className="w-6 h-6 text-gray-700" />
-        </button>
-      </>
+      </div>
     )}
+
   </div>
+</section>
 
-  {/* Slide Indicators */}
-  {cleaningProducts.length > 1 && (
-    <div className="flex justify-center gap-2 mt-6">
-      {Array.from({ length: totalSlides }).map((_, index) => (
-        <button
-          key={index}
-          onClick={() => scrollToSlide(index)}
-          className={`h-2 rounded-full transition-all duration-300 ${
-            index === currentSlide ? "w-8 bg-green-600" : "w-2 bg-gray-300"
-          }`}
-          aria-label={`Go to slide ${index + 1}`}
-        />
-      ))}
-    </div>
-  )}
-</div>
-
-
-
-       {/* Right Column - Image Container */}
-       <div className="relative">
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl group">
-            {/* Main Image */}
-            <div className="aspect-[4/5] lg:aspect-square overflow-hidden bg-gradient-to-br from-green-100 to-emerald-200">
-              <img
-                src="https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=800"
-                alt="Professional cleaning products"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            </div>
-
-            {/* Overlay Content */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-8">
-              <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                <span className="inline-block px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full mb-3">
-                  Professional Grade
-                </span>
-                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-                  Premium Quality Guaranteed
-                </h3>
-                <p className="text-gray-200 text-sm sm:text-base mb-4 opacity-90">
-                  Trusted by thousands of businesses nationwide for superior cleaning performance
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <div className="flex items-center gap-2 text-white">
-                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <span className="text-sm font-medium">Eco-Friendly</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-white">
-                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <span className="text-sm font-medium">Fast Acting</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-    </div>
-
-      {/* View All Button */}
-      {cleaningProducts.length > 2 && (
-        <div className="text-center mt-12 lg:mt-16">
-          <button
-            onClick={() => (window.location.href = "/Products?category=Cleaning")}
-            className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-4 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
-          >
-            View All Cleaning Products ({cleaningProducts.length} total)
-            <ArrowRight className="w-5 h-5" />
-          </button>
-        </div>
-      )}
-    </div>
-  </section>
   </>
 )}
 
       {/* Company Stats Section
       <section className="py-12 sm:py-16 bg-white scroll-reveal">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {companyStats.map((stat, index) => {
               const Icon = stat.icon;
@@ -1531,9 +1510,9 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
         </div>
       </section> */}
 
-      <section className="px-4 md:px-12 py-10 bg-white shadow-md border-spacing-2 rounded-xl">
+      <section className="px-3 md:px-12 py-10 bg-white shadow-md border-spacing-2 rounded-xl">
   <div className="text-center mb-10">
-    <span className="px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium font-sans">
+    <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium font-sans">
       Shop by Concern
     </span>
     <h2 className="text-3xl md:text-4xl font-bold mt-4 font-serif ">
@@ -1587,7 +1566,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
       {/* About Vijay Agencies Section */}
       <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 scroll-reveal mt-5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="space-y-6 lg:space-y-8 animate-fade-in-left">
               <div>
@@ -1699,7 +1678,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
       {/* Testimonials */}
       <section className="py-16 sm:py-20 bg-white scroll-reveal">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-serif">What Our Clients Say</h2>
             <p className="text-gray-600 max-w-3xl mx-auto text-base sm:text-lg lg:text-xl leading-relaxed">Trusted by hotels and businesses across Jaipur</p>
@@ -1744,11 +1723,11 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     <div className="absolute inset-0 bg-gradient-to-r from-red-900/95 via-red-800/90 to-rose-900/95"></div>
   </div>
   
-  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+  <div className="relative max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-16 lg:py-20">
     <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
       {/* Left Column - Banner Content */}
       <div className="text-white">
-        <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-sm font-medium mb-4 animate-fade-in">
+        <span className="inline-block px-3 py-2 bg-white/20 backdrop-blur-md rounded-full text-sm font-medium mb-4 animate-fade-in">
           Get In Touch
         </span>
         <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold mb-4 leading-tight animate-slide-up">
@@ -1794,15 +1773,15 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
         {/* Feature Badges */}
         <div className="flex flex-wrap gap-3">
-          <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2">
+          <div className="bg-white/10 backdrop-blur-md px-3 py-2 rounded-full border border-white/20 flex items-center gap-2">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             <span className="text-sm font-medium">Quick Support</span>
           </div>
-          <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2">
+          <div className="bg-white/10 backdrop-blur-md px-3 py-2 rounded-full border border-white/20 flex items-center gap-2">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             <span className="text-sm font-medium">Fast Delivery</span>
           </div>
-          <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2">
+          <div className="bg-white/10 backdrop-blur-md px-3 py-2 rounded-full border border-white/20 flex items-center gap-2">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             <span className="text-sm font-medium">500+ Clients</span>
           </div>
@@ -1829,32 +1808,32 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
                 <input
                   type="text"
                   placeholder="Your Name"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm text-sm"
+                  className="w-full px-3 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm text-sm"
                 />
                 <input
                   type="tel"
                   placeholder="Phone Number"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm text-sm"
+                  className="w-full px-3 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm text-sm"
                 />
               </div>
               
               <input
                 type="email"
                 placeholder="Email Address"
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm text-sm"
+                className="w-full px-3 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm text-sm"
               />
               
               <input
                 type="text"
                 placeholder="Business Name"
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm text-sm"
+                className="w-full px-3 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 bg-white/90 backdrop-blur-sm text-sm"
               />
               
               <div className="relative">
                 <input
                   title='category'
                   placeholder='category / product' 
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 bg-white/90 backdrop-blur-sm appearance-none cursor-pointer text-sm"
+                  className="w-full px-3 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 bg-white/90 backdrop-blur-sm appearance-none cursor-pointer text-sm"
                 />
                   {/* <option value="">Select Product Category</option>
                   <option value="cleaning">Cleaning Products</option>
@@ -1871,7 +1850,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
               <textarea
                 placeholder="Tell us about your requirements..."
                 rows={3}
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none bg-white/90 backdrop-blur-sm text-sm"
+                className="w-full px-3 py-3 rounded-xl border-2 border-gray-200 focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none bg-white/90 backdrop-blur-sm text-sm"
               ></textarea>
               
               <button

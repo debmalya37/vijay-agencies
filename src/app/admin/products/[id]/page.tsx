@@ -549,11 +549,14 @@ export default function EditProductPage() {
                         <div className="flex flex-wrap gap-3">
                           {(variant.images || []).map((img, imgIdx) => (
                             <div key={imgIdx} className="relative group">
-                              <img
-                                src={img}
-                                alt={`Variant ${i + 1} image ${imgIdx + 1}`}
-                                className="w-20 h-20 object-cover rounded-lg border border-gray-200"
-                              />
+                              <div className="w-20 max-h-20 flex items-center justify-center bg-white border rounded-lg">
+  <img
+    src={img}
+    alt=""
+    className="max-w-full h-auto object-contain"
+  />
+</div>
+
                               <button
                                 onClick={() => removeImage(imgIdx, true, i)}
                                 className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
@@ -602,11 +605,14 @@ export default function EditProductPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {(form.images || []).map((img, i) => (
                     <div key={i} className="relative group">
-                      <img
-                        src={img}
-                        alt={`Product image ${i + 1}`}
-                        className="w-full aspect-square object-cover rounded-lg border border-gray-200"
-                      />
+                      <div className="w-full flex items-center justify-center bg-gray-50 rounded-lg border">
+  <img
+    src={img}
+    alt={`Product image ${i + 1}`}
+    className="max-w-full h-auto object-contain rounded-lg"
+  />
+</div>
+
                       <button
                         onClick={() => removeImage(i)}
                         className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
@@ -616,7 +622,7 @@ export default function EditProductPage() {
                     </div>
                   ))}
                   
-                  <label className="aspect-square flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors">
+                  <label className="min-h-[160px] w-full flex flex-col items-center justify-center border-2 border-dashed rounded-lg border-gray-300  cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors">
                     <input
                       type="file"
                       accept="image/*"
