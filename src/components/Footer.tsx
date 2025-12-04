@@ -237,7 +237,7 @@ export default function Footer(): JSX.Element {
 
               <nav aria-label="footer legal" className="flex gap-3">
                 <Link href="/terms-and-conditions" className="text-gray-300 hover:text-white">Terms & Conditions</Link>
-                <Link href="/privacy" className="text-gray-300 hover:text-white">Privacy POlicy</Link>
+                <Link href="/privacy" className="text-gray-300 hover:text-white">Privacy Policy</Link>
                 <Link href="/contact-us" className="text-gray-300 hover:text-white">Customer Support</Link>
               </nav>
             </div>
