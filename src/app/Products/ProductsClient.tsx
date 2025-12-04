@@ -306,7 +306,12 @@ useEffect(() => {
 
     if (isListView) {
       return (
-        <div onClick={navigateToDetail} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-lg transition-all duration-300 hover:border-blue-200">
+        <div
+  onClick={navigateToDetail}
+  className="h-full flex flex-col bg-white rounded-xl shadow-sm border border-gray-100 
+             overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-blue-200 group"
+>
+
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
             <div className="relative w-full sm:w-48 h-48 sm:h-32 flex-shrink-0">
               <img onClick={navigateToDetail}
@@ -420,16 +425,21 @@ useEffect(() => {
 
     // Grid card
     return (
-      <div onClick={navigateToDetail} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-blue-200 group">
-        <div className="relative">
+      <div
+  onClick={navigateToDetail}
+  className="h-full flex flex-col bg-white rounded-xl shadow-sm border border-gray-100 
+             overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-blue-200 group"
+>
+
+        <div className="relative aspect-[4/3] bg-white flex items-center justify-center overflow-hidden">
           <img onClick={navigateToDetail}
             src={product.images?.[0] || "/placeholder.png"}
-            alt={product.title}
-            className="w-full h-48 sm:h-56 object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = "/placeholder.png";
-            }}
-          />
+    alt={product.title}
+    className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105 cursor-pointer"
+    onError={(e) => {
+      (e.currentTarget as HTMLImageElement).src = "/placeholder.png";
+    }}
+  />
           {discount > 0 && (
             <span className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">-{discount}%</span>
           )}
@@ -448,7 +458,7 @@ useEffect(() => {
           </div> */}
         </div>
 
-        <div className="p-3 sm:p-5">
+        <div className="p-3 sm:p-5 flex flex-col flex-1">
           <div className="flex flex-wrap gap-1 mb-2">
             {product.categories.slice(0, 2).map((cat) => (
               <button
@@ -884,7 +894,10 @@ useEffect(() => {
                 <p className="text-gray-600">Loading products...</p>
               </div>
             ) : (
-              <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6" : "space-y-4"}>
+              <div className={viewMode === "grid" 
+  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 items-stretch"
+  : "space-y-4"}>
+
                 {filteredProducts.map((product) => (
                   <ProductCard key={product._id} product={product} isListView={viewMode === "list"} />
                 ))}
