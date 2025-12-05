@@ -616,13 +616,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
       <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
       
       {/* <Navbar/> */}
-      <section className="bg-white py-6 px-3 overflow-x-hidden z-[100000]
-">
-  <div className="max-w-full z-[100000]
-">
-    <ProductSearch />
-  </div>
-</section>
+
       {/* Shop by Category Section */}
       {/* Shop by Category Section */}
       <section className="bg-white py-10 text-black">
@@ -701,13 +695,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
   </div>
 </section>
 
-{/* <section className="bg-white py-6 px-3 overflow-x-hidden z-[100000]
-">
-  <div className="max-w-full z-[100000]
-">
-    <ProductSearch />
-  </div>
-</section> */}
+
 
 
 
