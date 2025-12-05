@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 
 interface Suggestion {
   _id: string;
@@ -17,7 +18,7 @@ export default function ProductSearch() {
   const [results, setResults] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [rect, setRect] = useState<DOMRect | null>(null);
-
+const router = useRouter();
   const boxRef = useRef<HTMLDivElement>(null);
 
   /* ------------------ Fetch Suggestions ------------------ */
@@ -88,61 +89,88 @@ export default function ProductSearch() {
       </div>
 
       {/* Suggestions */}
-      {rect &&
-        results.length > 0 &&
-        typeof window !== "undefined" &&
-        createPortal(
-          <div
-            style={{
-              position: "fixed",
-              top: rect.bottom + 8,
-              left: rect.left,
-              width: rect.width,
-              zIndex: 999999,
-            }}
-            className="bg-white rounded-xl border shadow-2xl overflow-hidden"
-          >
-            {results.map((item) => (
-              <Link
-                href={`/Products/${item._id}`}
-                key={item._id}
-                className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition"
-                onClick={() => setResults([])}
-              >
-                <img
-                  src={item.images?.[0] || "/placeholder.png"}
-                  alt={item.title}
-                  width={40}
-                  height={40}
-                  className="rounded-lg object-cover"
-                />
-                <span className="text-sm font-medium text-gray-800">
-                  {item.title}
-                </span>
-              </Link>
-            ))}
-          </div>,
-          document.body
-        )}
+    
+        {rect &&
+  results.length > 0 &&
+  typeof window !== "undefined" &&
+  createPortal(
+    <div
+      onMouseDown={(e) => e.stopPropagation()}   // <— IMPORTANT FIX HERE
+      style={{
+        position: "fixed",
+        top: rect.bottom + 8,
+        left: rect.left,
+        width: rect.width,
+        zIndex: 999999,
+      }}
+      className="bg-white rounded-xl border shadow-2xl overflow-hidden"
+    >
+      {results.map((item) => (
+  <div
+    key={item._id}
+    onClick={() => {
+      setResults([]);
+      router.push(`/Products/${item._id}`);
+    }}
+    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition cursor-pointer"
+  >
+    <img
+      src={item.images?.[0] || "/placeholder.png"}
+      alt={item.title}
+      width={40}
+      height={40}
+      className="rounded-lg object-cover"
+    />
+    <span className="text-sm font-medium text-gray-800">
+      {item.title}
+    </span>
+  </div>
+))}
+    </div>,
+    document.body
+  )}
+
 
       {/* Loading */}
       {rect &&
         loading &&
         createPortal(
-          <div
-            style={{
-              position: "fixed",
-              top: rect.bottom + 8,
-              left: rect.left,
-              width: rect.width,
-              zIndex: 999998,
-            }}
-            className="bg-white text-center py-3 text-sm text-gray-500 rounded-xl shadow"
-          >
-            Searching…
-          </div>,
-          document.body
-        )}
+  <div
+    onMouseDown={(e) => e.stopPropagation()}   // <— Fix
+    style={{
+      position: "fixed",
+      top: rect.bottom + 8,
+      left: rect.left,
+      width: rect.width,
+      zIndex: 999999,
+    }}
+    className="bg-white rounded-xl border shadow-2xl overflow-hidden"
+  >
+    {results.map((item) => (
+  <div
+    key={item._id}
+    onClick={() => {
+      setResults([]);
+      router.push(`/Products/${item._id}`);
+    }}
+    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition cursor-pointer"
+  >
+    <img
+      src={item.images?.[0] || "/placeholder.png"}
+      alt={item.title}
+      width={40}
+      height={40}
+      className="rounded-lg object-cover"
+    />
+    <span className="text-sm font-medium text-gray-800">
+      {item.title}
+    </span>
+  </div>
+))}
+  </div>,
+  document.body
+)
+}
     </>
   );
 }
