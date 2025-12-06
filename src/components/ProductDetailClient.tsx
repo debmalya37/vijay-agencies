@@ -432,7 +432,10 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
                 <span className="hidden sm:inline">Wishlist</span>
               </button> */}
             </div>
+ 
 
+
+ 
             {/* Features */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center gap-2 text-sm">
