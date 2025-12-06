@@ -167,6 +167,28 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
   const cartItemId = `${product._id}::${currentSizeKey}`;
   const isInCart = useMemo(() => cartItems.some((ci) => ci.id === cartItemId), [cartItems, cartItemId]);
 
+  const handleShare = async () => {
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  const shareData = {
+    title: product.title,
+    text: product.description || "Check out this product!",
+    url: shareUrl,
+  };
+
+  try {
+    if (navigator.share) {
+      // Mobile & supported browsers
+      await navigator.share(shareData);
+    } else {
+      // Fallback: copy link
+      await navigator.clipboard.writeText(shareUrl);
+      alert("Product link copied to clipboard!");
+    }
+  } catch (err) {
+    console.error("Share failed:", err);
+  }
+};
+
   const handleAddToCart = () => {
     if (product.variants && product.variants.length > 0 && !selectedVariant) {
       alert("Please select a variant/size first.");
@@ -216,18 +238,20 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
                 </span>
               )}
               <div className="absolute top-4 right-4 flex gap-2">
-                <button
+                {/* <button
                   title="like"
                   className="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-colors"
                 >
                   <Heart className="w-5 h-5" />
-                </button>
+                </button> */}
                 <button
-                  title="share"
-                  className="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-colors"
-                >
-                  <Share2 className="w-5 h-5" />
-                </button>
+  title="Share product"
+  onClick={handleShare}
+  className="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-colors"
+>
+  <Share2 className="w-5 h-5" />
+</button>
+
               </div>
             </div>
 
@@ -403,12 +427,15 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
                   : "Add to Cart"}
               </button>
 
-              <button className="px-6 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              {/* <button className="px-6 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                 <Heart className="w-5 h-5 mx-auto sm:mr-2" />
                 <span className="hidden sm:inline">Wishlist</span>
-              </button>
+              </button> */}
             </div>
+ 
 
+
+ 
             {/* Features */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center gap-2 text-sm">
