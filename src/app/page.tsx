@@ -104,21 +104,21 @@ const testimonials = [
     name: 'Rajesh Sharma',
     role: 'Hotel Manager',
     company: 'Grand Palace Hotel, Jaipur',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80',
+    image: 'https://images.unsplash.com/photo-1607346256330-dee7af15f7c5?q=80&w=1206&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     text: 'Vijay Agencies has been our trusted partner for over 5 years. Their cleaning products are top quality and delivery is always on time.'
   },
   {
     name: 'Priya Agarwal',
     role: 'Procurement Head',
     company: 'Rajputana Hotels',
-    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b647?w=80',
+    image: 'https://images.unsplash.com/photo-1573165850883-9b0e18c44bd2?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     text: 'Excellent service and competitive prices for bulk orders. Their team understands our hotel requirements perfectly.'
   },
   {
     name: 'Amit Kumar',
     role: 'Operations Manager',
     company: 'Heritage Resort, Jaipur',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80',
+    image: 'https://images.unsplash.com/photo-1729157659231-1982957f2d7b?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     text: 'Professional approach and reliable supply chain. Highly recommend for all hotel and commercial cleaning needs.'
   }
 ];
