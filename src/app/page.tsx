@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 // import { ArrowRight } from "lucide-react";
@@ -609,6 +609,16 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     scrollToSlide(prevIndex);
   };
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+const itemsPerSlide2 = isMobile ? 1 : 2;
+
+const slides = useMemo(() => {
+  const chunks = [];
+  for (let i = 0; i < cleaningProducts.length; i += itemsPerSlide2) {
+    chunks.push(cleaningProducts.slice(i, i + itemsPerSlide2));
+  }
+  return chunks;
+}, [cleaningProducts, itemsPerSlide2]);
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
@@ -623,7 +633,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 </section>
       {/* Shop by Category Section */}
       {/* Shop by Category Section */}
-      <section className="bg-white py-10 text-black">
+      <section className="bg-white py-2 md:py-10 text-black">
   <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
     {/* Section Title */}
     <div className="text-center mb-8">
@@ -703,12 +713,13 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
   <div className="max-w-full z-[100000]">
     <ProductSearch />
   </div>
-</section> */}
+</section> 
+*/}
 
 
 
       {/* Hero Banner Section - Fixed for mobile */}
-      <section className="relative h-[30vh] sm:h-[60vh] lg:h-[80vh] scroll-reveal">
+      <section className="relative h-[25vh] sm:h-[50vh] lg:h-[80vh] scroll-reveal">
   {bannersLoading && (
     <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
       <div className="text-center">
@@ -821,7 +832,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
 
        {/* Featured Products */}
-       <section className="py-16 sm:py-20 bg-white scroll-reveal">
+       <section className="py-4 sm:py-8 bg-white scroll-reveal">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
@@ -866,7 +877,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
           )}
 
           {!productsLoading && products.length > 8 && (
-            <div className="text-center mt-12 lg:mt-16 animate-fade-in-up stagger-4">
+            <div className="text-center mt-8 lg:mt-12 animate-fade-in-up stagger-4">
               <button 
                 onClick={() => window.location.href = '/Products'}
                 className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
@@ -944,7 +955,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
         {/* <div className="absolute bottom-10 left-20 w-24 h-24 bg-indigo-500/20 backdrop-blur-sm rounded-2xl rotate-45 hidden lg:block"></div> */}
       </section>
 
-      <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
+      <section className="py-8 sm:py-12 bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-12">
@@ -1053,7 +1064,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
               {/* Slide Indicators - Only show if more than 2 products */}
               {housekeepingProducts.length > 2 && (
-                <div className="flex justify-center gap-2 mt-6">
+                <div className="flex justify-center gap-2 mt-4">
                   {Array.from({ length: totalSlides }).map((_, index) => (
                     <button
                       key={index}
@@ -1071,10 +1082,10 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
           {/* View All Button */}
           {housekeepingProducts.length > 2 && (
-            <div className="text-center mt-12 lg:mt-16">
+            <div className="text-center mt-8 lg:mt-12">
               <button
                 onClick={() => (window.location.href = "/Products?category=housekeeping")}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
               >
                 View All Housekeeping Products ({housekeepingProducts.length} total)
                 <ArrowRight className="w-5 h-5" />
@@ -1091,8 +1102,8 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 {/* shop by brand */}
   
 
-<section className="px-3 md:px-12 py-10 bg-white shadow-md border-spacing-2 rounded-xl mt-10">
-      <div className="text-center mb-10">
+<section className="px-3 md:px-10 py-6 bg-white shadow-md border-spacing-2 rounded-xl mt-4">
+      <div className="text-center mb-6">
         <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium font-sans">
           Popular Brands
         </span>
@@ -1137,7 +1148,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
     
       {/* Why Choose Vijay Agencies Section - NEW */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white scroll-reveal rounded-2xl m-2 sm:m-4 lg:m-10 shadow-md shadow-gray-300 overflow-hidden">
+      <section className="py-8 sm:py-12 lg:scroll-py-14 bg-white scroll-reveal rounded-2xl m-2 sm:m-4 lg:m-10 shadow-md shadow-gray-300 overflow-hidden">
   <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
     {/* Heading */}
     <div className="text-center mb-10 sm:mb-12 lg:mb-16 animate-fade-in-up">
@@ -1150,10 +1161,10 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     </div>
 
     {/* Why Choose Vijay Agencies – Highlights Section */}
-    <div className="bg-[#FFF2F2] relative overflow-hidden rounded-2xl shadow-lg mb-12 sm:mb-16 animate-fade-in-up">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-12 sm:py-16">
+    <div className="bg-[#FFF2F2] relative overflow-hidden rounded-2xl shadow-lg mb-8 sm:mb-12 animate-fade-in-up">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Inner Heading */}
-        <div className="text-center mb-10 sm:mb-12 text-[#E23744]">
+        <div className="text-center mb-8 sm:mb-10 text-[#E23744]">
           {/* <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 font-serif">
             Why CHOOSE VIJAY AGENCIES
           </h3> */}
@@ -1236,7 +1247,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
           ))}
         </div>
 
-        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-green-200">
+        <div className="mt-4 sm:mt-6 pt-6 sm:pt-8 border-t border-green-200">
           <img
             src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600"
             alt="Eco-friendly cleaning products"
@@ -1278,7 +1289,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
           ))}
         </div>
 
-        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-red-200">
+        <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-red-200">
           <img
             src="https://images.unsplash.com/photo-1585421514738-01798e348b17?w=600"
             alt="Chemical cleaning products"
@@ -1355,12 +1366,12 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
       </div>
     </section>
 
-    <section className="py-8 sm:py-10 lg:py-20 bg-gradient-to-br from-green-100 to-emerald-50 rounded-xl mx-2 md:mx-5 mt-2 overflow-x-hidden">
+    <section className="py-8 sm:py-12 lg:py-20 bg-gradient-to-br from-green-100 to-emerald-50 rounded-xl mx-2 md:mx-6 mt-4">
   <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
 
     {/* Header */}
-    <div className="text-center mb-8 sm:mb-10">
-      <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs sm:text-sm font-medium inline-flex items-center gap-2">
+    <div className="text-center mb-8 sm:mb-12">
+      <span className="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs sm:text-sm font-medium">
         <Sparkles className="w-4 h-4" />
         Cleaning Products
       </span>
@@ -1377,54 +1388,47 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     {/* Layout */}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center">
 
-      {/* Slider Column */}
-      <div className="relative order-1">
+      {/* SLIDER */}
+      <div className="relative">
 
-        <div className="relative rounded-2xl bg-[#EF4F5F] p-3 sm:p-4 shadow-lg overflow-hidden">
+        <div className="relative rounded-2xl bg-[#EF4F5F] p-3 sm:p-4 shadow-xl overflow-hidden">
 
           {/* Slides */}
           <div
-            ref={sliderRef2}
-            className="flex w-full overflow-hidden scroll-smooth"
+            className="flex transition-transform duration-500 ease-out"
+            style={{
+              transform: `translateX(-${currentSlide * 100}%)`,
+            }}
           >
-            {Array.from({ length: totalSlides }).map((_, slideIndex) => {
-              const start = slideIndex * itemsPerSlide;
-              const slideItems = cleaningProducts.slice(start, start + itemsPerSlide);
-
-              return (
-                <div
-                  key={slideIndex}
-                  className="w-full flex-shrink-0 px-1"
-                >
-                  <div
-                    className={`grid gap-4 ${
-                      itemsPerSlide === 1 ? "grid-cols-1" : "grid-cols-2"
-                    }`}
-                  >
-                    {slideItems.map((product) => (
-                      <div key={product._id} className="w-full">
-                        <ProductCard product={product} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+            {slides.map((group, index) => (
+              <div
+                key={index}
+                className="min-w-full grid grid-cols-1 sm:grid-cols-2 gap-4 px-1"
+              >
+                {group.map((product) => (
+                  <ProductCard key={product._id} product={product} />
+                ))}
+              </div>
+            ))}
           </div>
 
           {/* Arrows */}
-          {cleaningProducts.length > 1 && (
+          {slides.length > 1 && (
             <>
               <button
-                onClick={handlePrev}
-                className="absolute left-1 top-1/2 -translate-y-1/2 bg-white/95 p-2 rounded-full shadow-md active:scale-95 transition"
+                onClick={() =>
+                  setCurrentSlide((p) => (p === 0 ? slides.length - 1 : p - 1))
+                }
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-lg hover:scale-110 transition"
               >
                 <ChevronLeft className="w-5 h-5 text-gray-700" />
               </button>
 
               <button
-                onClick={handleNext}
-                className="absolute right-1 top-1/2 -translate-y-1/2 bg-white/95 p-2 rounded-full shadow-md active:scale-95 transition"
+                onClick={() =>
+                  setCurrentSlide((p) => (p + 1) % slides.length)
+                }
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-lg hover:scale-110 transition"
               >
                 <ChevronRight className="w-5 h-5 text-gray-700" />
               </button>
@@ -1433,14 +1437,16 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
         </div>
 
         {/* Dots */}
-        {cleaningProducts.length > 1 && (
+        {slides.length > 1 && (
           <div className="flex justify-center gap-2 mt-4">
-            {Array.from({ length: totalSlides }).map((_, i) => (
+            {slides.map((_, i) => (
               <button
                 key={i}
-                onClick={() => scrollToSlide(i)}
+                onClick={() => setCurrentSlide(i)}
                 className={`h-2 rounded-full transition-all ${
-                  i === currentSlide ? "w-7 bg-green-600" : "w-2 bg-gray-300"
+                  currentSlide === i
+                    ? "w-8 bg-green-600"
+                    : "w-2 bg-gray-300"
                 }`}
               />
             ))}
@@ -1448,33 +1454,29 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
         )}
       </div>
 
-      {/* Image Column */}
-      <div className="relative order-2">
+      {/* IMAGE COLUMN */}
+      <div className="relative hidden lg:block">
+        <div className="rounded-2xl overflow-hidden shadow-xl aspect-square">
+          <img
+            src="https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=900"
+            alt="Professional cleaning products"
+            className="w-full h-full object-cover"
+          />
 
-        <div className="rounded-2xl overflow-hidden shadow-xl">
-          <div className="aspect-[4/3] sm:aspect-[4/5] lg:aspect-square">
-            <img
-              src="https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=800"
-              alt="Professional cleaning products"
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-4 sm:p-6 flex flex-col justify-end">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-6 flex flex-col justify-end">
             <span className="inline-block px-3 py-1 bg-green-500 text-white text-xs font-semibold rounded-full mb-2">
               Professional Grade
             </span>
-            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-2">
+            <h3 className="text-xl font-bold text-white mb-2">
               Premium Quality Guaranteed
             </h3>
-            <p className="text-xs sm:text-sm text-gray-200">
+            <p className="text-sm text-gray-200">
               Trusted by thousands of businesses nationwide
             </p>
           </div>
         </div>
-
       </div>
+
     </div>
 
     {/* CTA */}
@@ -1482,15 +1484,15 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
       <div className="text-center mt-8 sm:mt-12">
         <button
           onClick={() => (window.location.href = "/Products?category=Cleaning")}
-          className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-base font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition"
+          className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition"
         >
           View All Cleaning Products ({cleaningProducts.length})
         </button>
       </div>
     )}
-
   </div>
 </section>
+
 
   </>
 )}
@@ -1515,8 +1517,8 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
         </div>
       </section> */}
 
-      <section className="px-3 md:px-12 py-10 bg-white shadow-md border-spacing-2 rounded-xl">
-  <div className="text-center mb-10">
+      <section className="px-3 md:px-12 py-6 bg-white shadow-md border-spacing-2 rounded-xl">
+  <div className="text-center mb-8">
     <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium font-sans">
       Shop by Concern
     </span>
@@ -1570,7 +1572,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
 
 
       {/* About Vijay Agencies Section */}
-      <section className="py-16 sm:py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 scroll-reveal mt-5">
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 scroll-reveal mt-5">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="space-y-6 lg:space-y-8 animate-fade-in-left">
@@ -1590,7 +1592,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
                 equipment, chemicals, and consumables.
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 lg:mt-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4 lg:mt-6">
                 <div className="flex items-start space-x-4 animate-fade-in-up stagger-1">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
                     <Check className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
@@ -1682,7 +1684,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 sm:py-20 bg-white scroll-reveal">
+      <section className="py-12 sm:py-16 bg-white scroll-reveal">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-serif">What Our Clients Say</h2>
@@ -1728,7 +1730,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     <div className="absolute inset-0 bg-gradient-to-r from-red-900/95 via-red-800/90 to-rose-900/95"></div>
   </div>
   
-  <div className="relative max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-16 lg:py-20">
+  <div className="relative max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-12 lg:py-16">
     <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
       {/* Left Column - Banner Content */}
       <div className="text-white">
