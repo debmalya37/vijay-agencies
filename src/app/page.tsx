@@ -633,81 +633,88 @@ const slides = useMemo(() => {
 </section>
       {/* Shop by Category Section */}
       {/* Shop by Category Section */}
-      <section className="bg-white py-2 md:py-10 text-black">
-  <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-    {/* Section Title */}
-    <div className="text-center mb-8">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Shop by Category</h2>
-      {categoriesLoading && <p className="text-gray-600">Loading categories...</p>}
-      {categoriesError && !categoriesLoading && (
-        <p className="text-red-600 text-sm">
-          {categoriesError} - Showing default categories
-        </p>
-      )}
-    </div>
+      {/* Shop by Category Section - Zepto Style */}
+      <section className="bg-white pt-2 pb-6 px-3">
+        <div className="max-w-7xl mx-auto">
+          
+          {/* Section Title (Optional, remove if you want it exactly like the screenshot) */}
+          <div className="mb-4 flex items-center justify-between">
+             <h2 className="text-lg font-bold text-gray-900">Explore by Category</h2>
+          </div>
 
-    {/* Categories Container */}
-    <div className="flex items-center justify-start md:justify-evenly gap-6 pb-4 overflow-x-auto md:overflow-visible scrollbar-hide px-3 snap-x snap-mandatory">
-      {!categoriesLoading &&
-        categories.slice(0, 8)
-        .filter((_, index) => index !== 4)
-        .map((category, index) => (
-          <div
-            key={category._id}
-            className="flex flex-col items-center min-w-[100px] flex-shrink-0 cursor-pointer group snap-start"
-            onClick={() => handleCategoryClick(category)}
-          >
-            <div
-              className={`w-24 h-24 ${getCategoryColor(category.name, index)} rounded-full flex items-center justify-center text-3xl mb-3 hover:shadow-lg transition-all duration-200 group-hover:scale-110`}
-            >
-              {category.image_url ? (
-                <Image
-                  src={category.image_url}
-                  alt={category.name}
-                  width={70}
-                  height={70}
-                  className="w-16 h-16 object-cover rounded-full"
-                />
-              ) : (
-                <span>{getCategoryIcon(category, index)}</span>
-              )}
+          {/* Lavender Container */}
+          <div className="bg-[#F8F0FF] rounded-xl p-4 shadow-sm border border-purple-100">
+            
+            <div className="flex items-start gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
+              
+              {/* 1. Static 'All' Tab (Active State) */}
+              <div 
+                onClick={() => window.location.href = '/Products'}
+                className="flex flex-col items-center gap-2 min-w-[60px] cursor-pointer group flex-shrink-0 snap-start"
+              >
+                <div className="w-12 h-12 flex items-center justify-center relative">
+                  {/* Grocery Bag Icon for 'All' */}
+                  <div className="relative w-10 h-10">
+                     <Image 
+                       src="https://cdn-icons-png.flaticon.com/512/3081/3081986.png" 
+                       alt="All" 
+                       width={40} 
+                       height={40} 
+                       className="object-contain drop-shadow-md transition-transform group-hover:scale-110"
+                     />
+                  </div>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="text-xs font-bold text-gray-900">All</span>
+                  {/* Black Underline for Active State */}
+                  <div className="h-1 w-8 bg-black mt-1 rounded-full"></div>
+                </div>
+              </div>
+
+              {/* 2. Dynamic Categories */}
+              {!categoriesLoading && categories.map((category, index) => (
+                <div
+                  key={category._id}
+                  className="flex flex-col items-center gap-2 min-w-[60px] cursor-pointer group flex-shrink-0 snap-start"
+                  onClick={() => handleCategoryClick(category)}
+                >
+                  <div className="w-12 h-12 flex items-center justify-center">
+                    {category.image_url ? (
+                      <Image
+                        src={category.image_url}
+                        alt={category.name}
+                        width={48}
+                        height={48}
+                        className="w-10 h-10 object-contain drop-shadow-sm transition-transform duration-200 group-hover:scale-110"
+                      />
+                    ) : (
+                      <span className="text-2xl filter drop-shadow-sm transition-transform duration-200 group-hover:scale-110">
+                        {getCategoryIcon(category, index)}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <span className="text-xs font-medium text-gray-700 text-center leading-tight whitespace-nowrap group-hover:text-purple-700">
+                      {category.name}
+                    </span>
+                    {/* Invisible underline to reserve height space so items align with 'All' */}
+                    <div className="h-1 w-8 bg-transparent mt-1"></div>
+                  </div>
+                </div>
+              ))}
+
+              {/* 3. Loading Skeletons */}
+              {categoriesLoading && Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex flex-col items-center gap-2 min-w-[60px] flex-shrink-0">
+                  <div className="w-10 h-10 bg-purple-200/50 rounded-lg animate-pulse"></div>
+                  <div className="w-12 h-3 bg-purple-200/50 rounded animate-pulse"></div>
+                </div>
+              ))}
+
             </div>
-            <span className="text-base font-medium text-gray-800 text-center leading-tight max-w-[100px] group-hover:text-green-600 transition-colors">
-              {category.name}
-            </span>
-            <span className="text-xs text-gray-500 mt-1">
-              {category.product_count} items
-            </span>
           </div>
-        ))}
-
-      {/* Skeleton Loader */}
-      {categoriesLoading &&
-        Array.from({ length: 6 }, (_, i) => (
-          <div
-            key={i}
-            className="flex flex-col items-center min-w-[100px] flex-shrink-0 snap-start"
-          >
-            <div className="w-24 h-24 bg-gray-200 rounded-full animate-pulse mb-3"></div>
-            <div className="w-20 h-4 bg-gray-200 rounded animate-pulse"></div>
-          </div>
-        ))}
-    </div>
-
-    {/* View All Button */}
-    {!categoriesLoading && categories.length > 0 && (
-      <div className="text-center mt-8">
-        <button
-          onClick={() => (window.location.href = "/Products")}
-          className="text-green-600 hover:text-green-700 font-medium inline-flex items-center gap-2 border border-green-600 px-5 py-2 rounded-lg hover:bg-green-50 transition-colors"
-        >
-          View All Categories
-          <ArrowRight className="w-4 h-4" />
-        </button>
-      </div>
-    )}
-  </div>
-</section>
+        </div>
+      </section>
 
 {/* <section className="bg-white py-6 px-3 overflow-x-hidden z-[100000]">
   <div className="max-w-full z-[100000]">

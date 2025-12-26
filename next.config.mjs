@@ -10,6 +10,7 @@ const nextConfig = {
       "images.unsplash.com",
       "cdn.pixabay.com",
       "lh3.googleusercontent.com",
+      "cdn-icons-png.flaticon.com",
     ],
   },
 
