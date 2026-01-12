@@ -44,6 +44,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import BrandShowcase from '@/components/BrandShowcase';
 import ProductSearch from '@/components/ProductSearch';
+import QuickProductCard from '@/components/QuickProductCard';
+import HousekeepingSection from '@/components/HousekeepingSection';
+import WhyChooseUs from '@/components/WhyChooseUs';
+import CleaningSection from '@/components/CleaningSection';
+import AboutSection from '@/components/AboutSection';
+import TestimonialSection from '@/components/TestimonialSection';
+import CategoryRail from '@/components/CategoryRail';
 
 // Type definitions
 interface Product {
@@ -634,87 +641,8 @@ const slides = useMemo(() => {
       {/* Shop by Category Section */}
       {/* Shop by Category Section */}
       {/* Shop by Category Section - Zepto Style */}
-      <section className="bg-white pt-2 pb-6 px-3">
-        <div className="max-w-7xl mx-auto">
-          
-          {/* Section Title (Optional, remove if you want it exactly like the screenshot) */}
-          <div className="mb-4 flex items-center justify-between">
-             <h2 className="text-lg font-bold text-gray-900">Explore by Category</h2>
-          </div>
+      <CategoryRail categories={categories} loading={categoriesLoading} />
 
-          {/* Lavender Container */}
-          <div className="bg-[#F8F0FF] rounded-xl p-4 shadow-sm border border-purple-100">
-            
-            <div className="flex items-start gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
-              
-              {/* 1. Static 'All' Tab (Active State) */}
-              <div 
-                onClick={() => window.location.href = '/Products'}
-                className="flex flex-col items-center gap-2 min-w-[60px] cursor-pointer group flex-shrink-0 snap-start"
-              >
-                <div className="w-12 h-12 flex items-center justify-center relative">
-                  {/* Grocery Bag Icon for 'All' */}
-                  <div className="relative w-10 h-10">
-                     <Image 
-                       src="https://cdn-icons-png.flaticon.com/512/3081/3081986.png" 
-                       alt="All" 
-                       width={40} 
-                       height={40} 
-                       className="object-contain drop-shadow-md transition-transform group-hover:scale-110"
-                     />
-                  </div>
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-xs font-bold text-gray-900">All</span>
-                  {/* Black Underline for Active State */}
-                  <div className="h-1 w-8 bg-black mt-1 rounded-full"></div>
-                </div>
-              </div>
-
-              {/* 2. Dynamic Categories */}
-              {!categoriesLoading && categories.map((category, index) => (
-                <div
-                  key={category._id}
-                  className="flex flex-col items-center gap-2 min-w-[60px] cursor-pointer group flex-shrink-0 snap-start"
-                  onClick={() => handleCategoryClick(category)}
-                >
-                  <div className="w-12 h-12 flex items-center justify-center">
-                    {category.image_url ? (
-                      <Image
-                        src={category.image_url}
-                        alt={category.name}
-                        width={48}
-                        height={48}
-                        className="w-10 h-10 object-contain drop-shadow-sm transition-transform duration-200 group-hover:scale-110"
-                      />
-                    ) : (
-                      <span className="text-2xl filter drop-shadow-sm transition-transform duration-200 group-hover:scale-110">
-                        {getCategoryIcon(category, index)}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <span className="text-xs font-medium text-gray-700 text-center leading-tight whitespace-nowrap group-hover:text-purple-700">
-                      {category.name}
-                    </span>
-                    {/* Invisible underline to reserve height space so items align with 'All' */}
-                    <div className="h-1 w-8 bg-transparent mt-1"></div>
-                  </div>
-                </div>
-              ))}
-
-              {/* 3. Loading Skeletons */}
-              {categoriesLoading && Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="flex flex-col items-center gap-2 min-w-[60px] flex-shrink-0">
-                  <div className="w-10 h-10 bg-purple-200/50 rounded-lg animate-pulse"></div>
-                  <div className="w-12 h-3 bg-purple-200/50 rounded animate-pulse"></div>
-                </div>
-              ))}
-
-            </div>
-          </div>
-        </div>
-      </section>
 
 {/* <section className="bg-white py-6 px-3 overflow-x-hidden z-[100000]">
   <div className="max-w-full z-[100000]">
@@ -839,63 +767,76 @@ const slides = useMemo(() => {
 
 
        {/* Featured Products */}
-       <section className="py-4 sm:py-8 bg-white scroll-reveal">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Featured Products
-            </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">Professional-grade cleaning solutions for commercial use</p>
+<section className="py-10 sm:py-14 bg-[#F9FAFB]">
+  <div className="max-w-7xl mx-auto px-3 sm:px-6">
+
+    {/* ================= HEADER ================= */}
+    {/* ================= HEADER ================= */}
+<div className="relative mb-6 sm:mb-8">
+
+  {/* Centered Title Group */}
+  <div className="text-center space-y-2 max-w-xl mx-auto">
+    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-[11px] sm:text-xs font-semibold tracking-wide uppercase">
+      <Sparkles className="w-4 h-4" />
+      Featured
+    </span>
+
+    <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+      Featured Products
+    </h2>
+
+    <p className="hidden sm:block text-sm text-gray-600">
+      Best-selling and recommended products trusted by businesses
+    </p>
+  </div>
+
+  {/* Desktop CTA (Right aligned, vertically centered) */}
+  <button
+    onClick={() => (window.location.href = "/Products")}
+    className="hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#EF4F5F] hover:underline whitespace-nowrap"
+  >
+    View All →
+  </button>
+
+  {/* Mobile CTA (Centered, below title) */}
+  <div className="sm:hidden mt-4 text-center">
+    <button
+      onClick={() => (window.location.href = "/Products")}
+      className="text-sm font-semibold text-[#EF4F5F]"
+    >
+      View All →
+    </button>
+  </div>
+</div>
+
+
+    {/* ================= MOBILE: HORIZONTAL SCROLL ================= */}
+    <div className="sm:hidden relative">
+      <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+        {products.slice(0, 10).map((product) => (
+          <div
+            key={product._id}
+            className="min-w-[165px] snap-start"
+          >
+            <QuickProductCard product={product} />
           </div>
+        ))}
+      </div>
 
-          {productsLoading && (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-red-600 mx-auto"></div>
-              <p className="mt-6 text-gray-600 text-lg">Loading products...</p>
-            </div>
-          )}
+      {/* Scroll Hint */}
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-gradient-to-l from-[#F9FAFB] via-[#F9FAFB]/80 to-transparent w-10 h-full pointer-events-none" />
+    </div>
 
-          {productsError && !productsLoading && (
-            <div className="text-center py-12">
-              <p className="text-red-600 mb-6 text-lg">{productsError}</p>
-              <button 
-                onClick={fetchProducts}
-                className="bg-red-600 text-white px-8 py-3 rounded-xl hover:bg-red-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
-              >
-                Try Again
-              </button>
-            </div>
-          )}
+    {/* ================= DESKTOP: GRID ================= */}
+    <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-6">
+      {products.slice(0, 8).map((product) => (
+        <QuickProductCard key={product._id} product={product} />
+      ))}
+    </div>
 
-          {!productsLoading && !productsError && products.length > 0 && (
-            <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6">
-              {products.slice(0, 8).map((product) => (
-                <div key={product._id} className="h-full">
-                  <ProductCard product={product} />
-                </div>
-              ))}
-            </div>
-          )}
+  </div>
+</section>
 
-          {!productsLoading && !productsError && products.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-600 text-lg">No products available at the moment.</p>
-            </div>
-          )}
-
-          {!productsLoading && products.length > 8 && (
-            <div className="text-center mt-8 lg:mt-12 animate-fade-in-up stagger-4">
-              <button 
-                onClick={() => window.location.href = '/Products'}
-                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
-              >
-                View All Products ({products.length} total)
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
-          )}
-        </div>
-      </section>
 
       {/* Housekeeping Products */}
 {/* Housekeeping Products */}
@@ -962,145 +903,14 @@ const slides = useMemo(() => {
         {/* <div className="absolute bottom-10 left-20 w-24 h-24 bg-indigo-500/20 backdrop-blur-sm rounded-2xl rotate-45 hidden lg:block"></div> */}
       </section>
 
-      <section className="py-8 sm:py-12 bg-gradient-to-br from-blue-50 to-indigo-50">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium inline-flex items-center gap-2">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-              </svg>
-              Housekeeping Products
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mt-6 mb-4 font-serif">
-              Housekeeping Essentials
-            </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
-              Trusted housekeeping solutions for hotels, restaurants, and businesses
-            </p>
-          </div>
-
-          {/* Two Column Layout - Reversed (Image Left, Products Right) */}
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
-            {/* Left Column - Image Container */}
-            <div className="relative order-2 lg:order-1 flex">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl group w-full">
-                {/* Main Image */}
-                <div className="h-full overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-200">
-                  <img
-                    src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800"
-                    alt="Professional housekeeping services"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                </div>
-
-                {/* Overlay Content */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-8">
-                  <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                    <span className="inline-block px-3 py-1 bg-blue-500 text-white text-sm font-semibold rounded-full mb-3">
-                      Industry Standard
-                    </span>
-                    <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-                      Professional Solutions
-                    </h3>
-                    <p className="text-gray-200 text-sm sm:text-base mb-4 opacity-90">
-                      High-quality housekeeping products designed for commercial and hospitality sectors
-                    </p>
-                    <div className="flex flex-wrap gap-3">
-                      <div className="flex items-center gap-2 text-white">
-                        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <span className="text-sm font-medium">Hotel Grade</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-white">
-                        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <span className="text-sm font-medium">Durable</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Decorative Elements */}
-                {/* <div className="absolute top-6 left-6 w-20 h-20 bg-white/20 backdrop-blur-md rounded-2xl -rotate-12 group-hover:-rotate-45 transition-transform duration-500"></div> */}
-                {/* <div className="absolute bottom-6 right-6 w-16 h-16 bg-blue-500/30 backdrop-blur-md rounded-full group-hover:scale-125 transition-transform duration-500"></div> */}
-              </div>
-            </div>
-
-            {/* Right Column - Product Slider */}
-            <div className="relative order-1 lg:order-2">
-              {/* Slider Container */}
-              <div className="relative overflow-hidden rounded-2xl bg-[#EF4F5F] backdrop-blur-sm p-2 shadow-xl">
-                <div className="grid grid-cols-2 gap-4">
-                  {housekeepingProducts.slice(
-                    currentHousekeepingSlide * 2, 
-                    (currentHousekeepingSlide * 2) + 2
-                  ).map((product) => (
-                    <div key={product._id} className="h-full">
-                      <ProductCard product={product} />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Navigation Arrows - Only show if more than 2 products */}
-                {housekeepingProducts.length > 2 && (
-                  <>
-                    <button
-                      onClick={prevSlide}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
-                      aria-label="Previous products"
-                    >
-                      <ChevronLeft className="w-6 h-6 text-gray-700" />
-                    </button>
-                    <button
-                      onClick={nextSlide}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
-                      aria-label="Next products"
-                    >
-                      <ChevronRight className="w-6 h-6 text-gray-700" />
-                    </button>
-                  </>
-                )}
-              </div>
-
-              {/* Slide Indicators - Only show if more than 2 products */}
-              {housekeepingProducts.length > 2 && (
-                <div className="flex justify-center gap-2 mt-4">
-                  {Array.from({ length: totalSlides }).map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => goToSlide(index)}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        currentHousekeepingSlide === index ? 'w-8 bg-blue-600' : 'w-2 bg-gray-300'
-                      }`}
-                      aria-label={`Go to slide ${index + 1}`}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* View All Button */}
-          {housekeepingProducts.length > 2 && (
-            <div className="text-center mt-8 lg:mt-12">
-              <button
-                onClick={() => (window.location.href = "/Products?category=housekeeping")}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 inline-flex items-center gap-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105"
-              >
-                View All Housekeeping Products ({housekeepingProducts.length} total)
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
-          )}
-        </div>
-      </section>
+      <HousekeepingSection 
+  products={housekeepingProducts}
+  currentSlide={currentHousekeepingSlide}
+  nextSlide={nextSlide}
+  prevSlide={prevSlide}
+  goToSlide={goToSlide}
+  totalSlides={totalSlides}
+/>
     </>
   );
 })()}
@@ -1108,205 +918,103 @@ const slides = useMemo(() => {
 
 {/* shop by brand */}
   
+<section className="py-8 sm:py-12 bg-[#F9FAFB]">
+  <div className="max-w-7xl mx-auto px-3 sm:px-6">
 
-<section className="px-3 md:px-10 py-6 bg-white shadow-md border-spacing-2 rounded-xl mt-4">
-      <div className="text-center mb-6">
-        <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium font-sans">
-          Popular Brands
-        </span>
-        <h2 className="text-3xl md:text-4xl font-bold mt-4 font-serif ">
-          Shop by Brand
-        </h2>
-      </div>
+    {/* Header */}
+    {/* ================= HEADER ================= */}
+<div className="relative mb-6 sm:mb-8">
 
-      <div className="max-w-6xl mx-auto">
-        <div
-          className="
-            flex gap-6 overflow-x-auto pb-4 
-            sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 sm:overflow-visible
-            scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-transparent
-          "
+  {/* Centered Title Group */}
+  <div className="text-center space-y-2 max-w-xl mx-auto">
+    <span className="inline-block px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">
+      Trusted Brands
+    </span>
+
+    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+      Shop by Brand
+    </h2>
+  </div>
+
+  {/* Desktop CTA */}
+  <button
+    onClick={() => (window.location.href = "/Products")}
+    className="hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 text-sm font-semibold text-blue-600 hover:underline whitespace-nowrap"
+  >
+    View All →
+  </button>
+
+  {/* Mobile CTA */}
+  <div className="sm:hidden mt-4 text-center">
+    <button
+      onClick={() => (window.location.href = "/Products")}
+      className="text-sm font-semibold text-blue-600"
+    >
+      View All →
+    </button>
+  </div>
+</div>
+
+
+    {/* Mobile – Horizontal Scroll */}
+    <div className="sm:hidden flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory">
+      {brands?.map((brand) => (
+        <Link
+          key={brand._id}
+          href={`/Products?brand=${brand.slug}`}
+          className="snap-start min-w-[140px]"
         >
-          { brands?( brands.map((brand ) => (
-            <Link
-              href={`/Products?brand=${brand.slug}`}
-              key={brand._id}
-              className="min-w-[180px] sm:min-w-0 bg-blue-50 rounded-xl p-6 shadow-sm flex flex-col items-center justify-between hover:shadow-md transition text-center"
-            >
+          <div className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 p-4 flex flex-col items-center text-center active:scale-95">
+            <div className="w-20 h-20 rounded-full bg-gray-50 flex items-center justify-center mb-3">
               <Image
                 src={brand.logo || "/placeholder.png"}
                 alt={brand.name}
-                width={90}
-                height={90}
-                className="object-contain rounded-lg mb-4"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "/placeholder.png";
-                }}
+                width={60}
+                height={60}
+                className="object-contain"
               />
-              <h3 className="text-lg font-semibold text-gray-800">
-                {brand.name}
-              </h3>
-            </Link>
-          ))): (<h1>no data found</h1>)}
-          
-        </div>
-      </div>
-    </section>
+            </div>
+            <p className="text-sm font-semibold text-gray-800 line-clamp-1">
+              {brand.name}
+            </p>
+          </div>
+        </Link>
+      ))}
+    </div>
+
+    {/* Desktop – Grid */}
+    <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      {brands?.map((brand) => (
+        <Link
+          key={brand._id}
+          href={`/Products?brand=${brand.slug}`}
+          className="group"
+        >
+          <div className="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-6 flex flex-col items-center text-center group-hover:-translate-y-1">
+            <div className="w-24 h-24 rounded-full bg-gray-50 flex items-center justify-center mb-4">
+              <Image
+                src={brand.logo || "/placeholder.png"}
+                alt={brand.name}
+                width={72}
+                height={72}
+                className="object-contain"
+              />
+            </div>
+            <h3 className="text-base font-semibold text-gray-900">
+              {brand.name}
+            </h3>
+          </div>
+        </Link>
+      ))}
+    </div>
+
+  </div>
+</section>
+
 
     
       {/* Why Choose Vijay Agencies Section - NEW */}
-      <section className="py-8 sm:py-12 lg:scroll-py-14 bg-white scroll-reveal rounded-2xl m-2 sm:m-4 lg:m-10 shadow-md shadow-gray-300 overflow-hidden">
-  <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-    {/* Heading */}
-    <div className="text-center mb-10 sm:mb-12 lg:mb-16 animate-fade-in-up">
-      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 font-serif">
-        Why Vijay Agencies Over Others?
-      </h2>
-      <p className="text-gray-800 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
-        What makes us the preferred choice for commercial cleaning solutions
-      </p>
-    </div>
-
-    {/* Why Choose Vijay Agencies – Highlights Section */}
-    <div className="bg-[#FFF2F2] relative overflow-hidden rounded-2xl shadow-lg mb-8 sm:mb-12 animate-fade-in-up">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12">
-        {/* Inner Heading */}
-        <div className="text-center mb-8 sm:mb-10 text-[#E23744]">
-          {/* <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 font-serif">
-            Why CHOOSE VIJAY AGENCIES
-          </h3> */}
-
-          {/* Icon Highlights Row */}
-          <div className="inline-flex flex-wrap justify-center gap-6 bg-white rounded-xl shadow-md px-6 py-5">
-            {whyChooseUs.map((feature, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center text-center min-w-[110px]"
-              >
-                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-red-100 mb-2">
-                  <feature.icon className="w-6 h-6 text-red-600" />
-                </div>
-                <div className="text-sm sm:text-base font-semibold text-gray-900 font-sans">
-                  {feature.title}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Company Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {companyStats.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <div
-                key={index}
-                className="rounded-xl p-6 flex flex-col items-center text-center bg-white shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105"
-              >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center mb-3">
-                  <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-red-500" />
-                </div>
-                <div className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  {stat.number}
-                </div>
-                <div className="text-sm sm:text-base text-gray-700 font-medium mt-1">
-                  {stat.label}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-
-    {/* Comparison Section */}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-      {/* Vijay Agencies Side */}
-      <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-left">
-        <div className="flex items-center justify-between mb-6 sm:mb-8">
-          <div className="bg-green-600 text-white px-5 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base shadow-md">
-            Vijay Agencies
-          </div>
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-600 rounded-full flex items-center justify-center shadow-md">
-            <ThumbsUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-          </div>
-        </div>
-
-        <div className="space-y-4 sm:space-y-5 mb-6 sm:mb-8 text-gray-800">
-          {[
-            "Direct Manufacturer Partnerships",
-            "Always in stock",
-            "Transparent pricing",
-            "Dedicated account manager",
-            "Fast & reliable delivery",
-          ].map((point, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-3 sm:gap-4 text-gray-800"
-            >
-              <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-              </div>
-              <span className="text-sm sm:text-base lg:text-lg font-medium">
-                {point}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-4 sm:mt-6 pt-6 sm:pt-8 border-t border-green-200">
-          <img
-            src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600"
-            alt="Eco-friendly cleaning products"
-            className="w-full h-40 sm:h-48 lg:h-56 object-cover rounded-2xl shadow-md"
-          />
-        </div>
-      </div>
-
-      {/* Others Side */}
-      <div className="bg-gradient-to-br from-red-300 to-red-400 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-right">
-        <div className="flex items-center justify-between mb-6 sm:mb-8">
-          <div className="bg-red-600 text-white px-5 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base shadow-md">
-            Others
-          </div>
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-600 rounded-full flex items-center justify-center shadow-md">
-            <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-          </div>
-        </div>
-
-        <div className="space-y-4 sm:space-y-5 mb-6 sm:mb-8 text-gray-800">
-          {[
-            "Multiple middlemen",
-            "Frequent shortages",
-            "Hidden costs",
-            "No personal support",
-            "Delayed dispatches",
-          ].map((point, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-3 sm:gap-4 text-gray-800"
-            >
-              <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0">
-                <X className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-              </div>
-              <span className="text-sm sm:text-base lg:text-lg font-medium">
-                {point}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-red-200">
-          <img
-            src="https://images.unsplash.com/photo-1585421514738-01798e348b17?w=600"
-            alt="Chemical cleaning products"
-            className="w-full h-40 sm:h-48 lg:h-56 object-cover rounded-2xl shadow-md"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+ <WhyChooseUs />
 
 
       {/* Cleaning Products Section */}
@@ -1373,132 +1081,14 @@ const slides = useMemo(() => {
       </div>
     </section>
 
-    <section className="py-8 sm:py-12 lg:py-20 bg-gradient-to-br from-green-100 to-emerald-50 rounded-xl mx-2 md:mx-6 mt-4">
-  <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-
-    {/* Header */}
-    <div className="text-center mb-8 sm:mb-12">
-      <span className="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs sm:text-sm font-medium">
-        <Sparkles className="w-4 h-4" />
-        Cleaning Products
-      </span>
-
-      <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gray-900 mt-4 mb-3 font-serif">
-        Cleaning Essentials
-      </h2>
-
-      <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto">
-        Powerful cleaning solutions for kitchens, bathrooms, and commercial use
-      </p>
-    </div>
-
-    {/* Layout */}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center">
-
-      {/* SLIDER */}
-      <div className="relative">
-
-        <div className="relative rounded-2xl bg-[#EF4F5F] p-3 sm:p-4 shadow-xl overflow-hidden">
-
-          {/* Slides */}
-          <div
-            className="flex transition-transform duration-500 ease-out"
-            style={{
-              transform: `translateX(-${currentSlide * 100}%)`,
-            }}
-          >
-            {slides.map((group, index) => (
-              <div
-                key={index}
-                className="min-w-full grid grid-cols-1 sm:grid-cols-2 gap-4 px-1"
-              >
-                {group.map((product) => (
-                  <ProductCard key={product._id} product={product} />
-                ))}
-              </div>
-            ))}
-          </div>
-
-          {/* Arrows */}
-          {slides.length > 1 && (
-            <>
-              <button
-                onClick={() =>
-                  setCurrentSlide((p) => (p === 0 ? slides.length - 1 : p - 1))
-                }
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-lg hover:scale-110 transition"
-              >
-                <ChevronLeft className="w-5 h-5 text-gray-700" />
-              </button>
-
-              <button
-                onClick={() =>
-                  setCurrentSlide((p) => (p + 1) % slides.length)
-                }
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-lg hover:scale-110 transition"
-              >
-                <ChevronRight className="w-5 h-5 text-gray-700" />
-              </button>
-            </>
-          )}
-        </div>
-
-        {/* Dots */}
-        {slides.length > 1 && (
-          <div className="flex justify-center gap-2 mt-4">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentSlide(i)}
-                className={`h-2 rounded-full transition-all ${
-                  currentSlide === i
-                    ? "w-8 bg-green-600"
-                    : "w-2 bg-gray-300"
-                }`}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* IMAGE COLUMN */}
-      <div className="relative hidden lg:block">
-        <div className="rounded-2xl overflow-hidden shadow-xl aspect-square">
-          <img
-            src="https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=900"
-            alt="Professional cleaning products"
-            className="w-full h-full object-cover"
-          />
-
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-6 flex flex-col justify-end">
-            <span className="inline-block px-3 py-1 bg-green-500 text-white text-xs font-semibold rounded-full mb-2">
-              Professional Grade
-            </span>
-            <h3 className="text-xl font-bold text-white mb-2">
-              Premium Quality Guaranteed
-            </h3>
-            <p className="text-sm text-gray-200">
-              Trusted by thousands of businesses nationwide
-            </p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    {/* CTA */}
-    {cleaningProducts.length > 2 && (
-      <div className="text-center mt-8 sm:mt-12">
-        <button
-          onClick={() => (window.location.href = "/Products?category=Cleaning")}
-          className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition"
-        >
-          View All Cleaning Products ({cleaningProducts.length})
-        </button>
-      </div>
-    )}
-  </div>
-</section>
+  <CleaningSection 
+   products={cleaningProducts}
+   currentSlide={currentSlide} // Note: You might need separate state for cleaning vs housekeeping slides if they slide independently.
+   nextSlide={nextSlide} 
+   prevSlide={prevSlide}
+   goToSlide={setCurrentSlide} // Or whatever state setter you use
+   totalSlides={totalSlides}
+/>
 
 
   </>
@@ -1579,151 +1169,10 @@ const slides = useMemo(() => {
 
 
       {/* About Vijay Agencies Section */}
-      <section className="py-12 sm:py-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 scroll-reveal mt-5">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="space-y-6 lg:space-y-8 animate-fade-in-left">
-              <div>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 lg:mb-6 font-serif">About Vijay Agencies</h2>
-                <div className="w-24 h-1.5 bg-gradient-to-r from-blue-600 to-blue-800 rounded-full mb-6"></div>
-              </div>
-              
-              <p className="text-base sm:text-lg lg:text-xl text-gray-700 leading-relaxed font-sans">
-                Established as a trusted wholesale supplier in Jaipur, Rajasthan, Vijay Agencies has been 
-                serving the hospitality and commercial sector with high-quality cleaning solutions and equipment.
-              </p>
-              
-              <p className="text-gray-600 leading-relaxed text-sm sm:text-base lg:text-lg font-sans">
-                We specialize in providing comprehensive cleaning solutions to hotels, restaurants, and commercial 
-                establishments across Jaipur and surrounding areas. Our extensive range includes industrial cleaning 
-                equipment, chemicals, and consumables.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4 lg:mt-6">
-                <div className="flex items-start space-x-4 animate-fade-in-up stagger-1">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
-                    <Check className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1 font-sans">Industrial Equipment</h4>
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-sans">Vacuum cleaners, scrubber driers, floor sweepers</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4 animate-fade-in-up stagger-2">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
-                    <Check className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1 font-sans">Cleaning Chemicals</h4>
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-sans">Kitchen & washroom cleaning solutions</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4 animate-fade-in-up stagger-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
-                    <Check className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1 font-sans">Paper Products</h4>
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-sans">Toilet rolls, kitchen towels, tissues</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4 animate-fade-in-up stagger-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
-                    <Check className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg mb-1 font-sans">Dispensers & Accessories</h4>
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-sans">Soap dispensers, air fresheners</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-8">
-                <button 
-                  onClick={() => window.location.href = '/about'}
-                  className="bg-[#EF4F5F] text-white px-8 py-4 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 inline-flex items-center gap-3 font-semibold shadow-lg hover:shadow-xl hover:scale-105 text-base sm:text-lg"
-                >
-                  Learn More About Us
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-            
-            <div className="relative animate-fade-in-right">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-shadow duration-500">
-                <img
-                  src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400"
-                  alt="Vijay Agencies Cleaning Solutions"
-                  className="w-full h-80 sm:h-96 lg:h-[28rem] object-cover hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                <div className="absolute bottom-6 sm:bottom-8 left-6 sm:left-8 right-6 sm:right-8 text-white">
-                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3 font-sans">Professional Cleaning Solutions</h3>
-                  <p className="text-sm sm:text-base opacity-90 leading-relaxed font-sans">Serving Jaipur&apos;s hospitality industry since 1972</p>
-                </div>
-              </div>
-              
-              {/* Floating contact card */}
-              <div className="absolute -bottom-8 -right-4 sm:-bottom-10 sm:-right-8 bg-white rounded-2xl shadow-2xl p-6 sm:p-8 border border-gray-100 max-w-xs animate-slide-in-bottom hover:scale-105 transition-transform duration-300">
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Phone className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <h4 className="font-bold text-gray-900 mb-4 text-lg font-sans">Get In Touch</h4>
-                  <div className="space-y-3 text-sm text-gray-600">
-                    <div className="flex items-center gap-3 justify-center">
-                      <Phone className="w-4 h-4 text-blue-600" />
-                      <span className="font-medium">9351630408</span>
-                    </div>
-                    <div className="flex items-center gap-3 justify-center">
-                      <Mail className="w-4 h-4 text-blue-600" />
-                      <span className="text-xs font-medium">support@vijayagenciesjpr.com</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+     <AboutSection />
 
       {/* Testimonials */}
-      <section className="py-12 sm:py-16 bg-white scroll-reveal">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-serif">What Our Clients Say</h2>
-            <p className="text-gray-600 max-w-3xl mx-auto text-base sm:text-lg lg:text-xl leading-relaxed">Trusted by hotels and businesses across Jaipur</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl border border-gray-100 hover:border-blue-200 transition-all duration-500 group animate-fade-in-up hover:scale-105" style={{ animationDelay: `${index * 0.2}s` }}>
-                <div className="flex items-center gap-4 mb-6">
-                  <img
-                    src={testimonial.image}
-                    alt={testimonial.name}
-                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover ring-4 ring-blue-100 shadow-md"
-                  />
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-base sm:text-lg">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-600 mb-1">{testimonial.role}</p>
-                    <p className="text-sm text-blue-600 font-semibold">{testimonial.company}</p>
-                  </div>
-                </div>
-                <div className="flex mb-4">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-gray-700 italic leading-relaxed text-sm sm:text-base">&quot;{testimonial.text}&quot;</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialSection />
 
       {/* Contact Us Banner */}
 {/* Contact Us Banner */}
