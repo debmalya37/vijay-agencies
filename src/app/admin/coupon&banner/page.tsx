@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Upload, Eye, EyeOff, Calendar, Percent, DollarSign } from 'lucide-react';
-
+import { LayoutTemplate, Palette, Type } from 'lucide-react';
 interface Coupon {
   _id: string;
   code: string;
@@ -22,9 +22,23 @@ interface Coupon {
 interface Banner {
   _id: string;
   title: string;
+  description?: string;
+  button_text?: string;
+  bg_color?: string;
+  image_position?: 'left' | 'right';
   image_url: string;
   link_url?: string;
   created_at: string;
+}
+
+// Update BannerForm Interface
+interface BannerForm {
+  title: string;
+  description: string;
+  button_text: string;
+  bg_color: string;
+  image_position: 'left' | 'right';
+  link_url: string;
 }
 
 interface CouponForm {
@@ -41,10 +55,7 @@ interface CouponForm {
   is_active: boolean;
 }
 
-interface BannerForm {
-  title: string;
-  link_url: string;
-}
+
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'coupons' | 'banners'>('coupons');
@@ -69,8 +80,12 @@ export default function AdminPage() {
     is_active: true
   });
 
-  const [bannerForm, setBannerForm] = useState<BannerForm>({
+ const [bannerForm, setBannerForm] = useState<BannerForm>({
     title: '',
+    description: '',
+    button_text: 'Shop Now',
+    bg_color: '#EF4F5F',
+    image_position: 'right',
     link_url: ''
   });
 
@@ -140,6 +155,10 @@ export default function AdminPage() {
     const formData = new FormData();
     
     formData.append('title', bannerForm.title);
+    formData.append('description', bannerForm.description);
+    formData.append('button_text', bannerForm.button_text);
+    formData.append('bg_color', bannerForm.bg_color);
+    formData.append('image_position', bannerForm.image_position);
     formData.append('link_url', bannerForm.link_url);
     formData.append('image', selectedFile);
 
@@ -219,9 +238,13 @@ export default function AdminPage() {
     });
   };
 
-  const resetBannerForm = () => {
+ const resetBannerForm = () => {
     setBannerForm({
       title: '',
+      description: '',
+      button_text: 'Shop Now',
+      bg_color: '#EF4F5F',
+      image_position: 'right',
       link_url: ''
     });
   };
@@ -571,49 +594,100 @@ export default function AdminPage() {
         )}
 
         {/* Banner Modal */}
+        {/* Banner Modal */}
         {showBannerModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-              <h3 className="text-lg font-semibold mb-4">Add New Banner</h3>
+            <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+              <h3 className="text-lg font-semibold mb-4">Add New Hero Banner</h3>
               
-              <form onSubmit={handleBannerSubmit}>
-                <div className="space-y-4">
+              <form onSubmit={handleBannerSubmit} className="space-y-4">
+                
+                {/* Title & Description */}
+                <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Banner Title</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Headline Title</label>
                     <input
                       type="text"
                       value={bannerForm.title}
                       onChange={(e) => setBannerForm({...bannerForm, title: e.target.value})}
                       className="w-full p-2 border border-gray-300 rounded-md"
-                      placeholder="Enter banner title"
-                      
+                      placeholder="e.g., Big Sales Every Friday"
                     />
                   </div>
-                  
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Link URL (Optional)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea
+                      value={bannerForm.description}
+                      onChange={(e) => setBannerForm({...bannerForm, description: e.target.value})}
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                      placeholder="e.g., Don't miss out on our fresh products..."
+                      rows={2}
+                    />
+                  </div>
+                </div>
+
+                {/* Styling Options */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+                    <input
+                      type="text"
+                      value={bannerForm.button_text}
+                      onChange={(e) => setBannerForm({...bannerForm, button_text: e.target.value})}
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                      placeholder="Shop Now"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Background Color</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={bannerForm.bg_color}
+                        onChange={(e) => setBannerForm({...bannerForm, bg_color: e.target.value})}
+                        className="h-10 w-10 p-0 border-0 rounded cursor-pointer"
+                      />
+                      <span className="text-sm text-gray-500">{bannerForm.bg_color}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Layout & Link */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Image Position</label>
+                    <select
+                    title='image_position'
+                      value={bannerForm.image_position}
+                      onChange={(e) => setBannerForm({...bannerForm, image_position: e.target.value as 'left' | 'right'})}
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="right">Image on Right</option>
+                      <option value="left">Image on Left</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Link URL</label>
                     <input
                       type="url"
                       value={bannerForm.link_url}
                       onChange={(e) => setBannerForm({...bannerForm, link_url: e.target.value})}
                       className="w-full p-2 border border-gray-300 rounded-md"
-                      placeholder="https://example.com"
+                      placeholder="https://..."
                     />
                   </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Banner Image</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                      className="w-full p-2 border border-gray-300 rounded-md"
-                      required
-                    />
-                    <p className="text-sm text-gray-500 mt-1">
-                      Recommended size: 1200x400px or similar aspect ratio
-                    </p>
-                  </div>
+                </div>
+
+                {/* Image Upload */}
+                <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">Product Image (Transparent BG recommended)</label>
+                   <input
+                     type="file"
+                     accept="image/*"
+                     onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                     className="w-full p-2 border border-gray-300 rounded-md"
+                     required
+                   />
                 </div>
                 
                 <div className="flex justify-end gap-2 mt-6">

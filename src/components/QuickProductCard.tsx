@@ -1,229 +1,266 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback, memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Plus, Star, Clock, Check, Share2, Loader2 } from "lucide-react";
+import { 
+  Heart, 
+  Minus, 
+  Plus, 
+  ShoppingCart, 
+  Loader2,
+  Star,
+  Check
+} from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
+import { toast } from "sonner"; 
 
-// Unified Interface combining both needs
+interface Variant {
+  label: string;
+  price: number;
+  stock: number;
+}
+
 interface Product {
   _id: string;
   title: string;
+  description?: string;
   price: number;
   originalPrice?: number;
   image: string;
   discount?: string;
   size?: string;
-  sizes?: string[]; // Handle arrays for logic
+  sizes?: string[];
   rating?: number;
   reviews?: number;
   minOrderQuantity?: number;
   category?: string;
-  deliveryTime?: string;
+  inStock?: boolean;
+  variants?: Variant[];
 }
 
-export default function QuickProductCard({ product }: { product: Product }) {
+const QuickProductCard = memo(({ product }: { product: Product }) => {
   const { addItem, items } = useCart();
-  
-  // -- State Management --
-  // Use first available size or default
   const [selectedSize] = useState<string>(
     product.size || product.sizes?.[0] || ""
   );
-  const [adding, setAdding] = useState(false);
-  const [showShareToast, setShowShareToast] = useState(false);
+  const [quantity, setQuantity] = useState(product.minOrderQuantity || 1);
+  const [isAdding, setIsAdding] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
-  // -- Derived State --
+
   const isInCart = items.some(
     (item) =>
       item.productId === product._id &&
       (item.size ?? "") === (selectedSize ?? "")
   );
+  const discountPercentage = product.originalPrice && product.originalPrice > product.price
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    : 0;
 
-  const calculatedDiscount =
-    product.originalPrice && product.originalPrice > product.price
-      ? Math.round(
-          ((product.originalPrice - product.price) / product.originalPrice) * 100
-        ) + "% OFF"
-      : product.discount;
-
-  // -- Handlers --
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // Stop navigation to product page
+  const handleQuantityChange = useCallback((delta: number, e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
+    setQuantity(prev => Math.max(product.minOrderQuantity || 1, prev + delta));
+  }, [product.minOrderQuantity]);
 
-    if (isInCart || adding) return;
-
-    setAdding(true);
-
-    // Simulate network delay for better UX feel
-    setTimeout(() => {
-      addItem({
-        productId: product._id,
-        title: product.title,
-        price: product.price,
-        originalPrice: product.originalPrice,
-        image: product.image,
-        size: selectedSize,
-        quantity: 1,
-        minOrderQuantity: product.minOrderQuantity ?? 1,
-        inStock: true,
-      });
-      setAdding(false);
-    }, 400);
-  };
-
-  const handleShare = async (e: React.MouseEvent) => {
+  const handleAddToCart = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    const productUrl = `${window.location.origin}/Products/${product._id}`;
-    const shareData = {
-      title: product.title,
-      text: `Check out ${product.title} for ₹${product.price.toLocaleString()}!`,
-      url: productUrl,
-    };
+    if (isAdding) return;
+    setIsAdding(true);
 
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(productUrl);
-        setShowShareToast(true);
-        setTimeout(() => setShowShareToast(false), 2000);
-      }
-    } catch (err) {
-      console.log("Share failed:", err);
-    }
-  };
+    await new Promise(resolve => setTimeout(resolve, 400));
+
+    addItem({
+      productId: product._id,
+      title: product.title,
+      price: product.price,
+      originalPrice: product.originalPrice,
+      image: product.image,
+      size: product.size || product.sizes?.[0],
+      quantity: quantity,
+      minOrderQuantity: product.minOrderQuantity ?? 1,
+      inStock: true,
+    });
+
+    setIsAdding(false);
+    toast.success(`Added ${quantity} ${product.title} to cart`);
+  }, [addItem, isAdding, product, quantity]);
+
+  const toggleWishlist = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsWishlisted(prev => !prev);
+  }, []);
 
   return (
-    <div className="group relative flex flex-col h-full w-full bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-blue-100 transition-all duration-300 overflow-hidden">
+    <div className="
+      group relative w-full h-full flex flex-col
+      bg-white rounded-xl sm:rounded-2xl
+      border border-gray-100/80
+      shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)]
+      hover:shadow-[0_12px_32px_-8px_rgba(139,0,0,0.12)]
+      hover:border-red-100/50
+      transition-all duration-500 ease-out
+      overflow-hidden
+    ">
       
-      {/* -- Share Toast Notification -- */}
-      {showShareToast && (
-        <div className="absolute top-12 right-2 z-30 px-2 py-1 rounded bg-gray-900/90 text-white text-[10px] font-medium shadow-lg animate-fade-in-up">
-          Link copied!
-        </div>
-      )}
-
-      {/* 1. Image Section */}
-      <Link href={`/Products/${product._id}`} className="relative aspect-square w-full bg-gray-50 overflow-hidden cursor-pointer">
+      {/* ===== IMAGE SECTION ===== */}
+      <Link href={`/Products/${product._id}`} className="relative block aspect-[4/3] sm:aspect-square w-full bg-[#FAFAFA] overflow-hidden">
         
+        {/* Wishlist Button */}
+        <button 
+          onClick={toggleWishlist}
+          className={`absolute top-3 right-3 z-20 p-2 sm:p-2.5 rounded-full bg-white/90 backdrop-blur border shadow-sm transition-all duration-300 active:scale-90 ${
+            isWishlisted 
+              ? "border-red-100 text-[#D32F2F]" 
+              : "border-gray-100 text-gray-400 hover:text-[#D32F2F] hover:border-red-100"
+          }`}
+        >
+          <Heart className={`w-4 h-4 sm:w-4.5 sm:h-4.5 ${isWishlisted ? "fill-current" : ""}`} />
+        </button>
+
         {/* Discount Badge */}
-        {calculatedDiscount && (
-          <div className="absolute top-0 left-0 bg-[#4a7c59] text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded-br-lg z-20 shadow-sm">
-            {calculatedDiscount}
+        {(discountPercentage > 0 || product.discount) && (
+          <div className="absolute top-3 left-3 z-20">
+            <span className="px-3 py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] text-white bg-[#CB202D] rounded-sm shadow-md">
+              {discountPercentage}% OFF
+            </span>
           </div>
         )}
-
-        {/* Top Right Actions (Rating & Share) */}
-        <div className="absolute top-2 right-2 z-20 flex flex-col gap-2 items-end">
-            {/* Rating / Time Badge */}
-            {product.rating ? (
-                <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm px-1.5 py-0.5 rounded-md shadow-sm border border-gray-100">
-                    <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                    <span className="text-[10px] font-bold text-gray-700">{product.rating}</span>
-                </div>
-            ) : (
-                 <div className="flex items-center gap-1 bg-gray-100/90 backdrop-blur-sm px-1.5 py-0.5 rounded-md">
-                    <Clock className="w-3 h-3 text-gray-500" />
-                    <span className="text-[10px] font-medium text-gray-600">Fast</span>
-                </div>
-            )}
-
-            {/* Share Button (Hidden until hover on desktop, always visible on touch if needed) */}
-            <button
-                onClick={handleShare}
-                className="w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-blue-600 hover:scale-110 transition-all shadow-sm opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 duration-300"
-                title="Share Product"
-            >
-                <Share2 className="w-3.5 h-3.5" />
-            </button>
-        </div>
 
         {/* Product Image */}
         <Image
           src={product.image || "/placeholder.png"}
           alt={product.title}
           fill
-          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
-          className="object-contain p-4 transition-transform duration-500 group-hover:scale-110 mix-blend-multiply"
-          priority={false}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-contain p-6 sm:p-8 transition-transform duration-700 group-hover:scale-105 mix-blend-multiply"
         />
+        
+        {/* Subtle bottom gradient for image contrast */}
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/5 to-transparent pointer-events-none" />
       </Link>
 
-      {/* 2. Content Section */}
-      <div className="flex flex-col flex-grow p-3 sm:p-4">
+      {/* ===== CONTENT SECTION ===== */}
+      <div className="flex flex-col flex-1 p-4 sm:p-5">
         
-        {/* Size Label */}
-        {selectedSize && (
-          <p className="text-[10px] sm:text-xs font-medium text-gray-500 mb-1 bg-gray-50 inline-block w-fit px-1.5 rounded-md border border-gray-100">
-            {selectedSize}
-          </p>
-        )}
+        {/* Rating & Meta */}
+        {/* <div className="flex items-center justify-between mb-2">
+           <div className="flex items-center gap-1">
+             <Star className="w-3.5 h-3.5 fill-[#D32F2F] text-[#D32F2F]" />
+             <span className="text-[11px] sm:text-xs font-bold text-gray-800">{product?.rating || "0"}</span>
+             <span className="text-[10px] text-gray-400 ml-0.5">({product?.reviews || 0})</span>
+           </div>
+           {product.size && (
+             <span className="text-[10px] sm:text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-sm">
+               {product.size}
+             </span>
+           )}
+        </div> */}
 
         {/* Title */}
-        <Link href={`/Products/${product._id}`} className="block">
-          <h3 className="text-xs sm:text-sm font-semibold text-gray-800 leading-snug line-clamp-2 min-h-[2.5em] group-hover:text-blue-600 transition-colors" title={product.title}>
+        <Link href={`/Products/${product._id}`} className="block mb-1.5">
+          <h3 
+            className="text-xl font-bold text-gray-900 leading-snug line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem] group-hover:text-[#CB202D] transition-colors duration-300" 
+            title={product.title}
+          >
             {product.title}
           </h3>
         </Link>
 
-        {/* Footer: Price & Smart Button */}
-        <div className="mt-auto pt-3 flex items-end justify-between gap-2">
+        {/* Description */}
+        <p className="text-[12px] sm:text-xs text-gray-500 line-clamp-2 min-h-[2rem] sm:min-h-[2.25rem] leading-relaxed mb-4">
+          {product.description || "Expertly crafted for superior performance and exceptional durability in professional environments."}
+        </p>
+
+        {/* Price & Actions Container */}
+        <div className="mt-auto pt-4 border-t border-gray-100">
           
           {/* Price Block */}
-          <div className="flex flex-col">
-            <span className="text-sm sm:text-base font-bold text-gray-900">
+          <div className="flex items-baseline gap-2 mb-4">
+            <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">
               ₹{product.price.toLocaleString()}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-[10px] sm:text-xs text-gray-400 line-through font-medium">
+              <span className="text-xs sm:text-sm text-gray-400 line-through font-medium">
                 ₹{product.originalPrice.toLocaleString()}
               </span>
             )}
           </div>
 
-          {/* SMART ACTION BUTTON */}
-          <button 
-            onClick={handleAddToCart}
-            disabled={adding}
-            className={`
-                relative overflow-hidden
-                flex items-center justify-center gap-1
-                px-3 py-1.5 sm:px-6 sm:py-2 
-                text-xs sm:text-sm font-bold 
-                rounded-lg shadow-sm
-                transition-all duration-300
-                active:scale-95
-                min-w-[70px] sm:min-w-[90px]
-                ${isInCart 
-                   ? "bg-green-50 border border-green-200 text-green-700" 
-                   : "bg-white border border-[#EF4F5F] text-[#EF4F5F] hover:bg-[#FFF2F2]"
+          {/* Controls: Stacked on small mobile, row on slightly larger screens */}
+          <div className="flex flex-col min-[400px]:flex-row items-stretch gap-2 w-full h-auto min-[400px]:h-11">
+            
+            {/* Quantity Selector */}
+            <div className="flex items-center justify-between min-[400px]:justify-center h-10 min-[400px]:h-full bg-white border border-gray-200 rounded-lg sm:rounded-xl p-1 shrink-0 min-[400px]:w-24">
+              <button 
+                onClick={(e) => handleQuantityChange(-1, e)}
+                className="w-8 min-[400px]:w-7 h-full flex items-center justify-center rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors disabled:opacity-30"
+                disabled={quantity <= (product.minOrderQuantity || 1)}
+              >
+                <Minus className="w-3.5 h-3.5" />
+              </button>
+              
+              <span className="w-8 text-center font-bold text-gray-900 text-xs sm:text-sm select-none">
+                {quantity}
+              </span>
+              
+              <button 
+                onClick={(e) => handleQuantityChange(1, e)}
+                className="w-8 min-[400px]:w-7 h-full flex items-center justify-center rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Add to Cart Button */}
+            <button
+  onClick={handleAddToCart}
+  disabled={isAdding || isInCart}
+  className={`
+    flex-1 h-11 min-[400px]:h-full relative overflow-hidden 
+    flex items-center justify-center gap-2 
+    bg-[#CB202D]
+    text-white font-bold text-xs uppercase tracking-wider
+    rounded-lg sm:rounded-xl shadow-md 
+    active:scale-[0.98] transition-all duration-300
+    disabled:opacity-70 disabled:cursor-not-allowed group/btn
+    ${isInCart 
+                   ? "bg-green-600 hover:bg-green-700 border border-green-200 text-green-700" 
+                   : "bg-[#CB202D] hover:bg-[#c21726] border border-[#EF4F5F]"
                 }
-            `}
-          >
-            {adding ? (
-                <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
-            ) : isInCart ? (
-                <>
-                  <span className="hidden sm:inline">ADDED</span>
+  `}
+>
+  {isAdding ? (
+    <Loader2 className="w-4 h-4 animate-spin" />
+  ) : 
+  isInCart ? (
+                <div className="cursor-none">
+                  <span className="hidden sm:inline cursor-not-allowed">Added to Cart</span>
                   <span className="sm:hidden">
                     <Check className="w-4 h-4" />
                   </span>
-                </>
-            ) : (
-                <>
-                   ADD
-                   <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
-                </>
-            )}
-          </button>
+                </div>
+            ) :
+  (
+    <>
+      <ShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover/btn:-translate-x-1" />
+      <span className="whitespace-nowrap">Add to Cart</span>
+    </>
+  )}
+</button>
+
+          </div>
+
         </div>
       </div>
     </div>
   );
-}
+});
+
+QuickProductCard.displayName = "QuickProductCard";
+
+export default QuickProductCard;

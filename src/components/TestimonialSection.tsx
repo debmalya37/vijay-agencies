@@ -28,82 +28,88 @@ const testimonials = [
 
 export default function TestimonialSection() {
   return (
-    <section className="py-16 sm:py-24 bg-gray-50 relative overflow-hidden">
+    <section className="py-16 sm:py-24 bg-gradient-to-b from-white via-red-50/20 to-white relative overflow-hidden">
       
       {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
-      <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-100/40 rounded-full blur-3xl -z-10"></div>
-      <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-indigo-100/40 rounded-full blur-3xl -z-10"></div>
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-100 to-transparent"></div>
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-red-100/40 rounded-full blur-3xl -z-10"></div>
+      <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-orange-100/40 rounded-full blur-3xl -z-10"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
-            <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-red-100 text-[#EF4F5F] text-xs font-bold uppercase tracking-wider mb-6 shadow-sm shadow-red-100 animate-fade-in-up">
+            <Star className="w-3.5 h-3.5 fill-[#EF4F5F]" />
             Client Stories
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 font-serif mb-6">
-            Trusted by Jaipur's Finest
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 font-sans mb-6 leading-tight">
+            Trusted by <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#CB202D] to-[#EF4F5F]">Jaipur's Finest</span>
           </h2>
-          <p className="text-gray-500 text-lg leading-relaxed">
-            We take pride in powering the hygiene standards of top hotels and businesses.
+          <p className="text-gray-500 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
+            We take pride in powering the hygiene standards of top hotels and businesses with our premium cleaning solutions.
           </p>
         </div>
 
         {/* Testimonials Container */}
         {/* Mobile: Horizontal Snap Scroll | Desktop: Grid */}
         <div className="
-            flex gap-6 overflow-x-auto pb-8 -mx-4 px-4 snap-x
-            sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:pb-0 sm:mx-0 sm:px-0
+            flex gap-6 overflow-x-auto pb-10 pt-4 -mx-4 px-4 snap-x snap-mandatory
+            sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:pb-0 sm:pt-0 sm:mx-0 sm:px-0
             scrollbar-hide
         ">
           {testimonials.map((testimonial, index) => (
             <div 
               key={index} 
               className="
-                min-w-[300px] sm:min-w-0 snap-center
-                relative bg-white rounded-2xl p-6 sm:p-8
-                border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 hover:-translate-y-1
-                transition-all duration-300 group
+                min-w-[320px] sm:min-w-0 snap-center h-full
+                relative bg-white rounded-3xl p-8
+                border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]
+                hover:shadow-[0_20px_40px_-12px_rgba(239,79,95,0.15)] 
+                hover:border-red-100 hover:-translate-y-2
+                transition-all duration-300 ease-out group
               "
             >
               {/* Giant Quote Icon Background */}
-              <div className="absolute top-6 right-8 text-gray-100 group-hover:text-blue-50 transition-colors">
-                <Quote className="w-16 h-16 fill-current transform rotate-180" />
+              <div className="absolute top-8 right-8 text-gray-50 group-hover:text-red-50/80 transition-colors duration-300">
+                <Quote className="w-20 h-20 fill-current transform rotate-180" />
               </div>
 
               {/* Stars */}
               <div className="flex gap-1 mb-6 relative z-10">
                 {Array.from({ length: 5 }, (_, i) => (
-                  <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                  <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400 drop-shadow-sm" />
                 ))}
               </div>
 
               {/* Quote Text */}
-              <blockquote className="relative z-10 mb-8">
-                <p className="text-gray-700 text-base sm:text-lg leading-relaxed font-medium">
+              <blockquote className="relative z-10 mb-8 min-h-[5rem]">
+                <p className="text-gray-700 text-lg leading-relaxed font-medium italic">
                   "{testimonial.text}"
                 </p>
               </blockquote>
 
               {/* Divider */}
-              <div className="w-full h-px bg-gray-100 mb-6"></div>
+              <div className="w-full h-px bg-gradient-to-r from-gray-100 via-red-50 to-gray-100 mb-6"></div>
 
               {/* User Profile */}
               <div className="flex items-center gap-4 relative z-10">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-md"
-                />
+                <div className="relative">
+                  <div className="absolute inset-0 bg-red-200 rounded-full blur-sm opacity-0 group-hover:opacity-50 transition-opacity"></div>
+                  <img
+                    src={testimonial.image}
+                    alt={testimonial.name}
+                    className="w-14 h-14 rounded-full object-cover ring-2 ring-white shadow-md relative z-10"
+                  />
+                </div>
+                
                 <div>
                   <div className="flex items-center gap-2">
-                    <h4 className="font-bold text-gray-900 text-sm">{testimonial.name}</h4>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-500" />
+                    <h4 className="font-bold text-gray-900 text-base">{testimonial.name}</h4>
+                    <CheckCircle2 className="w-4 h-4 text-[#EF4F5F]" />
                   </div>
-                  <p className="text-xs text-gray-500">{testimonial.role}</p>
-                  <p className="text-xs font-bold text-blue-600 mt-0.5">{testimonial.company}</p>
+                  <p className="text-xs text-gray-500 font-medium">{testimonial.role}</p>
+                  <p className="text-xs font-bold text-[#EF4F5F] mt-0.5">{testimonial.company}</p>
                 </div>
               </div>
 
@@ -111,11 +117,11 @@ export default function TestimonialSection() {
           ))}
         </div>
         
-        {/* Mobile Scroll Indicator */}
+        {/* Mobile Scroll Indicator (Dots) */}
         <div className="flex justify-center gap-2 mt-4 sm:hidden">
-            <div className="w-2 h-2 rounded-full bg-gray-800 opacity-50"></div>
-            <div className="w-2 h-2 rounded-full bg-gray-300"></div>
-            <div className="w-2 h-2 rounded-full bg-gray-300"></div>
+            <div className="w-2 h-2 rounded-full bg-[#EF4F5F]"></div>
+            <div className="w-2 h-2 rounded-full bg-red-100"></div>
+            <div className="w-2 h-2 rounded-full bg-red-100"></div>
         </div>
 
       </div>
