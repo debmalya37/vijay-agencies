@@ -1,126 +1,126 @@
 // File: src/app/api/categories/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
-import { Category, ICategory } from '@/models/Category';
-import { Product, IProduct } from '@/models/Product';
 
-// Extended API type for category response
-// import { ICategory } from "@/models/Category";
-
-// Define what you want to return in API response
-export interface CategoryResponse {
-  _id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  parent_category?: {
-    _id: string;
-    name: string;
-    slug: string;
-  } | null;
-  createdAt?: Date;
-  updatedAt?: Date;
-  product_count?: number; // Added product_count property
-}
+import { NextRequest, NextResponse } from "next/server";
+import dbConnect from "@/lib/dbConnect";
+import { Category } from "@/models/Category";
+import { Product } from "@/models/Product";
 
 export async function GET(request: NextRequest) {
   try {
     await dbConnect();
 
     const { searchParams } = new URL(request.url);
-    const hierarchical = searchParams.get('hierarchical') === 'true';
-    const includeProducts = searchParams.get('include_products') === 'true';
-    const limit = parseInt(searchParams.get('limit') || '0');
-    const parentId = searchParams.get('parent_id');
+    const hierarchical = searchParams.get("hierarchical") === "true";
+    const includeProducts = searchParams.get("include_products") === "true";
+    const parentId = searchParams.get("parent_id");
 
-    // Build query - only active categories
+    /* ---------------- QUERY ---------------- */
     const query: any = { is_active: true };
-    if (parentId) {
-      query.parent_category = parentId === 'null' ? null : parentId;
+
+    if (parentId !== null && parentId !== undefined) {
+      query.parent_category = parentId === "null" ? null : parentId;
     }
 
-    // Fetch categories
-    const categoriesDocs = await Category.find(query)
-      .populate('parent_category', 'name slug')
-      .populate('subcategories', 'name slug image_url')
+    /* ---------------- FETCH CATEGORIES (LEAN = FAST) ---------------- */
+    const categories = await Category.find(query)
+      .select("name slug parent_category image_url sort_order product_count")
       .sort({ sort_order: 1, name: 1 })
-      .limit(limit);
+      .lean();
 
-    // Convert to plain objects for API response
-    let categories: CategoryResponse[] = categoriesDocs.map((cat) => {
-      const obj = cat.toObject() as any;
-      return {
-        ...obj,
-        _id: obj._id.toString(),
-      };
-    });
+    /* ---------------- OPTIONAL: AGGREGATED PRODUCT COUNTS ---------------- */
+    // ⚡ ONE query instead of N queries
+    const counts = await Product.aggregate([
+      { $match: { is_in_stock: true } },
+      { $unwind: "$categories" },
+      {
+        $group: {
+          _id: "$categories",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
 
-    // Update product counts (and sync DB if needed)
-    await Promise.all(
-      categoriesDocs.map(async (catDoc, i) => {
-        const productCount = await Product.countDocuments({
-          categories: catDoc.name,
-          is_in_stock: true,
-        });
+    const countMap = new Map<string, number>();
+    counts.forEach(c => countMap.set(c._id, c.count));
 
-        if (catDoc.product_count !== productCount) {
-          catDoc.product_count = productCount;
-          await catDoc.save();
-        }
+    const enriched = categories.map(cat => ({
+      ...cat,
+      _id: cat._id.toString(),
+      product_count: countMap.get(cat.name) || 0,
+    }));
 
-        categories[i].product_count = productCount;
-      })
-    );
+    /* ---------------- OPTIONAL: SAMPLE PRODUCTS (1 QUERY PER ALL CATS) ---------------- */
+    let categoryProductsMap = new Map<string, any[]>();
 
-    // Include sample products if requested
     if (includeProducts) {
-      categories = await Promise.all(
-        categories.map(async (category) => {
-          const products = await Product.find({
-            categories: category.name,
-            is_in_stock: true,
-          })
-            .select('title base_price discounted_price images slug')
-            .sort({ created_at: -1 })
-            .limit(8)
-            .lean();
+      const allNames = enriched.map(c => c.name);
 
-          return {
-            ...category,
-            products,
-          };
-        })
-      );
-    }
+      const sampleProducts = await Product.aggregate([
+        { $match: { is_in_stock: true, categories: { $in: allNames } } },
+        { $sort: { created_at: -1 } },
+        {
+          $project: {
+            title: 1,
+            slug: 1,
+            base_price: 1,
+            discounted_price: 1,
+            images: 1,
+            categories: 1,
+          },
+        },
+      ]);
 
-    // Build hierarchical structure if requested
-    if (hierarchical) {
-      const buildHierarchy = (cats: CategoryResponse[], parentId: string | null = null): CategoryResponse[] => {
-        return cats
-          .filter((cat) => {
-            const catParentId = (cat.parent_category as any)?._id?.toString() || null;
-            return catParentId === parentId;
-          })
-          .map((cat) => ({
-            ...cat,
-            children: buildHierarchy(cats, cat._id.toString()),
-          }));
-      };
-
-      const hierarchicalCategories = buildHierarchy(categories);
-
-      return NextResponse.json({
-        success: true,
-        categories: hierarchicalCategories,
+      // group by category name
+      sampleProducts.forEach(p => {
+        p.categories.forEach((c: string) => {
+          if (!categoryProductsMap.has(c)) categoryProductsMap.set(c, []);
+          if (categoryProductsMap.get(c)!.length < 8) {
+            categoryProductsMap.get(c)!.push(p);
+          }
+        });
       });
     }
 
-    // Default: return flat list
-    return NextResponse.json({ success: true, categories });
+    /* ---------------- HIERARCHY BUILD (O(n)) ---------------- */
+    if (hierarchical) {
+      const map = new Map<string, any[]>();
+
+      enriched.forEach(cat => {
+        const pid = cat.parent_category?.toString() || "root";
+        if (!map.has(pid)) map.set(pid, []);
+        map.get(pid)!.push(cat);
+      });
+
+      const build = (pid: string | null): any[] => {
+        const key = pid || "root";
+        return (map.get(key) || []).map(cat => ({
+          ...cat,
+          products: includeProducts ? categoryProductsMap.get(cat.name) || [] : undefined,
+          children: build(cat._id.toString()),
+        }));
+      };
+
+      return NextResponse.json({
+        success: true,
+        categories: build(null),
+      });
+    }
+
+    /* ---------------- FLAT RESPONSE ---------------- */
+    const flat = enriched.map(cat => ({
+      ...cat,
+      products: includeProducts ? categoryProductsMap.get(cat.name) || [] : undefined,
+    }));
+
+    return NextResponse.json({
+      success: true,
+      categories: flat,
+    });
+
   } catch (error) {
-    console.error('Error fetching categories:', error);
+    console.error("Category API error:", error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch categories' },
+      { success: false, error: "Failed to fetch categories" },
       { status: 500 }
     );
   }

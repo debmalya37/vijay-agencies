@@ -51,6 +51,7 @@ import CleaningSection from '@/components/CleaningSection';
 import AboutSection from '@/components/AboutSection';
 import TestimonialSection from '@/components/TestimonialSection';
 import CategoryRail from '@/components/CategoryRail';
+import BrowseProductsSection from '@/components/BrowseProductsSection';
 
 // Type definitions
 interface Product {
@@ -94,6 +95,10 @@ interface Category {
 interface Banner {
   _id: string;
   title: string;
+  description?: string; // Add this
+  button_text?: string; // Add this
+  bg_color?: string;    // Add this
+  image_position?: 'left' | 'right'; // Add this
   image_url: string;
   link_url?: string;
   created_at: string;
@@ -298,7 +303,7 @@ const animationStyles = `
 `;
 
 export default function HomePage() {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  // const [currentSlide, setCurrentSlide] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Products state
@@ -317,10 +322,53 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
   const [banners, setBanners] = useState<Banner[]>([]);
   const [bannersLoading, setBannersLoading] = useState(true);
   const [bannersError, setBannersError] = useState<string | null>(null);
-  const sliderRef2 = useRef<HTMLDivElement>(null);
+  // const sliderRef2 = useRef<HTMLDivElement>(null);
   const [currentSlide2, setCurrentSlide2] = useState(0);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [notFound, setNotFound] = useState(false);
+
+  // Banner Slider Logic using Keen Slider
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [sliderRef2, instanceRef] = useKeenSlider<HTMLDivElement>({
+    initial: 0,
+    slideChanged(slider) {
+      setCurrentSlide(slider.track.details.rel);
+    },
+    loop: true,
+    drag: true,
+  }, [
+    (slider) => {
+      let timeout: ReturnType<typeof setTimeout>
+      let mouseOver = false
+      function clearNextTimeout() {
+        clearTimeout(timeout)
+      }
+      function nextTimeout() {
+        clearTimeout(timeout)
+        if (mouseOver) return
+        timeout = setTimeout(() => {
+          slider.next()
+        }, 5000)
+      }
+      slider.on("created", () => {
+        slider.container.addEventListener("mouseover", () => {
+          mouseOver = true
+          clearNextTimeout()
+        })
+        slider.container.addEventListener("mouseout", () => {
+          mouseOver = false
+          nextTimeout()
+        })
+        nextTimeout()
+      })
+      slider.on("dragStarted", clearNextTimeout)
+      slider.on("animationEnded", nextTimeout)
+      slider.on("updated", nextTimeout)
+    },
+  ]);
+
+  const nextSlide = () => instanceRef.current?.next();
+  const prevSlide = () => instanceRef.current?.prev();
   
   useEffect(() => {
     fetch("/api/admin/brands", { cache: "no-store" })
@@ -407,7 +455,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
   const fetchCategories = async () => {
     try {
       setCategoriesLoading(true);
-      const response = await fetch('/api/categories?limit=12');
+      const response = await fetch('/api/categories?parent_id=null&limit=12');
       if (!response.ok) {
         throw new Error('Failed to fetch categories');
       }
@@ -517,7 +565,7 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     ];
     return colors[index % colors.length];
   };
-
+  
   // Helper function to get category icon or emoji
   const getCategoryIcon = (category: Category, index: number) => {
     if (category.icon) {
@@ -546,17 +594,17 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     fetchBanners();
   }, []);
 
-  const nextSlide = () => {
-    if (banners.length > 0) {
-      setCurrentSlide((prev) => (prev + 1) % banners.length);
-    }
-  };
+  // const nextSlide = () => {
+  //   if (banners.length > 0) {
+  //     setCurrentSlide((prev) => (prev + 1) % banners.length);
+  //   }
+  // };
 
-  const prevSlide = () => {
-    if (banners.length > 0) {
-      setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
-    }
-  };
+  // const prevSlide = () => {
+  //   if (banners.length > 0) {
+  //     setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
+  //   }
+  // };
 
   useEffect(() => {
     if (banners.length > 1) {
@@ -596,25 +644,25 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     return () => window.removeEventListener("resize", updateItemsPerSlide);
   }, []);
 
-  const scrollToSlide = (index: number) => {
-    if (!sliderRef2.current) return;
-    const slideWidth = sliderRef2.current.clientWidth;
-    sliderRef2.current.scrollTo({
-      left: index * slideWidth,
-      behavior: "smooth",
-    });
-    setCurrentSlide(index);
-  };
+  // const scrollToSlide = (index: number) => {
+  //   if (!sliderRef2.current) return;
+  //   const slideWidth = sliderRef2.current.clientWidth;
+  //   sliderRef2.current.scrollTo({
+  //     left: index * slideWidth,
+  //     behavior: "smooth",
+  //   });
+  //   setCurrentSlide(index);
+  // };
 
-  const handleNext = () => {
-    const nextIndex = (currentSlide + 1) % totalSlides;
-    scrollToSlide(nextIndex);
-  };
+  // const handleNext = () => {
+  //   const nextIndex = (currentSlide + 1) % totalSlides;
+  //   scrollToSlide(nextIndex);
+  // };
 
-  const handlePrev = () => {
-    const prevIndex = (currentSlide - 1 + totalSlides) % totalSlides;
-    scrollToSlide(prevIndex);
-  };
+  // const handlePrev = () => {
+  //   const prevIndex = (currentSlide - 1 + totalSlides) % totalSlides;
+  //   scrollToSlide(prevIndex);
+  // };
 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
 const itemsPerSlide2 = isMobile ? 1 : 2;
@@ -627,21 +675,36 @@ const slides = useMemo(() => {
   return chunks;
 }, [cleaningProducts, itemsPerSlide2]);
 
+
+function getRandomProducts<T>(arr: T[], count: number) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, count);
+}
+
+const randomProducts = useMemo(() => {
+  return getRandomProducts(products, 12);
+}, [products]);
+
+
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-rose-200/10 overflow-x-hidden">
 
       <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
       
       {/* <Navbar/> */}
-      <section className="bg-white py-6 px-3 overflow-x-hidden z-[100000]">
+      {/* <section className="bg-white py-6 px-3 overflow-x-hidden z-[100000]">
   <div className="max-w-full z-[100000]">
     <ProductSearch />
   </div>
-</section>
+</section> */}
       {/* Shop by Category Section */}
       {/* Shop by Category Section */}
       {/* Shop by Category Section - Zepto Style */}
-      <CategoryRail categories={categories} loading={categoriesLoading} />
+      
 
 
 {/* <section className="bg-white py-6 px-3 overflow-x-hidden z-[100000]">
@@ -654,188 +717,308 @@ const slides = useMemo(() => {
 
 
       {/* Hero Banner Section - Fixed for mobile */}
-      <section className="relative h-[25vh] sm:h-[50vh] lg:h-[80vh] scroll-reveal">
-  {bannersLoading && (
-    <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
-      <div className="text-center">
-        <div className="w-16 h-16 bg-gray-400 rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-gray-600 text-lg">Loading banners...</p>
+    {/* ================= HERO SECTION (Replaces old banner) ================= */}
+      
+      {/* ================= PREMIUM HERO (Nykaa / Zepto Style) ================= */}
+<section className="w-full px-3 sm:px-6 lg:px-10 mb-10 pt-10 bg-rose-200/10">
+
+  {/* Outer container creates boxed layout */}
+  <div className="
+    relative
+    max-w-[1600px]
+    mx-auto
+    rounded-[28px] sm:rounded-[36px]
+    overflow-hidden
+    border border-gray-200/70
+    shadow-[0_30px_80px_-20px_rgba(0,0,0,0.25)]
+    bg-rose-200/40
+  ">
+
+    {bannersLoading && (
+      <div className="w-full h-[420px] md:h-[520px] bg-rose-200/10 animate-pulse flex items-center justify-center">
+        <div className="text-gray-400">Loading Offers...</div>
       </div>
-    </div>
-  )}
+    )}
 
-  {bannersError && !bannersLoading && (
-    <div className="w-full h-full bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 flex items-center justify-center text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-      <div className="text-center px-3 relative z-10 animate-slide-in-bottom">
-        <h1 className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-bold mb-4 leading-tight">
-          Vijay Agencies
-        </h1>
-        <p className="text-lg sm:text-xl lg:text-2xl mb-6 max-w-3xl mx-auto leading-relaxed">
-          Your Trusted Partner for Commercial Cleaning Solutions
-        </p>
-        <p className="text-base sm:text-lg lg:text-xl mb-8 opacity-90">
-          Serving Hotels & Businesses in Jaipur Since 1972
-        </p>
-        <button 
-          onClick={() => window.location.href = '/Products'}
-          className="bg-white text-blue-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 inline-flex items-center gap-2 shadow-xl hover:shadow-2xl hover:scale-105 text-base sm:text-lg"
-        >
-          Explore Products
-          <ArrowRight className="w-5 h-5" />
-        </button>
-      </div>
-      {/* Decorative elements */}
-      <div className="absolute top-10 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full animate-pulse"></div>
-      <div className="absolute bottom-20 right-10 w-32 h-32 bg-white bg-opacity-10 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-    </div>
-  )}
+    {!bannersLoading && banners.length > 0 && (
+      <div ref={sliderRef2} className="keen-slider h-[420px] md:h-[520px]">
 
-  {!bannersLoading && !bannersError && banners.length > 0 && (
-    <div className="relative w-full h-full">
-      {banners.map((banner, index) => {
-  const BannerContent = (
-    <div className={`absolute inset-0 transition-all duration-1000 flex items-center justify-center
-      ${index === currentSlide ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-105 pointer-events-none'}`}
-    >
-      <div className="relative w-full h-full cursor-pointer">
-        <Image
-          src={banner.image_url}
-          alt={banner.title}
-          width={1200}
-          height={600}
-          className="w-full h-auto object-cover sm:object-cover object-center bg-gray-100 rounded-md"
-        />
-        {/* <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div> */}
-        {/* <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 glass-effect text-white px-3 sm:px-6 py-2 sm:py-4 rounded-xl backdrop-blur-md max-w-[90%] sm:max-w-none">
-          <h2 className="text-base sm:text-xl lg:text-2xl font-bold line-clamp-2">{banner.title}</h2>
-        </div> */}
-      </div>
-    </div>
-  );
-
-  return banner.link_url ? (
-    <a
-      key={banner._id}
-      href={banner.link_url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block w-full h-full"
-    >
-      {BannerContent}
-    </a>
-  ) : (
-    <div key={banner._id} className="block w-full h-full">
-      {BannerContent}
-    </div>
-  );
-})}
-
-
-
-      {/* Navigation Arrows */}
-      {banners.length > 1 && (
-        <>
-          <button
-            onClick={prevSlide}
-            className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 glass-effect hover:bg-white hover:bg-opacity-20 text-white p-2 sm:p-3 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110"
+        {banners.map((banner, idx) => (
+          <div
+            key={banner._id}
+            className="keen-slider__slide relative flex items-center w-full h-full"
+            style={{ backgroundColor: banner.bg_color || '#EF4F5F' }}
           >
-            <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 glass-effect hover:bg-white hover:bg-opacity-20 text-white p-2 sm:p-3 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110"
-          >
-            <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
-          </button>
 
-          {/* Slide Indicators */}
-          <div className="absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 sm:gap-3">
-            {banners.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentSlide(idx)}
-                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${idx === currentSlide ? 'bg-red-500 scale-125' : 'bg-gray-600 bg-opacity-50 hover:bg-opacity-75'}`}
-              />
-            ))}
+            {/* Soft gradient overlay (premium depth like Nykaa) */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/10 to-black/20"></div>
+
+            {/* subtle grain texture */}
+            <div className="absolute inset-0 opacity-[0.08] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+
+            {/* inner content wrapper */}
+            <div className={`
+              relative z-10
+              w-full h-full
+              max-w-7xl mx-auto
+              px-6 sm:px-10 lg:px-16
+              py-10 sm:py-12
+              flex flex-col md:flex-row
+              items-center
+              justify-between
+              gap-10
+              ${banner.image_position === 'left' ? 'md:flex-row-reverse' : ''}
+            `}>
+
+              {/* ================= TEXT COLUMN ================= */}
+              <div className={`
+                flex-1
+                text-center md:text-left
+                space-y-5
+                ${banner.image_position === 'left' ? 'md:text-right' : ''}
+              `}>
+
+                {/* Tag */}
+                <span className="inline-block px-4 py-1.5 rounded-full bg-white/25 backdrop-blur-md text-white text-xs font-semibold tracking-wider shadow-sm">
+                  EXCLUSIVE DEAL
+                </span>
+
+                {/* Title */}
+                <h2 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white leading-tight drop-shadow-md">
+                  {banner.title}
+                </h2>
+
+                {/* Description */}
+                {banner.description && (
+                  <p className="text-base sm:text-lg text-white/90 max-w-lg mx-auto md:mx-0 leading-relaxed">
+                    {banner.description}
+                  </p>
+                )}
+
+                {/* CTA */}
+                <div className={`
+                  flex gap-4 pt-3
+                  justify-center md:justify-start
+                  ${banner.image_position === 'left' ? 'md:justify-end' : ''}
+                `}>
+                  <button
+                    onClick={() => banner.link_url && window.open(banner.link_url, '_self')}
+                    className="
+                      px-8 py-3.5
+                      bg-white text-gray-900
+                      font-bold
+                      rounded-full
+                      shadow-lg
+                      hover:shadow-xl
+                      hover:-translate-y-0.5
+                      transition-all
+                      duration-300
+                      flex items-center gap-2
+                      group
+                    "
+                  >
+                    {banner.button_text || 'Shop Now'}
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+
+              </div>
+
+              {/* ================= IMAGE COLUMN ================= */}
+              <div className="flex-1 w-full h-full flex items-center justify-center relative">
+
+                {/* glow behind product */}
+                <div className="absolute w-[280px] h-[280px] bg-white/20 rounded-full blur-[90px]"></div>
+
+                <div className="relative w-full max-w-[360px] md:max-w-[460px] aspect-square transition-transform duration-700 hover:scale-105">
+                  <Image
+                    src={banner.image_url}
+                    alt={banner.title}
+                    fill
+                    className="object-contain drop-shadow-2xl"
+                    priority={idx === 0}
+                  />
+                </div>
+              </div>
+
+            </div>
           </div>
-        </>
-      )}
-    </div>
-  )}
+        ))}
+
+        {/* ================= ARROWS ================= */}
+        {banners.length > 1 && (
+          <>
+            <button
+              onClick={prevSlide}
+              className="
+                absolute left-4 sm:left-6 top-1/2 -translate-y-1/2
+                w-11 h-11 flex items-center justify-center
+                rounded-full
+                bg-white/20 hover:bg-white/30
+                text-white
+                backdrop-blur-md
+                transition-all
+                border border-white/30
+                z-20
+              "
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            <button
+              onClick={nextSlide}
+              className="
+                absolute right-4 sm:right-6 top-1/2 -translate-y-1/2
+                w-11 h-11 flex items-center justify-center
+                rounded-full
+                bg-white/20 hover:bg-white/30
+                text-white
+                backdrop-blur-md
+                transition-all
+                border border-white/30
+                z-20
+              "
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            {/* ================= DOTS ================= */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+              {banners.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`
+                    h-2.5 rounded-full transition-all duration-300
+                    ${currentSlide === idx
+                      ? 'w-8 bg-white shadow'
+                      : 'w-2.5 bg-white/50 hover:bg-white'}
+                  `}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+      </div>
+    )}
+
+  </div>
 </section>
+
+
+<CategoryRail categories={categories} loading={categoriesLoading} />
 
 
        {/* Featured Products */}
-<section className="py-10 sm:py-14 bg-[#F9FAFB]">
-  <div className="max-w-7xl mx-auto px-3 sm:px-6">
+<section className="relative py-16 sm:py-24 overflow-hidden bg-white">
 
-    {/* ================= HEADER ================= */}
-    {/* ================= HEADER ================= */}
-<div className="relative mb-6 sm:mb-8">
-
-  {/* Centered Title Group */}
-  <div className="text-center space-y-2 max-w-xl mx-auto">
-    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-[11px] sm:text-xs font-semibold tracking-wide uppercase">
-      <Sparkles className="w-4 h-4" />
-      Featured
-    </span>
-
-    <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-      Featured Products
-    </h2>
-
-    <p className="hidden sm:block text-sm text-gray-600">
-      Best-selling and recommended products trusted by businesses
-    </p>
+  {/* ===== LIGHT BACKGROUND GLOW (optimized) ===== */}
+  <div className="absolute inset-0 pointer-events-none">
+    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[110%] h-[420px] bg-gradient-to-b from-red-50 via-white/40 to-transparent blur-2xl" />
   </div>
 
-  {/* Desktop CTA (Right aligned, vertically centered) */}
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    {/* ================= HEADER ================= */}
+    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+
+      <div className="text-center md:text-left max-w-2xl mx-auto md:mx-0">
+
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-red-100 shadow-sm mb-4">
+          <span className="w-2 h-2 rounded-full bg-[#EF4F5F] animate-pulse"></span>
+          <span className="text-[11px] font-bold tracking-widest text-[#EF4F5F] uppercase">
+            Trending Now
+          </span>
+        </div>
+
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-medium text-gray-900 leading-tight">
+          Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#EF4F5F] to-[#C41E3A]">Collection</span>
+        </h2>
+
+        <p className="mt-4 text-sm sm:text-base text-gray-500">
+          Discover our most popular cleaning essentials trusted by hotels & businesses.
+        </p>
+      </div>
+
+      {/* DESKTOP CTA */}
+      <button
+        onClick={() => (window.location.href = "/Products")}
+        className="hidden md:flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-red-100 shadow hover:shadow-md transition"
+      >
+        <span className="text-sm font-semibold text-gray-800">View All</span>
+        <ArrowRight className="w-4 h-4 text-[#EF4F5F]" />
+      </button>
+    </div>
+
+
+    {/* ================= SLIDER ================= */}
+
+    <div className="relative">
+
+      {/* LEFT FADE */}
+      <div className="absolute left-0 top-0 bottom-0 w-10 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+
+      {/* RIGHT FADE */}
+      <div className="absolute right-0 top-0 bottom-0 w-14 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+      {/* SCROLL CONTAINER */}
+      <div className="
+  flex gap-6 overflow-x-auto pb-10 pt-4 mx-4
+  snap-x snap-mandatory
+  scrollbar-hide
+  items-stretch
+">
+
+
+        {/* PRODUCTS */}
+        {products.slice(0, 12).map((product) => (
+  <div
+    key={product._id}
+    className="
+      w-[240px]
+      sm:w-[260px]
+      md:w-[270px]
+      flex-shrink-0
+      snap-start
+      h-full
+      transition-transform duration-300
+      hover:-translate-y-1
+    "
+  >
+    <QuickProductCard product={product} />
+  </div>
+))}
+
+
+        {/* VIEW ALL CARD */}
+        <div className="w-[240px] sm:w-[260px] md:w-[270px] flex-shrink-0 snap-start h-full">
   <button
     onClick={() => (window.location.href = "/Products")}
-    className="hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#EF4F5F] hover:underline whitespace-nowrap"
+    className="
+      h-full min-h-[420px] w-full
+      rounded-2xl
+      border-2 border-dashed border-red-200
+      flex flex-col items-center justify-center gap-3
+      text-[#EF4F5F]
+      font-bold
+      hover:bg-red-50
+      transition
+    "
   >
-    View All →
+    <ArrowRight className="w-7 h-7" />
+    View All
   </button>
-
-  {/* Mobile CTA (Centered, below title) */}
-  <div className="sm:hidden mt-4 text-center">
-    <button
-      onClick={() => (window.location.href = "/Products")}
-      className="text-sm font-semibold text-[#EF4F5F]"
-    >
-      View All →
-    </button>
-  </div>
 </div>
 
 
-    {/* ================= MOBILE: HORIZONTAL SCROLL ================= */}
-    <div className="sm:hidden relative">
-      <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-        {products.slice(0, 10).map((product) => (
-          <div
-            key={product._id}
-            className="min-w-[165px] snap-start"
-          >
-            <QuickProductCard product={product} />
-          </div>
-        ))}
       </div>
 
-      {/* Scroll Hint */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-gradient-to-l from-[#F9FAFB] via-[#F9FAFB]/80 to-transparent w-10 h-full pointer-events-none" />
-    </div>
-
-    {/* ================= DESKTOP: GRID ================= */}
-    <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-6">
-      {products.slice(0, 8).map((product) => (
-        <QuickProductCard key={product._id} product={product} />
-      ))}
     </div>
 
   </div>
 </section>
+
 
 
       {/* Housekeeping Products */}
@@ -844,172 +1027,168 @@ const slides = useMemo(() => {
 {/* // const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0); */}
 
 {/* Housekeeping Products */}
-{!productsLoading && !productsError && housekeepingProducts.length > 0 && (() => {
-  
-  const totalSlides = Math.ceil(housekeepingProducts.length / 2);
-  
-  const nextSlide = () => {
-    setCurrentHousekeepingSlide((prev) => (prev + 1) % totalSlides);
-  };
-  
-  const prevSlide = () => {
-    setCurrentHousekeepingSlide((prev) => prev === 0 ? totalSlides - 1 : prev - 1);
-  };
-  
-  const goToSlide = (index: number) => {
-    setCurrentHousekeepingSlide(index);
-  };
 
-  return (
-    <>
-      {/* Housekeeping Banner */}
-      <section className="relative w-full h-[300px] sm:h-[400px] lg:h-[450px] overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1920"
-            alt="Housekeeping essentials banner"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 via-blue-900/60 to-indigo-900/80"></div>
-        </div>
-        
-        <div className="relative h-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center">
-          <div className="max-w-3xl">
-            <span className="inline-block px-3 py-2 bg-white/20 backdrop-blur-md text-white rounded-full text-sm font-medium mb-4">
-              Professional Housekeeping
-            </span>
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-              Quality Housekeeping Solutions
-            </h1>
-            <p className="text-lg sm:text-xl text-blue-100 mb-6 leading-relaxed">
-              Premium products for hotels, restaurants, and commercial facilities
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <button 
-                onClick={() => (window.location.href = "/Products?category=housekeeping")}
-                className="bg-white text-blue-900 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
-              >
-                Shop Now
-              </button>
-              {/* <button className="bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30">
-                Learn More
-              </button> */}
-            </div>
-          </div>
-        </div>
-
-        {/* Decorative Elements */}
-        {/* <div className="absolute top-10 right-10 w-32 h-32 bg-white/10 backdrop-blur-sm rounded-full animate-pulse hidden lg:block"></div> */}
-        {/* <div className="absolute bottom-10 left-20 w-24 h-24 bg-indigo-500/20 backdrop-blur-sm rounded-2xl rotate-45 hidden lg:block"></div> */}
-      </section>
-
-      <HousekeepingSection 
-  products={housekeepingProducts}
-  currentSlide={currentHousekeepingSlide}
-  nextSlide={nextSlide}
-  prevSlide={prevSlide}
-  goToSlide={goToSlide}
-  totalSlides={totalSlides}
-/>
-    </>
-  );
-})()}
 
 
 {/* shop by brand */}
   
-<section className="py-8 sm:py-12 bg-[#F9FAFB]">
-  <div className="max-w-7xl mx-auto px-3 sm:px-6">
+<section className="relative py-14 sm:py-20 overflow-hidden bg-gradient-to-b from-[#050505] via-[#0b0b0b] to-[#140202]">
 
-    {/* Header */}
-    {/* ================= HEADER ================= */}
-<div className="relative mb-6 sm:mb-8">
+  {/* ===== PREMIUM BACKGROUND LAYERS ===== */}
 
-  {/* Centered Title Group */}
-  <div className="text-center space-y-2 max-w-xl mx-auto">
-    <span className="inline-block px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">
-      Trusted Brands
-    </span>
-
-    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-      Shop by Brand
-    </h2>
+  {/* radial glow */}
+  <div className="absolute inset-0 pointer-events-none">
+    <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-red-600/20 blur-[120px]" />
+    <div className="absolute bottom-[-150px] right-[-100px] w-[500px] h-[500px] bg-red-500/10 blur-[120px]" />
   </div>
 
-  {/* Desktop CTA */}
-  <button
-    onClick={() => (window.location.href = "/Products")}
-    className="hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 text-sm font-semibold text-blue-600 hover:underline whitespace-nowrap"
-  >
-    View All →
-  </button>
+  {/* subtle grid texture */}
+  <div className="absolute inset-0 opacity-[0.05] bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:40px_40px]" />
 
-  {/* Mobile CTA */}
-  <div className="sm:hidden mt-4 text-center">
-    <button
-      onClick={() => (window.location.href = "/Products")}
-      className="text-sm font-semibold text-blue-600"
-    >
-      View All →
-    </button>
-  </div>
-</div>
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+    {/* ===== HEADER ===== */}
+    <div className="mb-12 sm:mb-16 flex flex-col sm:flex-row items-end justify-between gap-6">
 
-    {/* Mobile – Horizontal Scroll */}
-    <div className="sm:hidden flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory">
+      <div className="text-center sm:text-left max-w-2xl mx-auto sm:mx-0">
+
+        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-red-400 text-[11px] font-bold tracking-widest uppercase mb-4 backdrop-blur-sm">
+          PREMIUM PARTNERS
+        </span>
+
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+          Shop by <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-300">Brand</span>
+        </h2>
+
+        <p className="mt-3 text-gray-400 font-medium max-w-lg">
+          Discover high-quality products from top-tier manufacturers trusted by professionals.
+        </p>
+      </div>
+
+      {/* CTA */}
+      <button
+        onClick={() => (window.location.href = "/Products")}
+        className="hidden sm:flex items-center gap-2 text-sm font-bold text-white hover:text-red-400 transition"
+      >
+        View All Brands
+        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-red-500 transition">
+          <ChevronRight className="w-4 h-4" />
+        </span>
+      </button>
+    </div>
+
+    {/* ===== MOBILE SCROLL ===== */}
+    <div className="sm:hidden flex gap-5 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pt-4">
+
       {brands?.map((brand) => (
         <Link
           key={brand._id}
           href={`/Products?brand=${brand.slug}`}
-          className="snap-start min-w-[140px]"
+          className="snap-center shrink-0 group"
         >
-          <div className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 p-4 flex flex-col items-center text-center active:scale-95">
-            <div className="w-20 h-20 rounded-full bg-gray-50 flex items-center justify-center mb-3">
+          <div className="
+            w-[160px] h-[180px]
+            flex flex-col items-center justify-center gap-4
+            rounded-3xl
+            bg-white/5
+            border border-white/10
+            backdrop-blur-sm
+            transition-transform duration-300
+            active:scale-95
+          ">
+
+            <div className="relative w-20 h-20 flex items-center justify-center p-3 rounded-2xl bg-black/40 group-hover:bg-black transition">
               <Image
                 src={brand.logo || "/placeholder.png"}
                 alt={brand.name}
-                width={60}
-                height={60}
-                className="object-contain"
+                width={80}
+                height={80}
+                className="object-contain w-full h-full brightness-90 group-hover:brightness-110 transition"
               />
             </div>
-            <p className="text-sm font-semibold text-gray-800 line-clamp-1">
+
+            <span className="font-semibold text-gray-200 text-sm px-4 text-center line-clamp-1">
               {brand.name}
-            </p>
+            </span>
           </div>
         </Link>
       ))}
+
+      {/* View all */}
+      <Link href="/Products" className="snap-center shrink-0">
+        <div className="w-[160px] h-[180px] flex flex-col items-center justify-center gap-3 rounded-3xl bg-gradient-to-br from-red-600 to-red-800 shadow-lg text-white">
+          <span className="text-lg font-bold">View All</span>
+          <ChevronRight className="w-6 h-6" />
+        </div>
+      </Link>
     </div>
 
-    {/* Desktop – Grid */}
-    <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+    {/* ===== DESKTOP GRID ===== */}
+    <div className="hidden sm:grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 lg:gap-8">
+
       {brands?.map((brand) => (
         <Link
           key={brand._id}
           href={`/Products?brand=${brand.slug}`}
-          className="group"
+          className="group relative"
         >
-          <div className="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-6 flex flex-col items-center text-center group-hover:-translate-y-1">
-            <div className="w-24 h-24 rounded-full bg-gray-50 flex items-center justify-center mb-4">
+          <div className="
+            relative h-full
+            flex flex-col items-center justify-center p-8
+            rounded-[28px]
+            bg-white/5
+            border border-white/10
+            backdrop-blur-sm
+            transition-all duration-300
+            hover:-translate-y-2
+            hover:border-red-500/40
+            hover:shadow-[0_20px_40px_-10px_rgba(239,68,68,0.35)]
+          ">
+
+            {/* glow hover */}
+            <div className="absolute inset-0 rounded-[28px] bg-gradient-to-br from-red-600/0 to-red-600/20 opacity-0 group-hover:opacity-100 transition" />
+
+            <div className="
+              relative w-24 h-24 mb-6
+              bg-black/40 rounded-2xl
+              flex items-center justify-center p-4
+              group-hover:scale-110 transition
+            ">
               <Image
                 src={brand.logo || "/placeholder.png"}
                 alt={brand.name}
-                width={72}
-                height={72}
-                className="object-contain"
+                width={100}
+                height={100}
+                className="object-contain w-full h-full brightness-90 group-hover:brightness-110 transition"
               />
             </div>
-            <h3 className="text-base font-semibold text-gray-900">
+
+            <h3 className="relative text-lg font-semibold text-gray-200 group-hover:text-white text-center">
               {brand.name}
             </h3>
           </div>
         </Link>
       ))}
+
+    </div>
+
+    {/* MOBILE CTA */}
+    <div className="sm:hidden mt-8 text-center">
+      <button
+        onClick={() => (window.location.href = "/Products")}
+        className="w-full py-3.5 rounded-xl bg-white/10 border border-white/10 text-sm font-semibold text-white active:bg-white/20"
+      >
+        Explore All Brands
+      </button>
     </div>
 
   </div>
 </section>
+
+
+
+
+<BrowseProductsSection products={products} />
 
 
     
@@ -1019,80 +1198,7 @@ const slides = useMemo(() => {
 
       {/* Cleaning Products Section */}
 {/* Cleaning Products */}
-{!productsLoading && !productsError && cleaningProducts.length > 0 && (
-  <>
-    {/* Cleaning Products Banner */}
-    <section className="relative w-full h-[400px] sm:h-[450px] lg:h-[450px] overflow-hidden">
-      <div className="absolute inset-0">
-        <img
-          src="https://images.unsplash.com/photo-1585421514738-01798e348b17?w=1920"
-          alt="Cleaning products banner"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-green-900/90 via-emerald-800/80 to-green-900/90"></div>
-      </div>
-      
-      <div className="relative h-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center">
-        <div className="max-w-3xl">
-          <span className="inline-block px-3 py-2 bg-white/20 backdrop-blur-md text-white rounded-full text-sm font-medium mb-4 animate-fade-in">
-            Premium Cleaning Solutions
-          </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-4 leading-tight animate-slide-up">
-            Professional Cleaning Essentials
-          </h1>
-          <p className="text-lg sm:text-xl text-green-100 mb-6 leading-relaxed animate-slide-up-delay">
-            Industrial-grade cleaning products for hotels, restaurants, and commercial spaces
-          </p>
-          <div className="flex flex-wrap gap-4 animate-fade-in-delay">
-            <button 
-              onClick={() => (window.location.href = "/Products?category=Cleaning")}
-              className="bg-white text-green-900 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 inline-flex items-center gap-2 group"
-            >
-              Shop Cleaning Products
-              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </button>
-            
-          </div>
-        </div>
-      </div>
 
-      {/* Animated Floating Elements */}
-      {/* <div className="absolute top-20 right-20 w-16 h-16 bg-white/10 backdrop-blur-sm rounded-full animate-float hidden lg:block"></div> */}
-      {/* <div className="absolute top-40 right-40 w-12 h-12 bg-green-400/20 backdrop-blur-sm rounded-full animate-float-delay hidden lg:block"></div> */}
-      {/* <div className="absolute bottom-20 right-32 w-20 h-20 bg-emerald-300/10 backdrop-blur-sm rounded-2xl rotate-45 animate-pulse hidden lg:block"></div> */}
-      {/* <div className="absolute bottom-32 left-20 w-24 h-24 bg-white/5 backdrop-blur-sm rounded-2xl -rotate-12 animate-float hidden lg:block"></div> */}
-      
-      {/* Feature Badges */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 hidden lg:flex gap-4">
-        <div className="bg-white/10 backdrop-blur-md px-3 py-2 rounded-full border border-white/20 flex items-center gap-2 animate-fade-in">
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-white text-sm font-medium">Eco-Friendly</span>
-        </div>
-        <div className="bg-white/10 backdrop-blur-md px-3 py-2 rounded-full border border-white/20 flex items-center gap-2 animate-fade-in-delay">
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-white text-sm font-medium">Fast Acting</span>
-        </div>
-        <div className="bg-white/10 backdrop-blur-md px-3 py-2 rounded-full border border-white/20 flex items-center gap-2 animate-fade-in-delay-2">
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-white text-sm font-medium">Professional Grade</span>
-        </div>
-      </div>
-    </section>
-
-  <CleaningSection 
-   products={cleaningProducts}
-   currentSlide={currentSlide} // Note: You might need separate state for cleaning vs housekeeping slides if they slide independently.
-   nextSlide={nextSlide} 
-   prevSlide={prevSlide}
-   goToSlide={setCurrentSlide} // Or whatever state setter you use
-   totalSlides={totalSlides}
-/>
-
-
-  </>
-)}
 
       {/* Company Stats Section
       <section className="py-12 sm:py-16 bg-white scroll-reveal">
@@ -1114,62 +1220,13 @@ const slides = useMemo(() => {
         </div>
       </section> */}
 
-      <section className="px-3 md:px-12 py-6 bg-white shadow-md border-spacing-2 rounded-xl">
-  <div className="text-center mb-8">
-    <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium font-sans">
-      Shop by Concern
-    </span>
-    <h2 className="text-3xl md:text-4xl font-bold mt-4 font-serif ">
-      Which Mess Matters?
-    </h2>
-  </div>
 
-  {/* Mobile Horizontal Scroll / Desktop Grid */}
-  <div className="max-w-6xl mx-auto">
-    <div
-      className="
-        flex gap-6 overflow-x-auto pb-4 
-        sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 sm:overflow-visible
-        scrollbar-thin scrollbar-thumb-amber-300 scrollbar-track-transparent
-      "
-    >
-      {messCategories.map((item, index) => (
-        <div
-          key={index}
-          className="min-w-[250px] sm:min-w-0 bg-amber-50 rounded-xl p-6 shadow-sm flex flex-col items-start justify-between hover:shadow-md transition"
-        >
-          <div className="flex items-center justify-between w-full">
-            <h3 className="text-2xl font-semibold text-gray-800 max-w-[60%]">
-              {item.title}
-            </h3>
-            <Image
-              src={item.image}
-              alt={item.title}
-              width={80}
-              height={80}
-              className="object-contain"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "/icons/fallback.png";
-              }}
-            />
-          </div>
-          <a
-            href={item.link}
-            className="mt-4 text-sm font-medium text-black underline hover:text-amber-700"
-          >
-            View Products &gt;
-          </a>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
 
   
 
 
       {/* About Vijay Agencies Section */}
-     <AboutSection />
+     {/* <AboutSection /> */}
 
       {/* Testimonials */}
       <TestimonialSection />

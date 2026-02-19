@@ -84,6 +84,8 @@ export default function ProductsClient(): JSX.Element {
   const [sortBy, setSortBy] = useState<string>(searchParams?.get("sort") || "name");
   const [minPrice, setMinPrice] = useState<number>(Number(searchParams?.get("min_price")) || 0);
   const [maxPrice, setMaxPrice] = useState<number>(Number(searchParams?.get("max_price")) || 50000);
+  const [expandedCats, setExpandedCats] = useState<Record<string, boolean>>({});
+
 
   // UI state
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -97,15 +99,16 @@ export default function ProductsClient(): JSX.Element {
     setLoading(true);
 
     const brand = searchParams?.get("brand");
+    const category = searchParams?.get("category");
+    const search = searchParams?.get("search");
 
-    let url = "/api/products";
+    const url = new URL("/api/products", window.location.origin);
 
-    // Only fetch by brand
-    if (brand) {
-      url = `/api/products?brand=${brand}`;
-    }
+    if (brand) url.searchParams.set("brand", brand);
+    if (category) url.searchParams.set("category", category);
+    if (search) url.searchParams.set("search", search);
 
-    const response = await fetch(url);
+    const response = await fetch(url.toString());
     const data = await response.json();
 
     if (Array.isArray(data)) setProducts(data);
@@ -120,13 +123,14 @@ export default function ProductsClient(): JSX.Element {
   }
 };
 
+
   
 
   // Fetch categories from API
   const fetchCategories = async () => {
     try {
       setCategoriesLoading(true);
-      const response = await fetch("/api/categories");
+      const response = await fetch("/api/categories?hierarchical=true");
       const data = await response.json();
 
       if (data?.success && Array.isArray(data.categories)) {
@@ -147,9 +151,9 @@ export default function ProductsClient(): JSX.Element {
 
   // Load data on component mount
  useEffect(() => {
-  const brand = searchParams?.get("brand");
-  fetchProducts();  // fetch with brand if exists
-}, [searchParams?.get("brand")]); // only re-fetch when brand changes
+  fetchProducts();
+}, [searchParams]);
+
 // reload products whenever query params change
 
 useEffect(() => {
@@ -194,17 +198,17 @@ useEffect(() => {
     }
 
     // brand filter
-  if (brandFilter) {
-    filtered = filtered.filter(p => {
-      const urlBrand = searchParams?.get("brand");
-      return urlBrand ? true : false;
-    });
-  }
+  // if (brandFilter) {
+  //   filtered = filtered.filter(p => {
+  //     const urlBrand = searchParams?.get("brand");
+  //     return urlBrand ? true : false;
+  //   });
+  // }
 
     // Category filter
-    if (selectedCategory !== "All") {
-      filtered = filtered.filter((product) => product.categories.includes(selectedCategory));
-    }
+    // if (selectedCategory !== "All") {
+    //   filtered = filtered.filter((product) => product.categories.includes(selectedCategory));
+    // }
 
     // Price range filter
     filtered = filtered.filter((product) => {
@@ -235,6 +239,23 @@ useEffect(() => {
 
     setFilteredProducts(filtered);
   }, [searchTerm, selectedCategory, sortBy, minPrice, maxPrice, products, brandFilter]);
+
+
+  useEffect(() => {
+  if (!categories.length || !selectedCategory) return;
+
+  const parent = categories.find((p: any) =>
+    p.children?.some((c: any) => c.name === selectedCategory)
+  );
+
+  if (parent) {
+    setExpandedCats(prev => ({
+      ...prev,
+      [parent._id]: true
+    }));
+  }
+}, [selectedCategory, categories]);
+
 
   // Handle filter changes and update URL
   const handleSearchChange = (value: string) => {
@@ -291,6 +312,15 @@ useEffect(() => {
      fetchProducts();
 
   };
+
+  //toggle category expand/collapse in sidebar
+  const toggleCategory = (id: string) => {
+  setExpandedCats(prev => ({
+    ...prev,
+    [id]: !prev[id]
+  }));
+};
+
   
 
   // ProductCard component inside client file for brevity
@@ -611,20 +641,67 @@ useEffect(() => {
                         <span className="ml-2 text-sm text-gray-700">All Categories</span>
                         <span className="ml-auto text-xs text-gray-500">({products.length})</span>
                       </label>
-                      {categories.map((category) => (
-                        <label key={category._id} className="flex items-center">
-                          <input
-                            type="radio"
-                            name="category"
-                            value={category.name}
-                            checked={selectedCategory === category.name}
-                            onChange={(e) => handleCategoryChange(e.target.value)}
-                            className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                          />
-                          <span className="ml-2 text-sm text-gray-700">{category.name}</span>
-                          <span className="ml-auto text-xs text-gray-500">({category.product_count})</span>
-                        </label>
-                      ))}
+                      {categories.map((parent: any) => {
+  const hasChildren = parent.children?.length > 0;
+  const isOpen = expandedCats[parent._id];
+
+  return (
+    <div key={parent._id} className="border-b border-gray-100 pb-2">
+
+      {/* PARENT ROW */}
+      <div className="flex items-center justify-between">
+        <label className="flex items-center gap-2 cursor-pointer flex-1">
+          <input
+            type="radio"
+            name="category"
+            value={parent.name}
+            checked={selectedCategory === parent.name}
+            onChange={(e) => handleCategoryChange(e.target.value)}
+            className="w-4 h-4 text-blue-600 border-gray-300"
+          />
+          <span className="text-sm font-medium text-gray-800">
+            {parent.name}
+          </span>
+        </label>
+
+        {hasChildren && (
+          <button
+            onClick={() => toggleCategory(parent._id)}
+            className="p-1 text-gray-400 hover:text-gray-700"
+          >
+            <ChevronDown
+              className={`w-4 h-4 transition ${
+                isOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+        )}
+      </div>
+
+      {/* CHILDREN */}
+      {hasChildren && isOpen && (
+        <div className="ml-6 mt-2 space-y-2">
+          {parent.children.map((child: any) => (
+            <label key={child._id} className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="category"
+                value={child.name}
+                checked={selectedCategory === child.name}
+                onChange={(e) => handleCategoryChange(e.target.value)}
+                className="w-4 h-4 text-blue-600 border-gray-300"
+              />
+              <span className="text-sm text-gray-600">
+                {child.name}
+              </span>
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+})}
+
                     </div>
                   )}
                 </div>
@@ -746,42 +823,92 @@ useEffect(() => {
 
               {/* Categories */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Categories</label>
-                {categoriesLoading ? (
-                  <div className="flex items-center justify-center py-4">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span className="ml-2 text-sm text-gray-500">Loading...</span>
-                  </div>
-                ) : (
-                  <div className="space-y-2 max-h-60 overflow-y-auto">
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="category"
-                        value="All"
-                        checked={selectedCategory === "All"}
-                        onChange={(e) => handleCategoryChange(e.target.value)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                      />
-                      <span className="ml-2 text-sm text-gray-700">All Categories</span>
-                      <span className="ml-auto text-xs text-gray-500">({products.length})</span>
-                    </label>
-                    {categories.map((category) => (
-                      <label key={category._id} className="flex items-center">
-                        <input
-                          type="radio"
-                          name="category"
-                          value={category.name}
-                          checked={selectedCategory === category.name}
-                          onChange={(e) => handleCategoryChange(e.target.value)}
-                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">{category.name}</span>
-                        <span className="ml-auto text-xs text-gray-500">({category.product_count})</span>
-                      </label>
-                    ))}
-                  </div>
-                )}
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+
+  {/* ALL */}
+  <label className="flex items-center">
+    <input
+      type="radio"
+      name="category"
+      value="All"
+      checked={selectedCategory === "All"}
+      onChange={(e) => handleCategoryChange(e.target.value)}
+      className="w-4 h-4 text-blue-600 border-gray-300"
+    />
+    <span className="ml-2 text-sm text-gray-700">
+      All Categories
+    </span>
+    <span className="ml-auto text-xs text-gray-500">
+      ({products.length})
+    </span>
+  </label>
+
+  {/* HIERARCHY */}
+  {categories.map((parent: any) => {
+    const hasChildren = parent.children?.length > 0;
+    const isOpen = expandedCats[parent._id];
+
+    return (
+      <div key={parent._id} className="border-b border-gray-100 pb-2">
+
+        {/* PARENT */}
+        <div className="flex items-center justify-between">
+
+          <label className="flex items-center gap-2 cursor-pointer flex-1">
+            <input
+              type="radio"
+              name="category"
+              value={parent.name}
+              checked={selectedCategory === parent.name}
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              className="w-4 h-4 text-blue-600 border-gray-300"
+            />
+            <span className="text-sm font-medium text-gray-800">
+              {parent.name}
+            </span>
+          </label>
+
+          {hasChildren && (
+            <button
+              onClick={() => toggleCategory(parent._id)}
+              className="p-1 text-gray-400 hover:text-gray-700"
+            >
+              <ChevronDown
+                className={`w-4 h-4 transition ${
+                  isOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+          )}
+        </div>
+
+        {/* CHILDREN */}
+        {hasChildren && isOpen && (
+          <div className="ml-6 mt-2 space-y-2">
+            {parent.children.map((child: any) => (
+              <label key={child._id} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="category"
+                  value={child.name}
+                  checked={selectedCategory === child.name}
+                  onChange={(e) => handleCategoryChange(e.target.value)}
+                  className="w-4 h-4 text-blue-600 border-gray-300"
+                />
+                <span className="text-sm text-gray-600">
+                  {child.name}
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
+
+      </div>
+    );
+  })}
+
+</div>
+
               </div>
 
               {/* Price Range */}

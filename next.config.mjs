@@ -22,6 +22,8 @@ const nextConfig = {
       "m.media-amazon.com",
       "offikart.s3.ap-south-1.amazonaws.com",
       "5.imimg.com",
+      "www.bbassets.com",
+      "hotelvaluemart.com",
     ],
   },
 
