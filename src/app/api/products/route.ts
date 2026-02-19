@@ -83,6 +83,7 @@ if (brandSlug) {
     const products = await Product.find(query)
       .select(`
         title
+        description
         slug
         base_price
         original_price
