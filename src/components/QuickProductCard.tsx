@@ -192,10 +192,10 @@ const QuickProductCard = memo(({ product }: { product: Product }) => {
           </div>
 
           {/* Controls: Stacked on small mobile, row on slightly larger screens */}
-          <div className="flex flex-col min-[400px]:flex-row items-stretch gap-2 w-full h-auto min-[400px]:h-11">
+          <div className="flex flex-col min-[400px]:flex-row items-stretch gap-1 min-[400px]:gap-2 w-full h-auto min-[400px]:h-11">
             
             {/* Quantity Selector */}
-            <div className="flex items-center justify-between min-[400px]:justify-center h-10 min-[400px]:h-full bg-white border border-gray-200 rounded-lg sm:rounded-xl p-1 shrink-0 min-[400px]:w-24">
+            <div className="flex items-center justify-between min-[400px]:justify-center h-7 min-[400px]:h-full bg-white border border-gray-200 rounded-lg sm:rounded-xl p-1 shrink-0 min-[400px]:w-24">
               <button 
                 onClick={(e) => handleQuantityChange(-1, e)}
                 className="w-8 min-[400px]:w-7 h-full flex items-center justify-center rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors disabled:opacity-30"
@@ -221,7 +221,7 @@ const QuickProductCard = memo(({ product }: { product: Product }) => {
   onClick={handleAddToCart}
   disabled={isAdding || isInCart}
   className={`
-    flex-1 h-11 min-[400px]:h-full relative overflow-hidden 
+    flex-1 h-11 py-2 min-[400px]:h-full relative overflow-hidden 
     flex items-center justify-center gap-2 
     bg-[#CB202D]
     text-white font-bold text-xs uppercase tracking-wider
@@ -247,7 +247,7 @@ const QuickProductCard = memo(({ product }: { product: Product }) => {
             ) :
   (
     <>
-      <ShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover/btn:-translate-x-1" />
+      <ShoppingCart className="w-[18px] h-[18px] sm:w-4 sm:h-4 transition-transform duration-300 group-hover/btn:-translate-x-1" />
       <span className="whitespace-nowrap">Add to Cart</span>
     </>
   )}
