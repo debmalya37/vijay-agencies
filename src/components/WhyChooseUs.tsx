@@ -68,11 +68,11 @@ export default function WhyChooseUs() {
             THE VIJAY ADVANTAGE
           </span>
 
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
-            Why Businesses
-            <br className="hidden sm:block" />
+          <h2 className="text-3xl sm:text-5xl font-semibold text-white leading-tight">
+            Why Businesses 
+            <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-300">
-              Trust Us Daily
+               Trust Us Daily
             </span>
           </h2>
 

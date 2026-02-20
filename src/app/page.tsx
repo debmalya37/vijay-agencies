@@ -784,7 +784,7 @@ const randomProducts = useMemo(() => {
                 </span>
 
                 {/* Title */}
-                <h2 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white leading-tight drop-shadow-md">
+                <h2 className="text-3xl sm:text-4xl lg:text-6xl font-semibold text-white leading-tight drop-shadow-md">
                   {banner.title}
                 </h2>
 
@@ -806,7 +806,7 @@ const randomProducts = useMemo(() => {
                     className="
                       px-8 py-3.5
                       bg-white text-gray-900
-                      font-bold
+                      font-semibold
                       rounded-full
                       shadow-lg
                       hover:shadow-xl
@@ -927,7 +927,7 @@ const randomProducts = useMemo(() => {
 
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-red-100 shadow-sm mb-4">
           <span className="w-2 h-2 rounded-full bg-[#EF4F5F] animate-pulse"></span>
-          <span className="text-[11px] font-bold tracking-widest text-[#EF4F5F] uppercase">
+          <span className="text-[11px] font-semibold tracking-widest text-[#EF4F5F] uppercase">
             Trending Now
           </span>
         </div>
@@ -1001,7 +1001,7 @@ const randomProducts = useMemo(() => {
       border-2 border-dashed border-red-200
       flex flex-col items-center justify-center gap-3
       text-[#EF4F5F]
-      font-bold
+      font-semibold
       hover:bg-red-50
       transition
     "
@@ -1052,11 +1052,11 @@ const randomProducts = useMemo(() => {
 
       <div className="text-center sm:text-left max-w-2xl mx-auto sm:mx-0">
 
-        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-red-400 text-[11px] font-bold tracking-widest uppercase mb-4 backdrop-blur-sm">
+        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-red-400 text-[11px] font-semibold tracking-widest uppercase mb-4 backdrop-blur-sm">
           PREMIUM PARTNERS
         </span>
 
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-white tracking-tight">
           Shop by <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-300">Brand</span>
         </h2>
 
@@ -1068,7 +1068,7 @@ const randomProducts = useMemo(() => {
       {/* CTA */}
       <button
         onClick={() => (window.location.href = "/Products")}
-        className="hidden sm:flex items-center gap-2 text-sm font-bold text-white hover:text-red-400 transition"
+        className="hidden sm:flex items-center gap-2 text-sm font-semibold text-white hover:text-red-400 transition"
       >
         View All Brands
         <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-red-500 transition">
@@ -1117,7 +1117,7 @@ const randomProducts = useMemo(() => {
       {/* View all */}
       <Link href="/Products" className="snap-center shrink-0">
         <div className="w-[160px] h-[180px] flex flex-col items-center justify-center gap-3 rounded-3xl bg-gradient-to-br from-red-600 to-red-800 shadow-lg text-white">
-          <span className="text-lg font-bold">View All</span>
+          <span className="text-lg font-semibold">View All</span>
           <ChevronRight className="w-6 h-6" />
         </div>
       </Link>
@@ -1211,7 +1211,7 @@ const randomProducts = useMemo(() => {
                   <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-red-100 to-red-200 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse-hover">
                     <Icon className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-red-600" />
                   </div>
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{stat.number}</div>
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-2">{stat.number}</div>
                   <div className="text-sm sm:text-base lg:text-lg text-gray-600 font-medium">{stat.label}</div>
                 </div>
               );
@@ -1250,7 +1250,7 @@ const randomProducts = useMemo(() => {
         <span className="inline-block px-3 py-2 bg-white/20 backdrop-blur-md rounded-full text-sm font-medium mb-4 animate-fade-in">
           Get In Touch
         </span>
-        <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold mb-4 leading-tight animate-slide-up">
+        <h1 className="text-3xl sm:text-4xl lg:text-6xl font-semibold mb-4 leading-tight animate-slide-up">
           Let&apos;s Work Together
         </h1>
         <p className="text-lg sm:text-xl text-red-100 mb-6 leading-relaxed animate-slide-up-delay">
@@ -1319,7 +1319,7 @@ const randomProducts = useMemo(() => {
           {/* Form Content */}
           <div className="relative z-10 p-6 sm:p-8 bg-white">
             <div className="mb-6">
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Get a Quote</h3>
+              <h3 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2">Get a Quote</h3>
               <p className="text-gray-600 text-sm">Fill out the form and we&apos;ll get back to you within 24 hours</p>
             </div>
             
@@ -1375,7 +1375,7 @@ const randomProducts = useMemo(() => {
               
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-3 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 font-bold shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-3 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
               >
                 Request Quote
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -62,11 +62,11 @@ export default function CategoryRail({ categories, loading }: CategoryRailProps)
           
           {/* Title Area */}
           <div className="text-center md:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100/50 border border-red-100 text-[#EF4F5F] text-[10px] font-bold tracking-widest uppercase mb-3 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100/50 border border-red-100 text-[#EF4F5F] text-[10px] font-semibold tracking-widest uppercase mb-3 animate-fade-in">
               <Sparkles className="w-3 h-3" />
               Our Collections
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-900 tracking-tight leading-tight">
               Browse <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#EF4F5F] to-[#C41E3A]">Categories</span>
             </h2>
           </div>
@@ -76,7 +76,7 @@ export default function CategoryRail({ categories, loading }: CategoryRailProps)
             <button
               onClick={() => setViewMode('grid')}
               className={`
-                flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-300
+                flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300
                 ${viewMode === 'grid' 
                   ? 'bg-[#A3221D] text-white shadow-lg shadow-red-500/30 scale-105' 
                   : 'text-gray-500 hover:bg-red-50 hover:text-red-600'}
@@ -88,7 +88,7 @@ export default function CategoryRail({ categories, loading }: CategoryRailProps)
             <button
               onClick={() => setViewMode('rail')}
               className={`
-                flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-300
+                flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300
                 ${viewMode === 'rail' 
                   ? 'bg-[#EF4F5F] text-white shadow-lg shadow-red-500/30 scale-105' 
                   : 'text-gray-500 hover:bg-red-50 hover:text-red-600'}
@@ -152,7 +152,7 @@ export default function CategoryRail({ categories, loading }: CategoryRailProps)
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white shadow-inner border border-white/30 group-hover:scale-110 transition-transform duration-500">
                   <LayoutGrid className="w-8 h-8" />
                 </div>
-                <span className="text-white font-bold text-base tracking-wide">All Products</span>
+                <span className="text-white font-semibold text-base tracking-wide">All Products</span>
               </div>
             </Link>
 
@@ -200,7 +200,7 @@ export default function CategoryRail({ categories, loading }: CategoryRailProps)
                   </div>
 
                   {/* Label */}
-                  <span className="relative font-bold text-gray-700 text-sm group-hover:text-[#EF4F5F] transition-colors duration-300 px-2 line-clamp-2">
+                  <span className="relative font-semibold text-gray-700 text-sm group-hover:text-[#EF4F5F] transition-colors duration-300 px-2 line-clamp-2">
                     {category.name}
                   </span>
                 </div>
