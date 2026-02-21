@@ -83,7 +83,7 @@ const [mobileCatsOpen, setMobileCatsOpen] = useState(false);
       <div className="bg-[#2e7d32] text-white text-xs py-2">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
           <span className="hidden md:block font-medium">
-            Welcome to Vijay Agencies — Trusted Hotel Suppliers
+            Welcome to Vijay Agencies — Trusted Wholesale Supplier for Hotels & Restaurants in Jaipur!
           </span>
           <div className="flex gap-4 text-[11px] md:text-xs opacity-90">
             <Link href="/track">Track Order</Link>
