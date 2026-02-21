@@ -802,7 +802,14 @@ const randomProducts = useMemo(() => {
                   ${banner.image_position === 'left' ? 'md:justify-end' : ''}
                 `}>
                   <button
-                    onClick={() => banner.link_url && window.open(banner.link_url, '_self')}
+                    onClick={() => {
+  const targetUrl =
+    banner.link_url && banner.link_url.trim() !== ""
+      ? banner.link_url
+      : "https://www.vijayagenciesjpr.com/Products";
+
+  window.open(targetUrl, "_self");
+}}
                     className="
                       px-8 py-3.5
                       bg-white text-gray-900
