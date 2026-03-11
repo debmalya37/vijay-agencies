@@ -367,8 +367,13 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
     },
   ]);
 
-  const nextSlide = () => instanceRef.current?.next();
-  const prevSlide = () => instanceRef.current?.prev();
+  const nextSlide = () => {
+  setCurrentSlide((prev) => (prev + 1) % banners.length);
+};
+
+const prevSlide = () => {
+  setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
+};
   
   useEffect(() => {
     fetch("/api/admin/brands", { cache: "no-store" })
@@ -606,13 +611,22 @@ const [currentHousekeepingSlide, setCurrentHousekeepingSlide] = useState(0);
   //   }
   // };
 
-  useEffect(() => {
-    if (banners.length > 1) {
-      const timer = setInterval(nextSlide, 5000);
-      return () => clearInterval(timer);
-    }
-  }, [banners.length]);
+  // useEffect(() => {
+  //   if (banners.length > 1) {
+  //     const timer = setInterval(nextSlide, 1000);
+  //     return () => clearInterval(timer);
+  //   }
+  // }, [banners.length]);
 
+  useEffect(() => {
+  if (banners.length === 0) return;
+
+  const interval = setInterval(() => {
+    setCurrentSlide((prev) => (prev + 1) % banners.length);
+  }, 2000);
+
+  return () => clearInterval(interval);
+}, [banners]);
   // Handle category click
   const handleCategoryClick = (category: Category) => {
     window.location.href = `/Products?category=${category.name}`;
@@ -720,198 +734,105 @@ const randomProducts = useMemo(() => {
     {/* ================= HERO SECTION (Replaces old banner) ================= */}
       
       {/* ================= PREMIUM HERO (Nykaa / Zepto Style) ================= */}
-<section className="w-full px-3 sm:px-6 lg:px-10 mb-10 pt-10 bg-rose-200/10">
+{/* ================= PREMIUM HERO (Nykaa / Myntra Style) ================= */}
+<section className="relative py-6 sm:py-10 bg-[#fafafa] scroll-reveal">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-  {/* Outer container creates boxed layout */}
-  <div className="
-    relative
-    max-w-[1600px]
-    mx-auto
-    rounded-[28px] sm:rounded-[36px]
-    overflow-hidden
-    border border-gray-200/70
-    shadow-[0_30px_80px_-20px_rgba(0,0,0,0.25)]
-    bg-rose-200/40
-  ">
-
+    {/* Loading */}
     {bannersLoading && (
-      <div className="w-full h-[420px] md:h-[520px] bg-rose-200/10 animate-pulse flex items-center justify-center">
-        <div className="text-gray-400">Loading Offers...</div>
+      <div className="w-full h-[220px] sm:h-[320px] lg:h-[420px] rounded-3xl bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
+        <p className="text-gray-500">Loading banners...</p>
       </div>
     )}
 
-    {!bannersLoading && banners.length > 0 && (
-      <div ref={sliderRef2} className="keen-slider h-[420px] md:h-[520px]">
+    {/* Error */}
+    {bannersError && !bannersLoading && (
+      <div className="w-full h-[220px] sm:h-[320px] lg:h-[420px] rounded-3xl bg-gradient-to-r from-red-600 to-red-800 flex items-center justify-center text-white shadow-xl">
+        <div className="text-center px-6">
+          <h2 className="text-3xl font-bold mb-2">Vijay Agencies</h2>
+          <p>Premium Cleaning Solutions</p>
+        </div>
+      </div>
+    )}
 
-        {banners.map((banner, idx) => (
-          <div
-            key={banner._id}
-            className="keen-slider__slide relative flex items-center w-full h-full"
-            style={{ backgroundColor: banner.bg_color || '#EF4F5F' }}
-          >
+    {/* Banner Slider */}
+    {!bannersLoading && !bannersError && banners.length > 0 && (
+      <div className="relative">
 
-            {/* Soft gradient overlay (premium depth like Nykaa) */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/10 to-black/20"></div>
+        {/* Banner Container */}
+        <div className="relative w-full overflow-hidden rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] bg-white">
 
-            {/* subtle grain texture */}
-            <div className="absolute inset-0 opacity-[0.08] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+  {banners.map((banner, index) => {
+    const BannerContent = (
+      <div
+        className={`transition-all duration-700 ${
+          index === currentSlide ? "block" : "hidden"
+        }`}
+      >
+        <Image
+          src={banner.image_url}
+          alt={banner.title}
+          width={1600}
+          height={600}
+          priority={index === 0}
+          className="w-full h-auto object-contain"
+        />
 
-            {/* inner content wrapper */}
-            <div className={`
-              relative z-10
-              w-full h-full
-              max-w-7xl mx-auto
-              px-6 sm:px-10 lg:px-16
-              py-10 sm:py-12
-              flex flex-col md:flex-row
-              items-center
-              justify-between
-              gap-10
-              ${banner.image_position === 'left' ? 'md:flex-row-reverse' : ''}
-            `}>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-black/5 pointer-events-none" />
+      </div>
+    );
 
-              {/* ================= TEXT COLUMN ================= */}
-              <div className={`
-                flex-1
-                text-center md:text-left
-                space-y-5
-                ${banner.image_position === 'left' ? 'md:text-right' : ''}
-              `}>
+    return banner.link_url ? (
+      <a
+        key={banner._id}
+        href={banner.link_url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {BannerContent}
+      </a>
+    ) : (
+      <div key={banner._id}>{BannerContent}</div>
+    );
+  })}
 
-                {/* Tag */}
-                <span className="inline-block px-4 py-1.5 rounded-full bg-white/25 backdrop-blur-md text-white text-xs font-semibold tracking-wider shadow-sm">
-                  EXCLUSIVE DEAL
-                </span>
+</div>
 
-                {/* Title */}
-                <h2 className="text-3xl sm:text-4xl lg:text-6xl font-semibold text-white leading-tight drop-shadow-md">
-                  {banner.title}
-                </h2>
+        {/* Navigation */}
+        {/* Navigation */}
+{banners.length > 1 && (
+  <>
+    <button
+      onClick={prevSlide}
+      className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 
+      bg-white/90 backdrop-blur-md border border-gray-200
+      shadow-lg hover:shadow-xl 
+      w-10 h-10 sm:w-12 sm:h-12 
+      rounded-full flex items-center justify-center
+      hover:bg-white hover:scale-110 transition-all duration-300 z-10"
+    >
+      <ChevronLeft className="w-5 h-5 text-gray-700" />
+    </button>
 
-                {/* Description */}
-                {banner.description && (
-                  <p className="text-base sm:text-lg text-white/90 max-w-lg mx-auto md:mx-0 leading-relaxed">
-                    {banner.description}
-                  </p>
-                )}
-
-                {/* CTA */}
-                <div className={`
-                  flex gap-4 pt-3
-                  justify-center md:justify-start
-                  ${banner.image_position === 'left' ? 'md:justify-end' : ''}
-                `}>
-                  <button
-                    onClick={() => {
-  const targetUrl =
-    banner.link_url && banner.link_url.trim() !== ""
-      ? banner.link_url
-      : "https://www.vijayagenciesjpr.com/Products";
-
-  window.open(targetUrl, "_self");
-}}
-                    className="
-                      px-8 py-3.5
-                      bg-white text-gray-900
-                      font-semibold
-                      rounded-full
-                      shadow-lg
-                      hover:shadow-xl
-                      hover:-translate-y-0.5
-                      transition-all
-                      duration-300
-                      flex items-center gap-2
-                      group
-                    "
-                  >
-                    {banner.button_text || 'Shop Now'}
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-
-              </div>
-
-              {/* ================= IMAGE COLUMN ================= */}
-              <div className="flex-1 w-full h-full flex items-center justify-center relative">
-
-                {/* glow behind product */}
-                <div className="absolute w-[280px] h-[280px] bg-white/20 rounded-full blur-[90px]"></div>
-
-                <div className="relative w-full max-w-[360px] md:max-w-[460px] aspect-square transition-transform duration-700 hover:scale-105">
-                  <Image
-                    src={banner.image_url}
-                    alt={banner.title}
-                    fill
-                    className="object-contain drop-shadow-2xl"
-                    priority={idx === 0}
-                  />
-                </div>
-              </div>
-
-            </div>
-          </div>
-        ))}
-
-        {/* ================= ARROWS ================= */}
-        {banners.length > 1 && (
-          <>
-            <button
-              onClick={prevSlide}
-              className="
-                absolute left-4 sm:left-6 top-1/2 -translate-y-1/2
-                w-11 h-11 flex items-center justify-center
-                rounded-full
-                bg-white/20 hover:bg-white/30
-                text-white
-                backdrop-blur-md
-                transition-all
-                border border-white/30
-                z-20
-              "
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-
-            <button
-              onClick={nextSlide}
-              className="
-                absolute right-4 sm:right-6 top-1/2 -translate-y-1/2
-                w-11 h-11 flex items-center justify-center
-                rounded-full
-                bg-white/20 hover:bg-white/30
-                text-white
-                backdrop-blur-md
-                transition-all
-                border border-white/30
-                z-20
-              "
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-
-            {/* ================= DOTS ================= */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-              {banners.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentSlide(idx)}
-                  className={`
-                    h-2.5 rounded-full transition-all duration-300
-                    ${currentSlide === idx
-                      ? 'w-8 bg-white shadow'
-                      : 'w-2.5 bg-white/50 hover:bg-white'}
-                  `}
-                />
-              ))}
-            </div>
-          </>
-        )}
-
+    <button
+      onClick={nextSlide}
+      className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 
+      bg-white/90 backdrop-blur-md border border-gray-200
+      shadow-lg hover:shadow-xl
+      w-10 h-10 sm:w-12 sm:h-12
+      rounded-full flex items-center justify-center
+      hover:bg-white hover:scale-110 transition-all duration-300 z-10"
+    >
+      <ChevronRight className="w-5 h-5 text-gray-700" />
+    </button>
+  </>
+)}
       </div>
     )}
 
   </div>
 </section>
+
 
 
 <CategoryRail categories={categories} loading={categoriesLoading} />
