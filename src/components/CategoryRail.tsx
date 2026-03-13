@@ -44,7 +44,7 @@ export default function CategoryRail({ categories, loading }: CategoryRailProps)
   );
 
   return (
-    <section className="relative w-full py-8 sm:py-16 overflow-hidden bg-rose-200/40">
+    <section className="relative w-full py-4 sm:py-16 overflow-hidden bg-rose-200/40">
 
       {/* BACKGROUND */}
       <div className="absolute inset-0 pointer-events-none">
@@ -194,7 +194,6 @@ export default function CategoryRail({ categories, loading }: CategoryRailProps)
                 <div className="w-16 h-3 bg-gray-100 rounded animate-pulse" />
               </div>
             ))}
-
           </div>
         </div>
       </div>
