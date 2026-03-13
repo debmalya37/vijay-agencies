@@ -736,7 +736,7 @@ const randomProducts = useMemo(() => {
       {/* ================= PREMIUM HERO (Nykaa / Zepto Style) ================= */}
 {/* ================= PREMIUM HERO (Nykaa / Myntra Style) ================= */}
 <section className="relative py-6 sm:py-10 bg-[#fafafa] scroll-reveal">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
 
     {/* Loading */}
     {bannersLoading && (
