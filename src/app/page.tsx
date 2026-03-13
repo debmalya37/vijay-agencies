@@ -863,7 +863,7 @@ const randomProducts = useMemo(() => {
 
 
        {/* Featured Products */}
-<section className="relative py-16 sm:py-24 overflow-hidden bg-white">
+<section className="relative py-4 sm:py-24 overflow-hidden bg-white">
 
   {/* ===== LIGHT BACKGROUND GLOW (optimized) ===== */}
   <div className="absolute inset-0 pointer-events-none">

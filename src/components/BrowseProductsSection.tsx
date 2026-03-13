@@ -26,7 +26,7 @@ export default function BrowseProductsSection({
   products: Product[];
 }) {
   return (
-    <section className="relative py-20 sm:py-28 bg-rose-200/40 overflow-hidden selection:bg-[#A3221D] selection:text-white">
+    <section className="relative py-6 sm:py-20 bg-rose-200/40 overflow-hidden selection:bg-[#A3221D] selection:text-white">
       
       {/* ===== ULTRA-PREMIUM BACKGROUND ===== */}
       {/* Subtle precision dot grid for a modern/architectural feel */}
@@ -41,7 +41,7 @@ export default function BrowseProductsSection({
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ================= HEADER ================= */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6 sm:mb-12">
           
           <div className="max-w-2xl">
             {/* Sharp, high-contrast badge */}
