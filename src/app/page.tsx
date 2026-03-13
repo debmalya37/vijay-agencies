@@ -735,22 +735,22 @@ const randomProducts = useMemo(() => {
       
       {/* ================= PREMIUM HERO (Nykaa / Zepto Style) ================= */}
 {/* ================= PREMIUM HERO (Nykaa / Myntra Style) ================= */}
-<section className="relative py-6 sm:py-10 bg-[#fafafa] scroll-reveal">
-  <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+<section className="relative bg-[#fafafa] scroll-reveal pt-2 sm:pt-1">
+  <div className="max-w-full mx-auto px-2 sm:px-4 lg:px-6">
 
     {/* Loading */}
     {bannersLoading && (
-      <div className="w-full h-[220px] sm:h-[320px] lg:h-[420px] rounded-3xl bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
-        <p className="text-gray-500">Loading banners...</p>
+      <div className="w-full h-[200px] sm:h-[320px] lg:h-[420px] rounded-3xl sm:rounded-xl bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse flex items-center justify-center">
+        <p className="text-gray-500 text-sm">Loading banners...</p>
       </div>
     )}
 
     {/* Error */}
     {bannersError && !bannersLoading && (
-      <div className="w-full h-[220px] sm:h-[320px] lg:h-[420px] rounded-3xl bg-gradient-to-r from-red-600 to-red-800 flex items-center justify-center text-white shadow-xl">
-        <div className="text-center px-6">
-          <h2 className="text-3xl font-bold mb-2">Vijay Agencies</h2>
-          <p>Premium Cleaning Solutions</p>
+      <div className="w-full h-[200px] sm:h-[320px] lg:h-[420px] rounded-xl bg-gradient-to-r from-red-600 to-red-800 flex items-center justify-center text-white shadow-xl">
+        <div className="text-center px-4">
+          <h2 className="text-xl sm:text-3xl font-bold mb-2">Vijay Agencies</h2>
+          <p className="text-sm sm:text-base">Premium Cleaning Solutions</p>
         </div>
       </div>
     )}
@@ -760,73 +760,97 @@ const randomProducts = useMemo(() => {
       <div className="relative">
 
         {/* Banner Container */}
-        <div className="relative w-full overflow-hidden rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] bg-white">
+        <div className="
+          relative w-full
+          h-[220px] 
+          sm:h-[380px] 
+          lg:h-[calc(100vh-160px)]
+          overflow-hidden 
+          rounded-2xl
+          sm:rounded-xl
+          shadow-[0_30px_60px_-15px_rgba(0,0,0,0.25)]
+          bg-white
+        ">
 
-  {banners.map((banner, index) => {
-    const BannerContent = (
-      <div
-        className={`transition-all duration-700 ${
-          index === currentSlide ? "block" : "hidden"
-        }`}
-      >
-        <Image
-          src={banner.image_url}
-          alt={banner.title}
-          width={1600}
-          height={600}
-          priority={index === 0}
-          className="w-full h-auto object-contain"
-        />
+          {banners.map((banner, index) => {
+            const BannerContent = (
+              <div
+                className={`absolute inset-0 transition-opacity duration-700 ${
+                  index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
+                }`}
+              >
+                <Image
+                  src={banner.image_url}
+                  alt={banner.title}
+                  width={1600}
+                  height={600}
+                  priority={index === 0}
+                  className="
+                    w-full h-full
+                    object-cover
+                    sm:object-cover
+                    object-center
+                    rounded-2xl
+                    sm:rounded-none
+                  "
+                />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-black/5 pointer-events-none" />
-      </div>
-    );
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-black/5 pointer-events-none" />
+              </div>
+            );
 
-    return banner.link_url ? (
-      <a
-        key={banner._id}
-        href={banner.link_url}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {BannerContent}
-      </a>
-    ) : (
-      <div key={banner._id}>{BannerContent}</div>
-    );
-  })}
-
-</div>
+            return banner.link_url ? (
+              <a
+                key={banner._id}
+                href={banner.link_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full h-full"
+              >
+                {BannerContent}
+              </a>
+            ) : (
+              <div key={banner._id} className="w-full h-full">
+                {BannerContent}
+              </div>
+            );
+          })}
+        </div>
 
         {/* Navigation */}
-        {/* Navigation */}
-{banners.length > 1 && (
-  <>
-    <button
-      onClick={prevSlide}
-      className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 
-      bg-white/90 backdrop-blur-md border border-gray-200
-      shadow-lg hover:shadow-xl 
-      w-10 h-10 sm:w-12 sm:h-12 
-      rounded-full flex items-center justify-center
-      hover:bg-white hover:scale-110 transition-all duration-300 z-10"
-    >
-      <ChevronLeft className="w-5 h-5 text-gray-700" />
-    </button>
+        {banners.length > 1 && (
+          <>
+            <button
+              onClick={prevSlide}
+              className="
+                absolute left-2 sm:left-4 top-1/2 -translate-y-1/2
+                bg-white/90 backdrop-blur-md border border-gray-200
+                shadow-md
+                w-8 h-8 sm:w-12 sm:h-12
+                rounded-full flex items-center justify-center
+                hover:bg-white hover:scale-105 transition-all duration-300 z-20
+              "
+            >
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
+            </button>
 
-    <button
-      onClick={nextSlide}
-      className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 
-      bg-white/90 backdrop-blur-md border border-gray-200
-      shadow-lg hover:shadow-xl
-      w-10 h-10 sm:w-12 sm:h-12
-      rounded-full flex items-center justify-center
-      hover:bg-white hover:scale-110 transition-all duration-300 z-10"
-    >
-      <ChevronRight className="w-5 h-5 text-gray-700" />
-    </button>
-  </>
-)}
+            <button
+              onClick={nextSlide}
+              className="
+                absolute right-2 sm:right-4 top-1/2 -translate-y-1/2
+                bg-white/90 backdrop-blur-md border border-gray-200
+                shadow-md
+                w-8 h-8 sm:w-12 sm:h-12
+                rounded-full flex items-center justify-center
+                hover:bg-white hover:scale-105 transition-all duration-300 z-20
+              "
+            >
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
+            </button>
+          </>
+        )}
+
       </div>
     )}
 
