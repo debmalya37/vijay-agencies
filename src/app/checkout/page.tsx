@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   ArrowLeft,
   Plus,
@@ -57,6 +58,7 @@ interface OrderSummary {
 export default function CheckoutPage() {
   const router = useRouter();
   const { items: cartItems, getSubtotal, getItemCount, clearCart } = useCart();
+  const {data: session} = useSession();
 
   // Form states
   const [currentStep, setCurrentStep] = useState(1); // 1: Details, 2: Address, 3: Payment
@@ -109,6 +111,14 @@ export default function CheckoutPage() {
     loadUserData();
     loadAddresses();
   }, []);
+
+  useEffect(()=> {
+    if(!session)  {
+      router.push('/auth/signin?callbackUrl=/checkout');
+    }
+      
+    }
+  )
 
   const loadUserData = async () => {
     try {
