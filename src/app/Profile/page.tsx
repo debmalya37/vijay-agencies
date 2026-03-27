@@ -871,6 +871,46 @@ export default function UserProfilePage() {
             </button>
           </div>
         </div>
+
+        {/* Danger Zone */}
+<div className="mt-10 border border-red-200 bg-red-50 rounded-xl p-6">
+  <h3 className="text-lg font-semibold text-red-700 mb-2">
+    Delete Account
+  </h3>
+  <p className="text-sm text-red-600 mb-4">
+    Once you delete your account, all your data will be permanently removed. This action cannot be undone.
+  </p>
+
+  <button
+    onClick={async () => {
+      const confirmDelete = confirm(
+        "Are you sure you want to delete your account? This action is irreversible."
+      );
+
+      if (!confirmDelete) return;
+
+      try {
+        const res = await fetch("/api/user/delete", {
+          method: "DELETE",
+        });
+
+        const data = await res.json();
+
+        if (data.ok) {
+          alert("Account deleted successfully");
+          window.location.href = "/";
+        } else {
+          alert(data.error || "Failed to delete account");
+        }
+      } catch (err) {
+        alert("Something went wrong");
+      }
+    }}
+    className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+  >
+    Delete My Account
+  </button>
+</div>
       </div>
     </div>
   );
