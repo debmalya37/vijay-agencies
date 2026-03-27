@@ -110,14 +110,14 @@ export default function SignInPage() {
           </form>
 
           {/* Divider */}
-          <div className="flex items-center my-6">
+          {/* <div className="flex items-center my-6">
             <div className="flex-1 h-px bg-gray-300"></div>
             <span className="mx-3 text-gray-400 text-sm">or continue with</span>
             <div className="flex-1 h-px bg-gray-300"></div>
-          </div>
+          </div> */}
 
           {/* Google Sign In */}
-          <button
+          {/* <button
             onClick={handleGoogleSignIn}
             disabled={googleLoading}
             className="w-full py-3 border border-gray-300 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition"
@@ -128,7 +128,7 @@ export default function SignInPage() {
                 Continue with Google
               </>
             )}
-          </button>
+          </button> */}
 
           {/* Links */}
           <div className="mt-6 flex justify-between text-sm text-gray-500">
