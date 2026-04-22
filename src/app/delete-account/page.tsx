@@ -65,7 +65,7 @@ export default function DeleteAccountPage() {
             </p>
             
             <Link 
-              href="/profile" 
+              href="/Profile" 
               className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium transition-colors"
             >
               Go to Profile Settings
