@@ -97,7 +97,9 @@ export default function CheckoutPage() {
   const subtotal = Number(getSubtotal() || 0);
   const discountAmount = subtotal * discount;
   const deliveryFee = subtotal > 50000 ? 0 : 150;
-  const total = subtotal + deliveryFee;
+  
+  // FIXED: Subtract discountAmount from the subtotal before adding delivery fee
+  const total = subtotal - discountAmount + deliveryFee;
 
   const orderSummary: OrderSummary = {
     subtotal,
@@ -285,13 +287,14 @@ export default function CheckoutPage() {
     }
   };
 
-  const applyPromoCode = () => {
+ const applyPromoCode = () => {
     if (promoCode.toLowerCase() === "save20") {
-      setDiscount(0.99);
+      setDiscount(0.20); // 20% discount instead of 99%
     } else if (promoCode.toLowerCase() === "welcome10") {
-      setDiscount(0.99);
+      setDiscount(0.10); // 10% discount instead of 99%
     } else {
       setDiscount(0);
+      alert("Invalid or expired promo code"); // Optional UX improvement
     }
   };
 

@@ -555,74 +555,133 @@ export default function ProductDetailClient({ product, sellerInfo }: ProductDeta
                 )}
 
                 {/* Reviews List */}
-                {reviews.length > 0 ? (
-                  <>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-8 p-4 bg-gray-50 rounded-lg">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-gray-900">{avgRating.toFixed(1)}</div>
-                        <div className="flex items-center justify-center mb-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-4 h-4 ${i < Math.floor(avgRating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
-                            />
-                          ))}
-                        </div>
-                        <div className="text-sm text-gray-600">{reviews.length} reviews</div>
-                      </div>
+                {/* Reviews List */}
+{reviews.length > 0 ? (
+  <>
+    {/* Mobile-Optimized Rating Summary Card */}
+    <div className="flex flex-col md:flex-row items-center gap-6 mb-8 p-5 sm:p-6 bg-gray-50 rounded-2xl w-full">
+      
+      {/* Average Score */}
+      <div className="flex flex-col items-center w-full md:w-auto md:min-w-[120px]">
+        <div className="text-4xl font-extrabold text-gray-900 mb-1">
+          {avgRating.toFixed(1)}
+        </div>
+        <div className="flex items-center gap-0.5 mb-1">
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                i < Math.floor(avgRating)
+                  ? "fill-yellow-400 text-yellow-400"
+                  : "text-gray-300"
+              }`}
+            />
+          ))}
+        </div>
+        <div className="text-sm text-gray-500 font-medium">
+          {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
+        </div>
+      </div>
 
-                      <div className="flex-1">
-                        {[5, 4, 3, 2, 1].map((rating) => {
-                          const count = reviews.filter((r) => r.rating === rating).length;
-                          const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
-                          return (
-                            <div key={rating} className="flex items-center gap-2 mb-1">
-                              <span className="text-sm w-2">{rating}</span>
-                              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                              <div className="flex-1 bg-gray-200 rounded-full h-2">
-                                <div className="bg-yellow-400 h-2 rounded-full" style={{ width: `${percentage}%` }}></div>
-                              </div>
-                              <span className="text-sm text-gray-600 w-8">{count}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
+      {/* Rating Progress Bars */}
+      <div className="flex-1 w-full space-y-2">
+        {[5, 4, 3, 2, 1].map((rating) => {
+          const count = reviews.filter((r) => r.rating === rating).length;
+          const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+          return (
+            <div key={rating} className="flex items-center gap-3 w-full">
+              <div className="flex items-center gap-1 w-8 shrink-0">
+                <span className="text-sm font-medium text-gray-700">{rating}</span>
+                <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+              </div>
+              <div className="flex-1 bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                <div
+                  className="bg-yellow-400 h-full rounded-full transition-all duration-500"
+                  style={{ width: `${percentage}%` }}
+                />
+              </div>
+              <span className="text-sm text-gray-500 w-8 text-right shrink-0">
+                {count}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
 
-                    <div className="space-y-6">
-                      {reviews.map((review) => (
-                        <div key={review._id} className="border-b border-gray-100 pb-6 last:border-b-0">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                <Users className="w-4 h-4 text-blue-600" />
-                              </div>
-                              <span className="font-medium">User {review.user_id}</span>
-                            </div>
-                            <span className="text-sm text-gray-500">
-                              {new Date(review.created_at).toLocaleDateString()}
-                            </span>
-                          </div>
+    {/* Individual Reviews List */}
+    <div className="space-y-6">
+      {reviews.map((review) => {
+        // Automatically grabs name if populated from backend, otherwise defaults
+        const reviewerName = review.user_name || review.user?.name || "Verified Buyer";
+        const initial = reviewerName.charAt(0).toUpperCase();
 
-                          <div className="flex items-center mb-2">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-4 h-4 ${i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
-                              />
-                            ))}
-                          </div>
-
-                          <p className="text-gray-600">{review.comment}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <p>No reviews yet. Be the first to review this product!</p>
+        return (
+          <div key={review._id} className="border-b border-gray-100 pb-6 last:border-b-0 w-full">
+            
+            {/* Header: Avatar, Name, Date */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2 sm:gap-0">
+              <div className="flex items-center gap-3">
+                {/* Dynamic Initial Avatar */}
+                <div className="w-10 h-10 bg-gradient-to-br from-[#A3221D] to-[#CB202D] rounded-full flex items-center justify-center shrink-0 shadow-sm">
+                  <span className="text-white font-bold text-sm">{initial}</span>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-gray-900 text-[15px]">{reviewerName}</h4>
+                  {/* Mobile-only Stars (shows under name on small screens) */}
+                  <div className="flex items-center gap-0.5 mt-0.5 sm:hidden">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-3.5 h-3.5 ${
+                          i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-200"
+                        }`}
+                      />
+                    ))}
                   </div>
-                )}
+                </div>
+              </div>
+
+              {/* Date */}
+              <span className="text-xs sm:text-sm text-gray-500 font-medium ml-12 sm:ml-0">
+                {new Date(review.created_at).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </span>
+            </div>
+
+            {/* Desktop-only Stars (shows above comment on larger screens) */}
+            <div className="hidden sm:flex items-center gap-0.5 mb-3 ml-13">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-4 h-4 ${
+                    i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-200"
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Review Comment */}
+            <p className="text-gray-700 text-[15px] leading-relaxed sm:ml-13 mt-2 sm:mt-0">
+              {review.comment}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  </>
+) : (
+  /* Enhanced Empty State */
+  <div className="flex flex-col items-center justify-center py-12 px-4 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+    <Star className="w-12 h-12 text-gray-300 mb-3" />
+    <p className="text-gray-900 font-semibold mb-1">No reviews yet</p>
+    <p className="text-gray-500 text-sm">Be the first to share your thoughts on this product!</p>
+  </div>
+)}
               </div>
             )}
           </div>
