@@ -96,7 +96,9 @@ const [mobileCatsOpen, setMobileCatsOpen] = useState(false);
 
       {/* MAIN HEADER */}
       <div className="border-b border-gray-200 bg-white overflow-visible">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+        
+        {/* ROW 1: Logo and Buttons */}
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
           <Link href="/" className="flex items-center gap-3 shrink-0">
             <div className="w-12 h-12 relative">
@@ -107,30 +109,25 @@ const [mobileCatsOpen, setMobileCatsOpen] = useState(false);
             </span>
           </Link>
 
+          {/* DESKTOP SEARCH */}
           <div className="flex-1 hidden md:block relative z-[60]">
             <ProductSearch />
           </div>
-          {/* MOBILE SEARCH */}
-<div className="md:hidden px-4 pb-3">
-  <ProductSearch />
-</div>
-
 
           {/* RIGHT ACTIONS */}
-          <div className="flex items-center gap-3 ml-auto">
-
-{/* MOBILE MENU BUTTON */}
-<button
-  onClick={() => setMobileOpen(true)}
-  className="md:hidden p-2 rounded-lg border border-gray-300"
->
-  <Menu className="w-5 h-5" />
-</button>
+          <div className="flex items-center gap-3 shrink-0">
+            {/* MOBILE MENU BUTTON */}
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="md:hidden p-2 rounded-lg border border-gray-300"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
 
             {/* CART */}
             <Link href="/cart" className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm relative hover:bg-gray-50 transition">
               <ShoppingCart className="w-4 h-4" />
-              Cart
+              <span className="hidden sm:inline">Cart</span>
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#A3221D] text-white text-[10px] flex items-center justify-center rounded-full">
                   {cartCount}
@@ -138,9 +135,8 @@ const [mobileCatsOpen, setMobileCatsOpen] = useState(false);
               )}
             </Link>
 
-            {/* USER AREA */}
+            {/* USER AREA (DESKTOP) */}
             <div className="hidden md:flex items-center relative">
-
               {status === "loading" ? (
                 <div className="px-4 py-2 text-sm text-gray-500">Checking...</div>
               ) : session ? (
@@ -169,42 +165,34 @@ const [mobileCatsOpen, setMobileCatsOpen] = useState(false);
                       <p className="font-semibold text-gray-900 truncate">{userName}</p>
                       <p className="text-xs text-gray-500 truncate">{session.user?.email}</p>
                     </div>
-
-                    <Link href="/Profile" className="block px-4 py-2 text-sm hover:bg-gray-50">
-                      Profile
-                    </Link>
-
-                    <Link href="/orders" className="block px-4 py-2 text-sm hover:bg-gray-50">
-                      My Orders
-                    </Link>
-
+                    <Link href="/Profile" className="block px-4 py-2 text-sm hover:bg-gray-50">Profile</Link>
+                    <Link href="/orders" className="block px-4 py-2 text-sm hover:bg-gray-50">My Orders</Link>
                     <button
                       onClick={() => signOut({ callbackUrl: "/" })}
                       className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 flex items-center gap-2"
                     >
-                      <LogOut className="w-4 h-4" />
-                      Logout
+                      <LogOut className="w-4 h-4" /> Logout
                     </button>
                   </div>
                 </>
               ) : (
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => signIn()}
-                    className="px-3 py-2 rounded-lg border border-gray-300 text-sm hover:bg-gray-50 flex items-center gap-2"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    Login
+                  <button onClick={() => signIn()} className="px-3 py-2 rounded-lg border border-gray-300 text-sm hover:bg-gray-50 flex items-center gap-2">
+                    <LogIn className="w-4 h-4" /> Login
                   </button>
-
                   <Link href="/auth/signup" className="px-3 py-2 rounded-lg bg-[#A3221D] text-white text-sm hover:bg-[#8c1c17]">
                     Sign up
                   </Link>
                 </div>
               )}
             </div>
-
           </div>
+        </div>
+
+        {/* ROW 2: MOBILE SEARCH */}
+        {/* Notice this is now OUTSIDE the flex row above, giving it 100% width on mobile without breaking the layout */}
+        <div className="md:hidden px-4 pb-3 w-full">
+          <ProductSearch isMobileView={true} />
         </div>
       </div>
 
